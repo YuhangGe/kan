@@ -1,0 +1,151 @@
+/site/login
+使用：用户登陆
+参数：{
+    'username' : xxx
+    'password' : xxx
+}
+返回：{
+    'data' : {
+        user_id : xxx,
+        nick_name : xxx
+    }
+    'success' : true/false,
+    'msg' : xxx
+}
+说明：
+    username可以是nick_name，email或者phone，由服务器端自动判断
+    返回的json数据，data为用户id，success表示是否登陆成功。msg是success为false时的服务器返回信息。
+    通常msg是没有用的，success为false也有可能是服务器端数据库操作失败，没有具体的msg返回。
+    客户端的提示信息应该是自定义的友好信息，这里只是保留这个字段。
+    在所有的ajax请求的返回都遵循这个格式，下面的描述返回值仅仅指data部分，success和msg不再复述。
+
+/site/register
+使用：用户注册
+参数：{
+    'username' : xxx,
+    'nick_name' : xxx,
+    'password' : xxx
+}
+返回：true/false【这里只是data部分，完整格式见上面第一个，以后的不再复述】
+说明：
+    username可以是手机或邮箱，应该在客户端判断是否符合手机或邮箱格式。
+    nick_name是昵称，可以是中文。password不少于6位。
+    服务器不返回注册失败的原因，在注册提交之前应该即时地提示用户的邮箱手机或昵称是否已经被占用。
+
+/user/cemail
+使用：检查是否邮箱已经被注册
+参数：{
+    'email' : xxx
+}
+返回：true/false
+说明：true表明已经被占用，要提示用户不能使用。
+
+/user/cphone
+参数：{
+    'phone' : xxx
+}
+
+/user/cnickname
+参数：{
+    'nick_name' : xxx
+}
+
+/usr/info
+使用：取得用户信息
+参数：{
+    'user_id' : xxx
+}
+返回：User[参考User的数据库字段]
+      此外有额外的三个字段：
+      fan_number, friend_number分别代表粉丝数和好友数。
+      relation是一个数组，代表当前登陆用户和这个用户的关系：
+      ['me']【是自己】
+      ['friend']【是互粉好友】
+      ['follow']【对方关注自己】
+      ['fan']【是对方粉丝】
+      其中，friend,follow,fan可以同时组合出现，比如作为普通用户两个人互相是好友，
+            而且两个人还都参加了选秀活动成为秀客彼此互相关注对方，那么他们间就会同时有这三个关系。
+说明：返回的birthday格式为Unix的timestamp（是int型而不是字符串，请根据需要转换成本地化显示）
+
+/user/update
+使用：更新用户信息
+参数：{
+    'nick_name' : xxx
+    'email' : xxx
+    //参考User的数据库字段
+}
+返回：true/false
+说明：
+    email和phone至少需要一个。nick_name不能为空。提交表单前客户端请先检查是否被占用。
+    birthday为timestamp
+    不包括头像的修改，头像修改请使用/user/avatar
+
+/user/avatar
+使用：修改头像
+参数：{
+    'big_avatar' : xxx
+    'small_avatar' : xxx
+}
+返回：true/false
+说明：头像是url格式的字符串，首先将头像图片传到IMG_SERVER/upload/avatar，将会返回big_avatar,small_avatar. IMG_SERVER是图片上传服务器，当前暂时使用同一个服务器，所以IMG_SERVER可以省略
+
+/user/password
+使用：更新密码
+参数：{
+    'pre_password' : xxx
+    'password' : xxx
+}
+返回：true/false
+说明：
+    pre_password为之前的密码。password为新密码。
+
+/fan/follow
+使用：关注某人
+参数：{
+    'follow_id' : xxx  //被关注人的user_id
+}
+返回：true/false
+
+/fan/unfollow
+使用：取消关注某人
+参数：{
+    'follow_id' : xxx  //被关注人的user_id
+}
+返回：true/false
+
+/fan/friend
+使用：互粉某人（成为好友，根据需求描述，互粉只要单向互粉就成为朋友，而关注是单向地关注选手）
+参数：{
+    'friend_id' : xxx  //被互粉人的user_id
+}
+返回：true/false
+
+/fan/unfriend
+使用：取消互粉某人（成为好友，根据需求描述，互粉只要单向互粉就成为朋友，而关注是单向地关注选手）
+参数：{
+    'friend_id' : xxx  //被互粉人的user_id
+}
+返回：true/false
+
+/user/fans
+使用：得到某人粉丝
+参数：{
+    'user_id' : xxx
+    'offset' : xxx //可选参数，默认为0.
+    'length' : xxx //可选参数，默认为50，如果超过50也最大支持50
+}
+返回：[{},{},{}]这样一个数组，其中{}为用户的概要信息，格式为：
+      {
+          'user_id' : xxx,
+          'nick_name' : xxx,
+          'small_avatar' : xxx //小头像
+      }
+说明：offset和length用于分页（或者显示更多）。初始时传入offset=0,length=N,
+      之后每一次取更多则把offset = offset + N，假设返回的data.length < N则说明已经取到尾部了。
+
+/user/friends
+使用：得到某人互粉好友
+参数和返回同上。
+
+
+

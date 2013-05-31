@@ -1,0 +1,224 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    tools:context=".SlidingMenu" >
+
+    <!-- 使用自定义的侧滑布局，orientation必须为水平方向 -->
+
+    <android.kankan.SlidingLayout
+        android:id="@+id/slidingLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal" >
+
+        <!--
+	        侧滑布局的根节点下，有且只能有两个子元素,这两个子元素必须是四种基本布局之一,
+	        即LinearLayout, RelativeLayout, FrameLayout或TableLayout。
+	        第一个子元素将做为左侧布局，初始化后被隐藏。第二个子元素将做为右侧布局，
+	        也就是当前Activity的主布局，将主要的数据放在里面。
+        -->
+
+        <LinearLayout
+            android:id="@+id/menu"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="5"
+                    android:orientation="vertical" >
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="85"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="选项列表"
+                        android:textSize="30dip" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="10"
+                    android:orientation="vertical" >
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_weight="5"
+                android:background="#555555"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_weight="85"
+                android:orientation="vertical" >
+
+                <ListView
+                    android:id="@+id/menu_list"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" >
+                </ListView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <!-- 
+            	顶栏和顶部的三个按钮
+             -->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_weight="20"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dip"
+                    android:layout_weight="50"
+                    android:orientation="vertical" >
+
+                    <Button
+                        android:id="@+id/menuButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Menu" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dip"
+                    android:layout_weight="50"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="32"
+                        android:gravity="center"
+                        android:text="选项1" />
+
+                    <LinearLayout
+                        android:layout_width="0dip"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="2" >
+
+                        <View
+                            android:layout_width="1dip"
+                            android:layout_height="25dip"
+                            android:layout_gravity="center"
+                            android:background="#555555" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="32"
+                        android:gravity="center"
+                        android:text="选项2" />
+
+                    <LinearLayout
+                        android:layout_width="0dip"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="2" >
+
+                        <View
+                            android:layout_width="1dip"
+                            android:layout_height="25dip"
+                            android:layout_gravity="center"
+                            android:background="#555555" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="32"
+                        android:gravity="center"
+                        android:text="选项3" />
+                </LinearLayout>
+            </LinearLayout>
+
+            
+            <!-- 
+            	主要内容
+             -->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_weight="70"
+                android:orientation="vertical" >
+
+                <ListView
+                    android:id="@+id/contentList"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" >
+                </ListView>
+            </LinearLayout>
+
+            
+            <!-- 
+            	底部两个按钮
+             -->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="49"
+                    android:gravity="center"
+                    android:text="选秀" />
+
+                <LinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="2" >
+
+                    <View
+                        android:layout_width="1dip"
+                        android:layout_height="25dip"
+                        android:layout_gravity="center"
+                        android:background="#555555" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="49"
+                    android:gravity="center"
+                    android:text="造星" />
+            </LinearLayout>
+        </LinearLayout>
+    </android.kankan.SlidingLayout>
+
+</LinearLayout>

@@ -1,0 +1,67 @@
+
+/**
+ *
+ * 看看数据库。目前所有字符串字段采用varchar，并且没有建立索引。以后需要逐步优化改进。
+ *
+ **/
+user
+
+user_id(auto, inc, key), level(tinyint), view_num(int), email(varchar 25, unique), phone(varchar 20, unique), password(char 32), nick_name(varchar 15，unique, 可中文), realname(varchar 10), sex(tinyint), birthday(date), constellation(tinyint), personalsay(varchar 50), company(varchar 20), hobby(varchar 50), avatar(varchar 30)
+
+avatar是服务器生成的头像id（通常是时间的整数），实际的头像地址是 user_big_{user_id}_{avatar}，小头像user_small_{user_id}_{avatar}
+
+level:用户等级，0秀客，1演客，2星客
+
+view_num: 空间的访问人气
+
+user_friend
+//互粉关系
+user_id_1(int, key), user_id_2(int, key)
+
+user_fan
+//关注关系
+user_id, fan_id
+
+user_location
+//用户最近一次的所在地
+user_id(int, key), time(datetime), lat(float,index), lng(float, index), address(varchar 30)
+
+active
+//选秀活动
+act_id(key,int,auto), act_name(varchar 25), begin_time(datetime), end_time(date_time), type(tinyint), image(varchar 20), description(text)
+//type 0表演，1才艺，2简历
+//image是服务器生成的id，实际的图片地址是  act_{act_id}_{image}
+
+photo
+photo_id(key,int,auto), user_id(int), act_id(int), url(varchar 30), user_name(varchar 15), act_name(varchar 25), vote_num(uint), view_num(uint), upload_time(date)
+
+url是服务器生成的地址id，实际地址是 pho_{user_id}_{url}
+user_name,act_name是为了方便查询的冗余
+
+photo_view
+photo_id(int), user_id(int), view_num(int), view_date(int)
+//view_date是今天的日子，用来设置比如每个访问者每天给每张图片的人气不能加来超过某个值（这样可以防止使用程序刷票）.日期统一使用int类型
+
+photo_vote
+photo_id(int), user_id(int)
+//vote是喜欢功能，每人只能喜欢一次
+
+user_view
+user_id(int), view_id(int), view_date(char 10)
+//view_date的说明同上
+
+video
+video_id(key, int, auto), url(varchar 30), user_id(uint),  act_id(uint), user_name(varchar 15) act_name(varchar 25),upload_time(datetime), vote_num(uint), view_num(uint)
+
+video_view
+video_id(int), user_id(int), view_num(int), view_date(char 10)
+//view_date同上
+
+video_vote
+video_id(int), user_id(uint)
+
+
+
+
+
+
