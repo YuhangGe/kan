@@ -6,7 +6,6 @@
  * The followings are the available columns in table 'user':
  * @property integer $user_id
  * @property integer $level
- * @property integer $view_num
  * @property string $email
  * @property string $phone
  * @property string $password
@@ -51,7 +50,7 @@ class User extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('password', 'required'),
-			array('level, view_num, sex, constellation, birthday', 'numerical', 'integerOnly'=>true),
+			array('level, sex, constellation, birthday', 'numerical', 'integerOnly'=>true),
 			array('email', 'length', 'max'=>30),
 			array('phone', 'numerical', 'integerOnly'=>true),
 			array('password', 'length', 'max'=>32),
@@ -182,4 +181,6 @@ class User extends CActiveRecord
         $criteria->params = $par;
         return User::model()->find($criteria);
     }
+
+
 }

@@ -46,7 +46,7 @@ class Active extends CActiveRecord
 			array('description', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('act_id, act_name, begin_time, end_time, act_type, image, description', 'safe', 'on'=>'search'),
+			//array('act_id, act_name, begin_time, end_time, act_type, image, description', 'safe', 'on'=>'search'),
 		);
 	}
 

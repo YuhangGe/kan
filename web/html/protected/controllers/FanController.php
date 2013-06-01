@@ -10,8 +10,8 @@ class FanController extends Controller {
     public function accessRules()
     {
         return array(
-            array('deny',
-                'actions'=>array('follow', 'friend'),
+            array(
+                'deny',
                 'users'=>array('?'),
             )
         );

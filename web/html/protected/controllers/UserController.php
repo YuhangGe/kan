@@ -10,8 +10,8 @@ class UserController extends Controller {
     public function accessRules()
     {
         return array(
-            array('deny',
-                'actions'=>array('info', 'update', 'password', 'fans', 'friends'),
+            array(
+                'deny',
                 'users'=>array('?'),
             )
         );
@@ -25,25 +25,8 @@ class UserController extends Controller {
             return true;
         }
     }
-    public function actionUpdate() {
-        $u = new UpdateUserForm();
-        $u -> attributes = $_POST;
-        if($u->update()) {
-            $this->sendAjax(true);
-        } else {
-            $this->sendAjax(null);
-        }
-    }
 
-    public function actionPassword() {
-        $u = new UpdateUserForm();
-        $u -> attributes = $_POST;
-        if($u->updatePassword()) {
-            $this->sendAjax(true);
-        } else {
-            $this->sendAjax(null);
-        }
-    }
+
     public function actionInfo() {
         if(!isset($_POST['user_id'])) {
             return;
@@ -96,27 +79,7 @@ class UserController extends Controller {
         $this->sendAjax($info, true);
 
     }
-    public function actionCemail() {
-        if(!isset($_POST['email'])) {
-            $this->sendAjax(null);
-        } else {
-            $this->sendAjax($this->check("email", $_POST['email']), true);
-        }
-    }
-    public function actionCnickname() {
-        if(!isset($_POST['nick_name'])) {
-            $this->sendAjax(null);
-        } else {
-            $this->sendAjax($this->check("nick_name", $_POST['nick_name']), true);
-        }
-    }
-    public function actionCphone() {
-        if(!isset($_POST['phone'])) {
-            $this->sendAjax(null);
-        } else {
-            $this->sendAjax($this->check("phone", $_POST['phone']), true);
-        }
-    }
+
     /*
      * 得到某个用户的粉丝
      */
@@ -147,6 +110,29 @@ class UserController extends Controller {
             $this->sendAjax(null);
         } else {
             $this->sendAjax($data, true);
+        }
+    }
+
+
+    public function actionLocation() {
+        if(!isset($_POST['user_id'])) {
+            return;
+        } else {
+            $uid = (int)$_POST['user_id'];
+        }
+        if(empty($uid)||$uid<0) {
+            return;
+        }
+        $r = UserLocation::model()->findByPk($uid);
+        if($r!==null) {
+            $this->sendAjax(array(
+                'lat'=>$r->lat,
+                'lng'=>$r->lng,
+                'time'=>$r->time,
+                'address'=>$r->address
+            ), true);
+        } else {
+            $this->sendAjax(null);
         }
     }
 }

@@ -76,6 +76,12 @@ class RegisterForm extends CFormModel {
             $ufn = new UserFriendNumber();
             $ufn -> user_id = $user->user_id;
             $ufn -> save();
+            $ufn = new UserViewNumber();
+            $ufn -> user_id = $user->user_id;
+            $ufn -> save();
+            $ufn = new UserLocation();
+            $ufn->user_id = $user->user_id;
+            $ufn->save();
             $transaction->commit(); //提交事务会真正的执行数据库操作
             $rtn = true;
         } catch (Exception $e) {

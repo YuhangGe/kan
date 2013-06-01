@@ -1,22 +1,18 @@
 <?php
 
 /**
- * This is the model class for table "user_location".
+ * This is the model class for table "photo_view_number".
  *
- * The followings are the available columns in table 'user_location':
- * @property integer $id
- * @property integer $user_id
- * @property string $time
- * @property double $lat
- * @property double $lng
- * @property string $address
+ * The followings are the available columns in table 'photo_view_number':
+ * @property integer $photo_id
+ * @property integer $view_number
  */
-class UserLocation extends CActiveRecord
+class PhotoViewNumber extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return UserLocation the static model class
+	 * @return PhotoViewNumber the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -28,7 +24,7 @@ class UserLocation extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'user_location';
+		return 'photo_view_number';
 	}
 
 	/**
@@ -39,13 +35,11 @@ class UserLocation extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id', 'required'),
-			array('user_id', 'numerical', 'integerOnly'=>true),
-			array('lat, lng', 'numerical'),
-			array('address', 'length', 'max'=>150),
+			array('photo_id', 'required'),
+			array('photo_id, view_number', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('user_id, time, lat, lng, address', 'safe', 'on'=>'search'),
+			array('photo_id, view_number', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -66,12 +60,8 @@ class UserLocation extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'user_id' => 'User',
-			'time' => 'Time',
-			'lat' => 'Lat',
-			'lng' => 'Lng',
-			'address' => 'Address',
+			'photo_id' => 'Photo',
+			'view_number' => 'View Number',
 		);
 	}
 
@@ -86,12 +76,8 @@ class UserLocation extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('time',$this->time,true);
-		$criteria->compare('lat',$this->lat);
-		$criteria->compare('lng',$this->lng);
-		$criteria->compare('address',$this->address,true);
+		$criteria->compare('photo_id',$this->photo_id);
+		$criteria->compare('view_number',$this->view_number);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

@@ -69,9 +69,11 @@
                     ts.find("input").val("");
                 }
             }).on("change", ".param", function() {
-                        var _t = $(this);
-                        if(_t.val().trim()==='file' || /^file/i.test(_t.val())) {
+                        var _t = $(this), _v = _t.val().trim();
+                        if(_v==='file' || /^file/i.test(_v)) {
                             _t.parents("tr").find(".value").attr("type","file");
+                        } else if(_v==='time') {
+                            _t.parents("tr").find(".value").val(Math.round(new Date().getTime()/1000));
                         }
                     });
 
