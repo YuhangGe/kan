@@ -21,14 +21,14 @@ class PhotoController extends Controller{
 
     }
 
-    public function actionLocation() {
+    public function actionLocationList() {
 
     }
-    public function actionTime() {
+    public function actionTimeList() {
 
     }
 
-    public function actionHot() {
+    public function actionViewList() {
 
     }
 }

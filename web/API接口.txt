@@ -89,6 +89,17 @@
 返回：true/false
 说明：头像是url格式的字符串，首先将头像图片传到IMG_SERVER/upload/avatar，将会返回big_avatar,small_avatar. IMG_SERVER是图片上传服务器，当前暂时使用同一个服务器，所以IMG_SERVER可以省略
 
+/update/location
+使用：更新用户最近的地理位置
+参数：{
+    'lat' : xxx.xxx 经度，浮点类型
+    'lng' : xxx.xxx 纬度，浮点类型
+    'time' : 当前时间，整数型时间戳
+    'address': 当前位置。此参数可选，长度暂时规定不超过150个字符，是描述位置，比如“南京大学”，可以使用Google API自动获取。
+}
+说明：客户端可以每隔10分钟，或是在程序从后台被唤醒时，检测下当前位置和上一次的位置差，如果达到某个值则向服务器更新。
+      最好要检测位置差，否则10分钟一次的调用似乎压力有点繁重。这个可以以后再细讨论。
+
 /update/password
 使用：更新密码
 参数：{
@@ -237,9 +248,40 @@
 返回：true/false
 
 /photo/locationList
+使用：根据距离得到照片列表。(会返回选手的大头像)
+参数：{
+    'lat' : xxx.xxx
+    'lng' : xxx.xxx
+    'offset' : xxx
+    'length' : xxx  此处四个参数含义和上面接口中已经出现过的一样。
+}
+返回：[{
+    'user_id' : xx
+    'act_id' : xx
+    'user_name' : xx
+    'act_name' : xx
+    'upload_time' : xx
+    'url' : xx //图片地址
+    'thumb' : xx //缩略图地址
+}, {}, {}, ...]
 
 /photo/timeList
+使用：根据时间得到照片列表。（会返回用户上传的几张图片中的最后一张）
+参数：{
+    'offset' : xxx
+    'length' : xxx
+}
+返回：同上
 
 /photo/viewList
+使用：根据人气返回照片列表。（暂时以浏览量为人气）
+参数：{
+    'offset' : xxx
+    'length' : xxx
+}
+返回：同上
+
+（上面的三个接口可以考虑加一个act_id，返回某个活动下面的照片。但初期需求没提到，先不管了）
+（视屏接口就是把photo换成vedio，其它都一样）
 
 
