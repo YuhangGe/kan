@@ -22,7 +22,7 @@ class TestController extends Controller {
 //        echo CJSON::encode($_GET);
         $this->render("do");
     }
-    function actionInfo() {
+    function actionGoodInfo() {
         phpinfo();
     }
 }

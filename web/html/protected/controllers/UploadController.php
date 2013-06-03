@@ -17,7 +17,13 @@ class UploadController extends Controller{
         );
     }
 
-    function actionImage() {
+    public function actionPhoto() {
 
     }
+
+    public function actionAvatar() {
+
+    }
+
+
 }

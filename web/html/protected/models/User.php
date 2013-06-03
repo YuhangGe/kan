@@ -78,6 +78,7 @@ class User extends CActiveRecord
 		return array(
             'fan_number' => array(self::HAS_ONE, 'UserFanNumber', 'user_id'),
             'friend_number' => array(self::HAS_ONE, 'UserFriendNumber', 'user_id')
+
 		);
 	}
 

@@ -14,7 +14,7 @@ return array(
 	// preloading 'log' component
 	'preload'=>array('log'),
 
-    'language'=>'zh_cn',//要翻译的语言，这个可以在程序中动态设置
+    //'language'=>'zh_cn',//要翻译的语言，这个可以在程序中动态设置
 	// autoloading model and component classes
 	'import'=>array(
 		'application.models.*',

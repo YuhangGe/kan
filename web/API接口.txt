@@ -32,7 +32,7 @@
     nick_name是昵称，可以是中文。password不少于6位。
     服务器不返回注册失败的原因，在注册提交之前应该即时地提示用户的邮箱手机或昵称是否已经被占用。
 
-/user/cemail
+/tip/cemail
 使用：检查是否邮箱已经被注册
 参数：{
     'email' : xxx
@@ -40,12 +40,12 @@
 返回：true/false
 说明：true表明已经被占用，要提示用户不能使用。
 
-/user/cphone
+/tip/cphone
 参数：{
     'phone' : xxx
 }
 
-/user/cnickname
+/tip/cnickname
 参数：{
     'nick_name' : xxx
 }
@@ -67,7 +67,7 @@
             而且两个人还都参加了选秀活动成为秀客彼此互相关注对方，那么他们间就会同时有这三个关系。
 说明：返回的birthday格式为Unix的timestamp（是int型而不是字符串，请根据需要转换成本地化显示）
 
-/user/update
+/update/user
 使用：更新用户信息
 参数：{
     'nick_name' : xxx
@@ -80,8 +80,8 @@
     birthday为timestamp
     不包括头像的修改，头像修改请使用/user/avatar
 
-/user/avatar
-使用：修改头像
+/update/avatar
+使用：修改头像 [注意upadate和upload的区别。。。]
 参数：{
     'big_avatar' : xxx
     'small_avatar' : xxx
@@ -89,7 +89,7 @@
 返回：true/false
 说明：头像是url格式的字符串，首先将头像图片传到IMG_SERVER/upload/avatar，将会返回big_avatar,small_avatar. IMG_SERVER是图片上传服务器，当前暂时使用同一个服务器，所以IMG_SERVER可以省略
 
-/user/password
+/update/password
 使用：更新密码
 参数：{
     'pre_password' : xxx
@@ -98,6 +98,15 @@
 返回：true/false
 说明：
     pre_password为之前的密码。password为新密码。
+
+/update/avatar
+使用：更新头像
+参数：{
+    'big_avatar' : xxx
+    'small_avatar' : xxx
+}
+返回：true/false
+
 
 /fan/follow
 使用：关注某人
@@ -147,5 +156,90 @@
 使用：得到某人互粉好友
 参数和返回同上。
 
+
+/active/list
+使用：得到活动列表
+参数：{
+    'act_type' : [0,1,2] 活动类型，表演，才艺，简历
+    'offset' : xx  //offset, length之后统计都是用于分页的参数，参见/user/fans，不再复述
+    'length' : xx
+}
+返回：[{
+    'act_name' : xxx
+    'begin_time' : xxx  //整数时间戳，需要转换
+    'end_time' : xxx
+    'image' : xxx //海报
+    'user_id' : xxx //如果user_id不等于null，则表明当前活动用户已经报了名了。
+}, {}, {},...]
+说明：列表没有返回description，在点进去的详细信息里才会有。用户报名可以在列表页直接报名，也可以在详细页面报名。
+
+/active/info
+使用：得到活动详细信息
+参数：{
+    'act_id' : xxx  //活动id
+}
+返回：{
+    同上。
+    'description' : xxx
+}
+
+/active/join
+使用：活动报名
+参数：{
+    'act_id' : xxx
+}
+返回：true/false
+
+/active/isjoin
+使用：当前用户是否参与了活动
+参数：{
+    'act_id' : xxx
+}
+返回：true/false
+
+/upload/avatar
+使用：上传头像
+参数：{
+    'type' : 'big_avatar'/'small_avatar'
+    'file' : 图像文件
+}
+返回：{
+    'url' : xxx //服务器的图片地址
+}
+说明：到底是客户端进行裁剪，并生成大小头像，传给服务器。还是由服务器生成小头像，这个再讨论。暂时先客户端裁剪。
+
+/upload/photo
+使用：报名时上传照片
+参数：{
+    'act_id' : xxx
+    'file' : 图像文件
+}
+返回：{
+    'big_url' : xxx //图片地址
+    'small_url' : xxx //缩略图
+}
+说明：用户报名时，应该是这样的流程。
+    首先调用/active/join报名，如果成功，
+    则一张照片一张照片地向/upload/photo上传，得到返回的url后，
+    再调用/photo/post将图片信息加入。
+    （这个思路还值得商榷）
+
+/photo/post
+使用：上传图片信息
+参数：{
+    'act_id' : xxx,
+    'user_name' : xxx,
+    'act_name' : xxx,
+    'upload_time' : xxx//整数型时间戳
+    'url' : xxx//对应于/upload/photo返回的big_url
+    'thumb' : xx//缩略图，small_url
+}
+返回：true/false
+
+/photo/locationList
+
+/photo/timeList
+
+/photo/viewList
 
 

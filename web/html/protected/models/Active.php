@@ -42,7 +42,9 @@ class Active extends CActiveRecord
 		return array(
 			array('act_name, begin_time, end_time, act_type, image', 'required'),
 			array('begin_time, end_time, act_type', 'numerical', 'integerOnly'=>true),
-			array('act_name, image', 'length', 'max'=>25),
+            array('act_type', 'in', 'range'=>array(0,1,2)),
+			array('act_name', 'length', 'max'=>25),
+            array('image', 'length', 'max'=>150),
 			array('description', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -58,6 +60,7 @@ class Active extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+            'user_active' => array(self::HAS_MANY, 'UserActive', 'act_id')
 		);
 	}
 
@@ -100,4 +103,6 @@ class Active extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+
 }
