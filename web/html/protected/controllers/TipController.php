@@ -10,6 +10,16 @@
  *
  */
 class TipController extends Controller {
+    private function check($type, $val) {
+        $record = User::model()->findIdByAttributes(array($type=>$val));
+
+        if($record==null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function actionCemail() {
         if(!isset($_POST['email'])) {
             $this->sendAjax(null);

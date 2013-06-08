@@ -62,7 +62,7 @@ class SiteController extends Controller
     public function actionRegister() {
         $model = new RegisterForm();
        // echo "hello";
-        $model->attributes = array('username'=>$_POST['username'],'password'=>$_POST['password'], 'nick_name' => $_POST['nick_name']);
+        $model->attributes = array('username'=>$_POST['username'], 'password'=>$_POST['password'], 'nick_name' => $_POST['nick_name']);
         $rtn = false;
        // echo $model->validate();
        // return;

@@ -131,6 +131,10 @@ return array(
          */
         'KanKanImageServer' => array(
             'http://localhost:8089'
-        )
+        ),
+        'maxViewNumberEachDay' => 3,
+        'staticServer' => 'http://localhost:8090',
+        'uploadDir'=> '/Users/abraham/workspace/kan/web/static'
+
 	),
 );

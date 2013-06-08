@@ -72,16 +72,39 @@ class ActiveController extends Controller{
         if($r===null) {
             return;
         }
+//        echo time();
         if($r->end_time<time()) {
             $this->sendAjax("活动已经过期",false);
         }
-        $m = new UserActive();
-        $m->act_id = $_POST['act_id'];
-        $m->user_id = Yii::app()->user->id;
-        if($m->validate() && $m->save()) {
+
+        $uid = Yii::app()->user->id;
+        $r = UserActive::model()->findByAttributes(array('act_id'=>$_POST['act_id'], 'user_id'=>$uid));
+        if($r!==null) {
             $this->sendAjax(true, true);
-        } else {
+        }
+
+        $m = new UserActive();
+        $m->attributes = $_POST;
+//        echo CJSON::encode($m);
+
+        $m->user_id = Yii::app()->user->id;
+        if(!$m->validate()) {
             $this->sendAjax(null);
+        }
+        $transaction = Yii::app()->db->beginTransaction(); //创建事务
+        try {
+            /*
+             * 一但报名，则成为秀客
+             * user_location表的user_level是为了冗余，方便在基于地理位置时的查找和搜索
+             */
+            $m->save(false);
+            Yii::app()->db->createCommand("update `user` set level=1 where user_id=:uId and level=0")->query(array(':uId'=>$m->user_id));
+            Yii::app()->db->createCommand("update `user_location` set user_level=1 where user_id=:uId and user_level=0")->query(array(':uId'=>$m->user_id));
+            $transaction->commit(); //提交事务会真正的执行数据库操作
+            $this->sendAjax(true, true);
+        } catch (Exception $e) {
+            $transaction->rollback(); //如果操作失败, 数据回滚
+            $this->sendAjax($e->getMessage(), false);
         }
     }
 

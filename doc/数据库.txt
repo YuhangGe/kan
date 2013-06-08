@@ -63,7 +63,75 @@ video_vote
 video_id(int), user_id(uint)
 
 
+/*** 计算热门度的函数 ***/
 
+DELIMITER $$
+ 
+CREATE FUNCTION `HOT`(`vote` INT, `view` INT) RETURNS INT
+
+READS SQL DATA
+ 
+DETERMINISTIC
+ 
+BEGIN
+
+DECLARE s INT;
+
+SET s = `vote` * 10 + `view`;
+ 
+RETURN s;
+ 
+END$$
+ 
+DELIMITER ;
+
+/******依赖的计算距离的函数******/
+
+DELIMITER $$
+ 
+CREATE FUNCTION `GETDISTANCE`(lat1 DOUBLE, lng1 DOUBLE, lat2 DOUBLE, lng2 DOUBLE) RETURNS double
+ 
+READS SQL DATA
+ 
+DETERMINISTIC
+ 
+BEGIN
+ 
+DECLARE RAD DOUBLE;
+ 
+DECLARE EARTH_RADIUS DOUBLE DEFAULT 6378137;
+ 
+DECLARE radLat1 DOUBLE;
+ 
+DECLARE radLat2 DOUBLE;
+ 
+DECLARE radLng1 DOUBLE;
+ 
+DECLARE radLng2 DOUBLE;
+ 
+DECLARE s DOUBLE;
+ 
+SET RAD = PI() / 180.0;
+ 
+SET radLat1 = lat1 * RAD;
+ 
+SET radLat2 = lat2 * RAD;
+ 
+SET radLng1 = lng1 * RAD;
+ 
+SET radLng2 = lng2 * RAD;
+ 
+SET s = 2*asin(sqrt(pow(sin((radLat1-radLat2)/2),2)+cos(radLat1)*cos(radLat2)*pow(sin((radLng1-radLng2)/2),2)))*EARTH_RADIUS;
+
+#SET s = ACOS(COS(radLat1)*COS(radLat2)*COS(radLng1-radLng2)+SIN(radLat1)*SIN(radLat2))*EARTH_RADIUS;
+ 
+SET s = ROUND(s * 10000) / 10000;
+ 
+RETURN s;
+ 
+END$$
+ 
+DELIMITER ;
 
 
 

@@ -17,6 +17,16 @@ class SearchController extends Controller{
     }
 
     public function actionUser() {
-
+        $m = new SearchUserForm();
+        $m->attributes = $_POST;
+        if(!$m->validate()) {
+            $this->sendAjax(null);
+        }
+        $rs = $m->search();
+        if($rs!==null) {
+            $this->sendAjax($rs, true);
+        } else {
+            $this->sendAjax(null);
+        }
     }
 }

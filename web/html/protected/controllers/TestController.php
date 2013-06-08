@@ -10,12 +10,8 @@ class TestController extends Controller {
     public $t_aa;
 
     function actionIndex() {
-        $i = (int)$_GET['id'];
-        if(empty($i) || $i<0) {
-            echo 'not';
-        } else {
-            echo $i;
-        }
+        $r = Yii::app()->db->createCommand("select * from user where nick_name like :nn")->queryAll(true, array(':nn'=>'%白羊座%'));
+        echo CJSON::encode($r);
     }
 
     function actionDo() {
@@ -24,5 +20,8 @@ class TestController extends Controller {
     }
     function actionGoodInfo() {
         phpinfo();
+    }
+    function actionAvatar() {
+        $this->render("avatar");
     }
 }

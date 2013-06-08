@@ -49,8 +49,6 @@ class FanController extends Controller {
         }
         $uf = new UserFanForm();
         $uf->user_id = $_POST['follow_id'];
-        $uf->fan_id  = Yii::app()->user->id;
-        $uf->fan_name = Yii::app()->user->name;
 
         if(!$uf->validate() || !$uf->unfollow()) {
             $this->sendAjax(null);
@@ -65,8 +63,6 @@ class FanController extends Controller {
         }
         $uf = new UserFanForm();
         $uf->user_id = $_POST['follow_id'];
-        $uf->fan_id  = Yii::app()->user->id;
-        $uf->fan_name = Yii::app()->user->name;
 
         if(!$uf->validate() || !$uf->follow()) {
             $this->sendAjax(null);

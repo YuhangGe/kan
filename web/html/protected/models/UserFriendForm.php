@@ -54,12 +54,12 @@ class UserFriendForm extends CFormModel {
         if($type=='friend') {
             if($record!==null) {
                 //已经是朋友
-                return false;
+                return true;
             }
         } else {
             if($record===null) {
                 //本来就不是朋友
-                return false;
+                return true;
             }
         }
 
@@ -82,8 +82,8 @@ class UserFriendForm extends CFormModel {
 
 
         $c = $type == 'friend' ? 1 : -1;
-        UserFriendNumber::model()->updateCounters(array("friend_number"=>$c), "user_id=:userId", array(":userId"=>$id1));
-        UserFriendNumber::model()->updateCounters(array("friend_number"=>$c), "user_id=:userId", array(":userId"=>$id2));
+        User::model()->updateCounters(array("friend_number"=>$c), "user_id=:userId", array(":userId"=>$id1));
+        User::model()->updateCounters(array("friend_number"=>$c), "user_id=:userId", array(":userId"=>$id2));
 
         return true;
     }

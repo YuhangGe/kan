@@ -166,6 +166,7 @@ class User extends CActiveRecord
         return User::model()->find($criteria);
     }
     public function findColumnByAttributes($columns, $params, $op = "AND") {
+
         $criteria=new CDbCriteria;
         $criteria->select= join($columns, ",");
         $con = "";
@@ -177,6 +178,7 @@ class User extends CActiveRecord
             }
             $con .= $key.'=:'.$key;
             $par[':'.$key] = $value;
+            $i++;
         }
         $criteria->condition = $con;
         $criteria->params = $par;

@@ -50,14 +50,31 @@
     'nick_name' : xxx
 }
 
-/usr/info
+/user/info
 使用：取得用户信息
 参数：{
     'user_id' : xxx
 }
-返回：User[参考User的数据库字段]
-      此外有额外的三个字段：
-      fan_number, friend_number分别代表粉丝数和好友数。
+返回：{
+    user_id: 
+    nick_name:
+    email : 
+    phone:
+    level : 0/1/2 看客，秀客，星客
+    sex : 0/1  男女
+    constellation : 1-12  星座
+    birthday : 
+    personalsay: 个人说明
+    company: 公司或学校（单位）
+    hobby: 兴趣爱好
+    big_avatar:
+    small_avatar:
+    image_server : //图片上传服务器地址
+    fan_number : 粉丝数
+    friend_number: 好友数
+    view_number : 空间来访量（人气）
+    relation : [me,friend,follow,fan]
+}
       relation是一个数组，代表当前登陆用户和这个用户的关系：
       ['me']【是自己】
       ['friend']【是互粉好友】
@@ -92,8 +109,8 @@
 /update/location
 使用：更新用户最近的地理位置
 参数：{
-    'lat' : xxx.xxx 经度，浮点类型
-    'lng' : xxx.xxx 纬度，浮点类型
+    'lat' : xxx.xxx 纬度，浮点类型
+    'lng' : xxx.xxx 经度，浮点类型
     'time' : 当前时间，整数型时间戳
     'address': 当前位置。此参数可选，长度暂时规定不超过150个字符，是描述位置，比如“南京大学”，可以使用Google API自动获取。
 }
@@ -197,9 +214,12 @@
 /active/join
 使用：活动报名
 参数：{
-    'act_id' : xxx
+    'act_id' : xxx,
+    'intro' : xxx //个人简介
+    'slogan' : xxx //宣言
 }
 返回：true/false
+说明：个人简介和宣言是报名时可选的内容，用于用户添加信息来作自我宣传。
 
 /active/isjoin
 使用：当前用户是否参与了活动
@@ -211,29 +231,36 @@
 /upload/avatar
 使用：上传头像
 参数：{
-    'type' : 'big_avatar'/'small_avatar'
-    'file' : 图像文件
+    'image_file' : 图像文件
+    'thumb_file' : 缩略图
+    'small_file' : 被裁剪后的图像文件
 }
 返回：{
-    'url' : xxx //服务器的图片地址
+    'image_url' : xxx
+    'thumb_url' : xxx
+    'small_url' : xxx
 }
-说明：到底是客户端进行裁剪，并生成大小头像，传给服务器。还是由服务器生成小头像，这个再讨论。暂时先客户端裁剪。
+说明：source_file是头像的原始图片，会用在比如图片版块的位置搜索时会显示用户头像。
+      到底服务器接受头像后直接插数据库，还是返回数据让客户端和其它信息一起提交数据库更新，再讨论。
 
 /upload/photo
 使用：报名时上传照片
 参数：{
     'act_id' : xxx
-    'file' : 图像文件
+    'image_file' : 图像文件
+    'thumb_file' : 缩略图文件
 }
 返回：{
-    'big_url' : xxx //图片地址
-    'small_url' : xxx //缩略图
+    'image_url' : xxx //图片地址
+    'thumb_url' : xxx //缩略图
 }
 说明：用户报名时，应该是这样的流程。
     首先调用/active/join报名，如果成功，
     则一张照片一张照片地向/upload/photo上传，得到返回的url后，
-    再调用/photo/post将图片信息加入。
-    （这个思路还值得商榷）
+    再调用/photo/post将图片信息加入。（这个流程思路还值得商榷）
+    php服务器生成缩略图性能不好，而且据说没有靠谱的库，生成的效果不好看。所以直接在客户端生成。
+    而且有手机可能直接拍的照片很大，也需要先压缩下。
+
 
 /photo/post
 使用：上传图片信息
@@ -242,10 +269,12 @@
     'user_name' : xxx,
     'act_name' : xxx,
     'upload_time' : xxx//整数型时间戳
-    'url' : xxx//对应于/upload/photo返回的big_url
-    'thumb' : xx//缩略图，small_url
+    'image_url' : xxx
+    'thumb_url' : xx//缩略
 }
 返回：true/false
+说明：user_name和act_name是为了冗余方便下次查询，不要联表，因为图片数量巨大。
+     客户端需要把这两个字段传给服务器。
 
 /photo/locationList
 使用：根据距离得到照片列表。(会返回选手的大头像)
@@ -256,32 +285,113 @@
     'length' : xxx  此处四个参数含义和上面接口中已经出现过的一样。
 }
 返回：[{
+    'photo_id' : xx
     'user_id' : xx
     'act_id' : xx
     'user_name' : xx
     'act_name' : xx
     'upload_time' : xx
-    'url' : xx //图片地址
-    'thumb' : xx //缩略图地址
+    'image_url' : xx //图片地址
+    'thumb_url' : xx //缩略图地址
+    'vote_number' : //当前喜欢的人数
+    'view_number' : //当前浏览的人数
+    'distance' : 上传人离自己的距离
+    'address' : 上传人所在地址
+    ‘
 }, {}, {}, ...]
 
 /photo/timeList
 使用：根据时间得到照片列表。（会返回用户上传的几张图片中的最后一张）
 参数：{
+    'time' : xxx
     'offset' : xxx
     'length' : xxx
 }
-返回：同上
+返回：同上，但是没有距离信息。注意每次取更多照片时time要保持一致，否则可能出现逻辑错误。
+     如果要刷新时间后取最新的照片，则应该从offset=0开始取。
 
 /photo/viewList
-使用：根据人气返回照片列表。（暂时以浏览量为人气）
+使用：根据人气返回照片列表。
 参数：{
     'offset' : xxx
     'length' : xxx
 }
 返回：同上
+说明：目前是按照 vote_number * 10 + view_number来计算的人气。
+     有个问题是，当用户取更多数据的时候，可能当前人气已经发生了变化。
+     但这个问题没办法跟本上解决，所以建议客户端一次多取点数据（比如200），
+     但显示的时候一次加载20张图片。
 
 （上面的三个接口可以考虑加一个act_id，返回某个活动下面的照片。但初期需求没提到，先不管了）
 （视屏接口就是把photo换成vedio，其它都一样）
+
+/photo/randList
+使用：随机返回照片列表
+参数：{
+    'offset' : xxx
+    'length' : xxx
+}
+返回：同上
+说明：这个接口可以用在用户登陆后的首页。注意随机的照片可能是重复的，
+     因为服务器端保证不重复性能很差。但这个应该没有关系，当照片非常多的时候重复的可能性很小。
+     如果要求苛刻，可以在客户端判断下。
+
+/vote/photo
+使用：给photo投票（喜欢）
+{
+    'photo_id' : xxx
+}
+返回：true/false
+
+/vote/video
+使用：给video投票（喜欢）
+{
+    'video_id' : xxx
+}
+返回：true/false
+
+/view/photo
+使用：用户查看照片大图时增加人气
+{
+    'photo_id' : xxx
+}
+返回：true/false
+
+/view/video
+使用：用户播放视频时增加人气
+{
+    'video_id' : xxx
+}
+返回：true/false
+
+/search/user
+使用：搜索用户
+参数：{
+    email : xxx
+    phone : xxx
+    sex : 0/1
+    constellation : 1-12  星座
+    age_from : 0-100
+    age_to : 0-100
+    nick_name : xxx(模糊搜索)
+    company : xxx学校公司（模糊搜索）
+    hobby ：爱好（模糊搜索）
+    fan_number: xx
+    friend_number: xx
+    distance : xx
+    lat : xx.xx
+    lng : xx.xx
+}
+返回：[{
+    //完整的用户信息，见/user/info
+    //这里是否需要返回完整的信息，可以再讨论。
+},{},{},{}]
+说明：以上参数为组合参数。其中一但email或phone中有一个出现，
+    则为精确搜索。这个可以方便快速定位选手，便于拉票。
+    age_from和age_to必须同时出现，搜索年龄段，age_from必须小于age_to,
+    如果搜索某个年龄，则age_to=age_from+1，请客户端注意。
+    distance和lat,lng必须同时出现，查找lat，lng经纬度中心的distance米的人。
+    fan_number和friend_number是指搜索用户的粉丝或好友需要超过这个数量
+
 
 

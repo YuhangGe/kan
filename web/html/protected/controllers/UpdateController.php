@@ -37,7 +37,13 @@ class UpdateController extends Controller{
     }
 
     public function actionAvatar() {
-
+        $u = new UpdateUserForm();
+        $u -> attributes = $_POST;
+        if($u->updateAvatar()) {
+            $this->sendAjax(true);
+        } else {
+            $this->sendAjax(false);
+        }
     }
     public function actionLocation() {
         $m = new LocationForm();

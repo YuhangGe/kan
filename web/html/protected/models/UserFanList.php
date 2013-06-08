@@ -33,10 +33,6 @@ class UserFanList extends CFormModel{
             $this->length = intval($this->length);
         }
 
-//        echo $this->offset;
-//        echo $this->length;
-        //die();
-//        echo $this->user_id;
 
         $records = UserFan::model()->findAll("user_id=:userId LIMIT :offset, :length", array(":userId"=>$this->user_id, ":offset"=>$this->offset, ":length"=>$this->length));
         if($records === null) {

@@ -7,11 +7,10 @@
  * @property integer $photo_id
  * @property integer $user_id
  * @property integer $act_id
- * @property string $url
+ * @property string $image_url
+ * @property string $thumb_url
  * @property string $user_name
  * @property string $act_name
- * @property string $vote_num
- * @property string $view_num
  * @property integer $upload_time
  */
 class Photo extends CActiveRecord
@@ -42,14 +41,11 @@ class Photo extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, act_id, url, user_name, act_name, upload_time', 'required'),
+			array('user_id, act_id, image_url, thumb_url, user_name, act_name, upload_time', 'required'),
 			array('user_id, act_id, upload_time', 'numerical', 'integerOnly'=>true),
-			array('url, act_name', 'length', 'max'=>25),
+			array('act_name', 'length', 'max'=>25),
 			array('user_name', 'length', 'max'=>15),
-			array('vote_num, view_num', 'length', 'max'=>10),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('photo_id, user_id, act_id, url, user_name, act_name, vote_num, view_num, upload_time', 'safe', 'on'=>'search'),
+            array('image_url, thumb_url', 'length', 'max'=>150)
 		);
 	}
 

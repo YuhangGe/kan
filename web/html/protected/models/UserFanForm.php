@@ -37,12 +37,12 @@ class UserFanForm extends CFormModel {
         if($type == "follow") {
             if($record!==null) {
                 //已经关注
-                return false;
+                return true;
             }
         } else {
             if($record===null) {
                 //本来就没有关注
-                return false;
+                return true;
             }
         }
 
@@ -61,7 +61,7 @@ class UserFanForm extends CFormModel {
             }
         }
 
-        UserFanNumber::model()->updateCounters(array("fan_number"=>($type=="follow"?1:-1)), "user_id=:userId", array(":userId"=>$this->user_id));
+        User::model()->updateCounters(array("fan_number"=>($type=="follow"?1:-1)), "user_id=:userId", array(":userId"=>$this->user_id));
 
         return true;
 

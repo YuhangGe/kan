@@ -29,11 +29,13 @@
                     return;
                 }
                 _vd = _t.find(".value");
-                if(_vd.attr("type")==='file' && _vd[0].files.length>1) {
+                if(_vd[0].type==='file' && _vd[0].files.length>0) {
+
                     _v = _vd[0].files[0];
                 } else {
                     _v = _vd.val();
                 }
+               // $.log(_v);
                 fd.append(_p, _v);
             });
             if(fd.length==0) {
@@ -44,7 +46,7 @@
                     url: url,
                     type : 'post',
                     data: fd,
-                    contentType:false,
+                    contentType: false,
                     processData:false,
                     success : function(rtn) {
                         $("#output").html(rtn);
@@ -55,7 +57,9 @@
 
         $(function() {
             $("#btnAdd").click(function() {
-                $("#table tr:first").clone().appendTo($("#table"));
+                var i = $("#table tr:first").clone().appendTo($("#table"));
+                i.find(".value").val("")[0].type="text";
+                i.find(".param").val("");
             });
             $("#btnSubmit").click(function() {
                 submit("ajax");
@@ -65,13 +69,13 @@
                 if(ts.length>1) {
                     $(this).parents("tr").remove();
                 } else {
-                    ts.find(".value").attr("type","text");
+                    ts.find(".value")[0].type = "text";
                     ts.find("input").val("");
                 }
             }).on("change", ".param", function() {
                         var _t = $(this), _v = _t.val().trim();
                         if(_v==='file' || /^file/i.test(_v)) {
-                            _t.parents("tr").find(".value").attr("type","file");
+                            _t.parents("tr").find(".value")[0].type = "file";
                         } else if(_v==='time') {
                             _t.parents("tr").find(".value").val(Math.round(new Date().getTime()/1000));
                         }
@@ -96,7 +100,7 @@
     <tbody id="table">
     <tr>
         <td><input class="param" ></td>
-        <td><input class="value"></td>
+        <td><input class="value" ></td>
         <td><a class="op_del" href="javascript:;">删除</a></td>
     </tr>
     </tbody>

@@ -17,29 +17,21 @@ class UserController extends Controller {
         );
     }
 
-    private function check($type, $val) {
-        $record = User::model()->findIdByAttributes(array($type=>$val));
-        if($record==null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
 
     public function actionInfo() {
         if(!isset($_POST['user_id'])) {
             return;
         }
-        $user = User::model()->with("fan_number", "friend_number")->findByPk($_POST['user_id']);
+        $user = User::model()->findByPk($_POST['user_id']);
         if($user === null) {
             $this->sendAjax(null);
         }
 
         $info = $user->attributes;
         unset($info['password']);
-        $info['fan_number'] = $user->fan_number->fan_number;
-        $info['friend_number'] = $user->friend_number->friend_number;
+        unset($info['real_name']);
+
         $my_id = Yii::app()->user->id;
         if($user->user_id === $my_id) {
             $info['relation'] = array("me");
