@@ -29,4 +29,18 @@ class SearchController extends Controller{
             $this->sendAjax(null);
         }
     }
+
+    public function actionPhoto() {
+        $m = new SearchPhotoForm();
+        $m->attributes = $_POST;
+        if(!$m->validate()) {
+            $this->sendAjax(null);
+        }
+        $rs = $m->search();
+        if($rs!==null) {
+            $this->sendAjax($rs, true);
+        } else {
+            $this->sendAjax(null);
+        }
+    }
 }

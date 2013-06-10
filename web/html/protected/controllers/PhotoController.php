@@ -85,4 +85,28 @@ class PhotoController extends Controller{
             $this->sendAjax(null);
         }
     }
+
+    public function actionRandList() {
+        $m = new PhotoList();
+        $m->attributes = $_POST;
+        $m->type="rand";
+        if($m->validate()) {
+            $list = $m->get();
+            $this->sendAjax($list, true);
+        } else {
+            $this->sendAjax(null);
+        }
+    }
+
+    public function actionUserList() {
+        $m = new PhotoList();
+        $m->attributes = $_POST;
+        $m->type="user";
+        if($m->validate()) {
+            $list = $m->get();
+            $this->sendAjax($list, true);
+        } else {
+            $this->sendAjax(null);
+        }
+    }
 }

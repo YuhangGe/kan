@@ -322,7 +322,16 @@
      但这个问题没办法跟本上解决，所以建议客户端一次多取点数据（比如200），
      但显示的时候一次加载20张图片。
 
-（上面的三个接口可以考虑加一个act_id，返回某个活动下面的照片。但初期需求没提到，先不管了）
+/photo/userList
+使用：返回某个用户的所有照片。
+参数：{
+    user_id: xxx
+    offset : 
+    length : 
+}
+返回：同上
+
+（上面的四个接口可以考虑加一个act_id，返回某个活动下面的照片。但初期需求没提到，先不管了）
 （视屏接口就是把photo换成vedio，其它都一样）
 
 /photo/randList
@@ -378,6 +387,7 @@
     hobby ：爱好（模糊搜索）
     fan_number: xx
     friend_number: xx
+    address : xxx
     distance : xx
     lat : xx.xx
     lng : xx.xx
@@ -385,13 +395,119 @@
 返回：[{
     //完整的用户信息，见/user/info
     //这里是否需要返回完整的信息，可以再讨论。
+    以及：
+    distance : 距离（如果搜索时带了distance参数）
+    address : 位置（如果搜索时带了distance或address参数）
 },{},{},{}]
 说明：以上参数为组合参数。其中一但email或phone中有一个出现，
     则为精确搜索。这个可以方便快速定位选手，便于拉票。
     age_from和age_to必须同时出现，搜索年龄段，age_from必须小于age_to,
     如果搜索某个年龄，则age_to=age_from+1，请客户端注意。
     distance和lat,lng必须同时出现，查找lat，lng经纬度中心的distance米的人。
+    address和distance不能同时出现。查找关键字为xx的地方的人。
+    （由于自动定位的经纬度不一定准确，可以考虑地点名称由用户输入，就像人人的报道）
     fan_number和friend_number是指搜索用户的粉丝或好友需要超过这个数量
 
 
+/search/photo
+使用：搜索照片
+参数：{
+    email:
+    phone:
+    nick_name:
+    act_name : //活动名称（模糊搜索）
+    address:
+    distance:
+    lat:
+    lng:
+}
+（参数意义同上，是指搜索这些信息对应的用户上传的照片。额外有act_name）
+（当前版本没有照片的单独地理信息）
+返回：{
+    Photo的所有信息。
+    distance : 
+    address : (同上)
+}
 
+/search/vedio
+使用：搜索视频
+参数：{
+    email : 
+    phone :
+    nick_name :
+    vedio_name: //节目名字（模糊搜索）
+    act_name : //活动名字
+}
+返回：{
+    
+}
+说明：视频不是用户上传的，而且视频数量较少，所以没有地理位置。
+
+/search/active
+使用：搜索活动
+参数：{
+    'act_type': xx
+    act_name : 
+}
+返回：{
+    
+}
+
+/chat/unreadList
+使用：返回未读聊天列表
+参数：{
+    offset : xxx
+    length : xxx
+}
+返回：[{
+    from_user_id : 
+    content : 消息内容
+    time : 
+    user_name : 
+    user_avatar : 
+},{},{}]
+说明：以用户为单位的列表，跟同一个用户的未读聊天会只显示他最新的一条。
+    用户点击查看消息详情时，使用from_user_id调用/chat/dialog打开具体的聊天对话
+
+/chat/unreadCount
+使用：返回未读消息数
+参数：无
+返回: {count: xxx}
+说明：每5分钟调用一次，如果未读数大于1，则提示用户刷新。
+
+/chat/setRead
+使用：设置与某个用户的对话为已读
+参数：{
+    from_user_id : xxx
+}
+返回：true/false
+
+/chat/dialog
+使用：查看与某用户的详细聊天列表
+参数：{
+    from_user_id : xxx
+    offset: 
+    length:
+}
+返回：[{
+    Chat所有字段
+},{},{}]
+
+/chat/allList
+使用：返回所有消息列表（包括未读，时间排序）
+说明：也是合并后的列表。同/chat/unreadList
+
+
+/chat/post
+使用：发布聊天
+参数：{
+    to_user_id : 对方id
+    content : 内容，最多150字。
+}
+返回：true/false
+
+/notify/unreadList
+
+/notify/allList
+
+/notify/setRead

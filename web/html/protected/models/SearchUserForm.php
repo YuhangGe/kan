@@ -21,6 +21,7 @@ class SearchUserForm extends CFormModel{
     public $age_to;
     public $offset;
     public $length;
+    public $address;
 
     public $distance;
     public $lat;
@@ -39,22 +40,27 @@ class SearchUserForm extends CFormModel{
             array('nick_name, company, hobby', 'length', 'min'=>3),
             array("offset", 'numerical', 'integerOnly'=>true, 'min'=>0),
             array('length', 'numerical', 'integerOnly'=>true, 'min'=>1),
-            array('email', 'length', 'max'=>100),
+            array('email', 'length', 'min'=>5, 'max'=>20),
+            array('address', 'length', 'min'=>2, 'max'=>20),
             array('lat, lng','numerical')
         );
     }
     private function searchEmail() {
+        $uid = Yii::app()->user->id;
+
         $r = User::model()->find(array(
             'select'=> self::USER_COLUMN,
-            'condition'=>'email=:e',
+            'condition'=>"user_id<>$uid and email=:e",
             'params'=>array(':e'=>$this->email)
         ));
         return $r;
     }
     private function searchPhone() {
+        $uid = Yii::app()->user->id;
+
         $r = User::model()->find(array(
             'select'=> self::USER_COLUMN,
-            'condition'=>'phone=:p',
+            'condition'=>"user_id<>$uid and phone=:p",
             'params'=>array(':p'=>$this->phone)
         ));
         return $r;
@@ -120,6 +126,8 @@ class SearchUserForm extends CFormModel{
         $uid = Yii::app()->user->id;
 
         $join = "";
+        $s_dis = false;
+        $s_add = false;
         if($this->distance!==null && $this->lat!==null && $this->lng!==null) {
             $dlng =  2 * asin(sin($this->distance / (2 * 6371)) / cos(deg2rad($this->lat)));
             $dlng = rad2deg($dlng);
@@ -131,8 +139,12 @@ class SearchUserForm extends CFormModel{
             $lat_right = $this->lat + $dlat;
             $lng_left = $this->lng - $dlng;
             $lng_right = $this->lng + $dlng;
-
+            $s_dis = true;
             $join = " (select user_id, address, GETDISTANCE(lat, lng, {$this->lat},{$this->lng}) as distance from user_location where user_id<>$uid and lat between $lat_left and $lat_right and lng between $lng_left and $lng_right order by distance limit 1000) ua where ua.user_id=user.user_id";
+        } else if($this->address!==null) {
+            $s_add = true;
+            $join = " (select user_id, address from user_location where user_id<>$uid and address like :add limit 1000) ua where ua.user_id = user.user_id ";
+            $par[':add'] = '%'.strtr($this->address,array('%'=>'\%', '_'=>'\_', '\\'=>'\\\\')).'%';
         }
 
         if(count($cdt)===0 && $join=="") {
@@ -141,9 +153,10 @@ class SearchUserForm extends CFormModel{
 
         $cdt_str = join("  AND  ", $cdt);
 
-        $sql = "select ".self::USER_COLUMN.($join==""?"":", ua.distance, ua.address ")." from user ".($join=="" ? " where $cdt_str" : ", $join and $cdt_str ").($join==""?"":" order by ua.distance ")." limit {$this->offset},{$this->length}";
+        $sql = "select ".self::USER_COLUMN.($s_dis?", ua.distance, ua.address ":"").($s_add?", ua.address ":"")." from user ".(($s_dis||$s_add)? (", $join".($cdt_str==""?"":" and $cdt_str ")) : " where $cdt_str").($s_dis?" order by ua.distance ":"")." limit {$this->offset},{$this->length}";
 
         return Yii::app()->db->createCommand($sql)->queryAll(true, $par);
 
     }
+
 }

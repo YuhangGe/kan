@@ -13,12 +13,13 @@ class PhotoList extends CFormModel{
     public $lat;
     public $lng;
     public $time;
+    public $user_id;
 
     public function rules(){
         return array(
             array('type', 'required'),
-            array('type', 'in', 'range'=>array("location", "time", "view", "rand")),
-            array("time", 'numerical', 'integerOnly'=>true, 'min'=>0),
+            array('type', 'in', 'range'=>array("location", "time", "view", "rand", "user")),
+            array("time, user_id", 'numerical', 'integerOnly'=>true),
             array("offset", 'numerical', 'integerOnly'=>true, 'min'=>0),
             array('length', 'numerical', 'integerOnly'=>true, 'min'=>1),
             array('lat, lng', 'numerical')
@@ -148,6 +149,14 @@ class PhotoList extends CFormModel{
         }
         return $rs;
     }
+
+    private function getUserList() {
+        if($this->user_id===null) {
+            return array();
+        }
+        $sql = "select * from photo where user_id={$this->user_id} order by upload_time desc limit {$this->offset},{$this->length}";
+        return Yii::app()->db->createCommand($sql)->queryAll();
+    }
     public function get() {
         if($this->offset===null) {
             $this->offset = 0;
@@ -172,6 +181,9 @@ class PhotoList extends CFormModel{
                 break;
             case "rand" :
                 return $this->getRandList();
+                break;
+            case "user" :
+                return $this->getUserList();
                 break;
             default:
                 return array();

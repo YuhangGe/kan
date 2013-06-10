@@ -6,14 +6,9 @@
  **/
 user
 
-user_id(auto, inc, key), level(tinyint), email(varchar 25, unique), phone(varchar 20, unique), password(char 32), nick_name(varchar 15，unique, 可中文), realname(varchar 10), sex(tinyint), birthday(date), constellation(tinyint), personalsay(varchar 50), company(varchar 20), hobby(varchar 50), big_avatar(varchar 125), small_avatar(varchar 125)
-
+user_id(auto, inc, key), level(tinyint), email(varchar 25, unique), phone(varchar 20, unique), password(char 32), nick_name(varchar 15，unique, 可中文), realname(varchar 10), sex(tinyint), birthday(date), constellation(tinyint), personalsay(varchar 50), company(varchar 20), hobby(varchar 50), big_avatar(varchar 125), small_avatar(varchar 125), fan_number(int), friend_number(int), view_number(int)
 
 level:用户等级，0秀客，1演客，2星客
-
-user_view_number
-//空间的访问人气
-user_id, view_number
 
 
 user_friend
@@ -35,13 +30,13 @@ act_id(key,int,auto), act_name(varchar 25), begin_time(datetime), end_time(date_
 //image是服务器生成的id，实际的图片地址是  act_{act_id}_{image}
 
 photo
-photo_id(key,int,auto), user_id(int), act_id(int), url(varchar 30), user_name(varchar 15), act_name(varchar 25), vote_num(uint), view_num(uint), upload_time(date)
+photo_id(key,int,auto), user_id(int), act_id(int), url(varchar 30), user_name(varchar 15), act_name(varchar 25), vote_number(uint), view_number(uint), upload_time(date)
 
 url是服务器生成的地址id，实际地址是 pho_{user_id}_{url}
 user_name,act_name是为了方便查询的冗余
 
 photo_view
-photo_id(int), user_id(int), view_num(int), view_date(int)
+photo_id(int), user_id(int), view_num(int), view_time(int)
 //view_date是今天的日子，用来设置比如每个访问者每天给每张图片的人气不能加来超过某个值（这样可以防止使用程序刷票）.日期统一使用int类型
 
 photo_vote
@@ -49,7 +44,7 @@ photo_id(int), user_id(int)
 //vote是喜欢功能，每人只能喜欢一次
 
 user_view
-user_id(int), view_id(int), view_date(char 10)
+user_id(int), view_id(int), view_time(int)
 //view_date的说明同上
 
 video
@@ -61,6 +56,15 @@ video_id(int), user_id(int), view_num(int), view_date(char 10)
 
 video_vote
 video_id(int), user_id(uint)
+
+chat 
+msg_id(key,int,auto), content(varchar 150), to_user_id, user_id, time(int), read(tiny int)
+//time上建立desc类型的索引
+
+notify
+notify_id(key,int,auto), type(tiny int), content(var char 300), read(tiny int)
+//type : 类型：0系统通知
+
 
 
 /*** 计算热门度的函数 ***/
