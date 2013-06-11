@@ -13,7 +13,7 @@ class AController extends Controller{
     public function filterAccessControl($filterChain) {
 
         if(!Yii::app()->user->isAdmin()) {
-            $this->redirect("/admin/default/login");
+            $this->redirect("/admin/login");
         }
         $filterChain->run();
     }

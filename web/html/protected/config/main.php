@@ -20,7 +20,7 @@ return array(
 		'application.models.*',
 		'application.components.*',
 	),
-    'theme' => 'bootstrap',
+    'theme' => 'charisma',
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
 
