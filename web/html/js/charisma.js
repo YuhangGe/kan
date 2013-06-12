@@ -40,8 +40,13 @@ $(document).ready(function(){
 	
 	//highlight current / active link
 	$('ul.main-menu li a').each(function(){
-		if($($(this))[0].href==String(window.location))
-			$(this).parent().addClass('active');
+		if($($(this))[0].href==String(window.location)) {
+            var t = $(this), p = t.parent();
+            p.addClass('active');
+            var bc = $(".breadcrumb li a");
+            $(bc[0]).text(p.prevAll("li.nav-header:first").text());
+            $(bc[1]).text(t.text());
+        }
 	});
 	
 	//establish history variables
@@ -88,9 +93,16 @@ $(document).ready(function(){
 	function(){
 		$(this).animate({'margin-left':'-=5'},300);
 	});
-	
+
+    if(typeof viewStart === 'function') {
+        viewStart();
+    }
 	//other things to do on document ready, seperated for ajax calls
 	docReady();
+
+    if(typeof viewReady === 'function') {
+        viewReady();
+    }
 });
 		
 		
@@ -100,9 +112,7 @@ function docReady(){
 		e.preventDefault();
 	});
 	
-	//rich text editor
-	$('.cleditor').cleditor();
-	
+
 	//datepicker
 	$('.datepicker').datepicker();
 	
@@ -260,13 +270,61 @@ function docReady(){
 	}
 
 	//datatable
-	$('.datatable').dataTable({
-			"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
-			"sPaginationType": "bootstrap",
-			"oLanguage": {
-			"sLengthMenu": "_MENU_ records per page"
-			}
-		} );
+	$('table.datatable').each(function() {
+        var _t = $(this);
+        var params = {
+            "oLanguage": {
+                "sProcessing": "正在加载中......",
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sZeroRecords": "对不起，查询不到相关数据！",
+                "sEmptyTable": "表中无数据存在！",
+                "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录",
+                "sInfoFiltered": "数据表中共为 _MAX_ 条记录",
+                "sSearch": "搜索",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上一页",
+                    "sNext": "下一页",
+                    "sLast": "末页"
+                }
+            },
+            "bPaginate": true,
+            "bLengthChange": true,
+            "bInfo" : true,
+            "bLength" : false,
+            "bSortClasses": false,
+            "bAutoWidth" : false,
+            "aaSorting" : [],
+            "bFilter" : false,
+            "sDom": "<'row-fluid'<'span6'l><'span6 control'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
+            "sPaginationType": "bootstrap"
+//            "fnInfoCallback": typeof onTableInfo === 'function' ? onTableInfo : function() {},
+//            "fnHeaderCallback": typeof onTableHeader === 'function' ? onTableHeader : function() {}
+        };
+        if(typeof _t.attr("data-source") !== 'undefined') {
+            $.extend(params, {
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": _t.attr("data-source")
+            });
+        }
+        if(typeof _t.attr("order-by") !== 'undefined') {
+            $.extend(params, {
+                "fnServerParams": function ( aoData ) {
+                    var _o = _t.attr("order-by");
+                    if(typeof _o !== 'undefined' && _o.trim()!=="") {
+                        aoData.push( { "name": "sOrderBy", "value": _o.trim() } );
+                    }
+                }
+            });
+        }
+        if(typeof aoColumns !== 'undefined') {
+            $.extend(params, {
+                "aoColumns" : aoColumns
+            });
+        }
+        _t.dataTable(params);
+    });
 	$('.btn-close').click(function(e){
 		e.preventDefault();
 		$(this).parent().parent().parent().fadeOut();
@@ -611,18 +669,21 @@ function docReady(){
 
 
 //additional functions for data table
+
 $.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
 {
+//    var s = oSettings, _t = $(s.nTable), _start = Number(_t.attr("iStart")), _total = Number(_t.attr("iTotal"));
 	return {
-		"iStart":         oSettings._iDisplayStart,
-		"iEnd":           oSettings.fnDisplayEnd(),
-		"iLength":        oSettings._iDisplayLength,
-		"iTotal":         oSettings.fnRecordsTotal(),
+		"iStart": oSettings._iDisplayStart,
+		"iEnd":   oSettings.fnDisplayEnd(),
+		"iLength":     oSettings._iDisplayLength,
+		"iTotal":        oSettings.fnRecordsTotal(),
 		"iFilteredTotal": oSettings.fnRecordsDisplay(),
 		"iPage":          Math.ceil( oSettings._iDisplayStart / oSettings._iDisplayLength ),
-		"iTotalPages":    Math.ceil( oSettings.fnRecordsDisplay() / oSettings._iDisplayLength )
+		"iTotalPages":    Math.ceil( oSettings.fnRecordsTotal() / oSettings._iDisplayLength )
 	};
 }
+
 $.extend( $.fn.dataTableExt.oPagination, {
 	"bootstrap": {
 		"fnInit": function( oSettings, nPaging, fnDraw ) {
