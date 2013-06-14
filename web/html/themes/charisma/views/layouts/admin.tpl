@@ -1,13 +1,15 @@
 {assign 'menu_items' [
 ['label'=>'活动管理', 'child_items' =>
     [
-        ['label'=>'查看活动', 'url'=>'/admin/default/index'],
-        ['label'=>'添加活动', 'url'=>'/admin/default/add']
+        ['label'=>'所有活动', 'url'=>'/admin/default/index'],
+        ['label'=>'添加活动', 'url'=>'/admin/default/add'],
+        ['label'=>'活动详情', 'url'=>'/admin/default/detail']
     ]
 ],
 ['label'=>'用户管理', 'child_items' =>
     [
-        ['label'=>'查看用户', 'url'=>'/admin/user/index'],
+        ['label'=>'所有用户', 'url'=>'/admin/user/index'],
+        ['label'=>'用户详情', 'url'=>'/admin/user/detail'],
         ['label'=>'星客选拔', 'url'=>'/admin/user/star']
     ]
 ],
@@ -56,8 +58,8 @@
     <link href='/css/uniform.default.css' rel='stylesheet'>
     <link href='/css/colorbox.css' rel='stylesheet'>
     <link href='/css/jquery.cleditor.css' rel='stylesheet'>
-    <link href='/css/jquery.noty.css' rel='stylesheet'>
-    <link href='/css/noty_theme_default.css' rel='stylesheet'>
+    {*<link href='/css/jquery.noty.css' rel='stylesheet'>*}
+    {*<link href='/css/noty_theme_default.css' rel='stylesheet'>*}
     <link href='/css/elfinder.min.css' rel='stylesheet'>
     <link href='/css/elfinder.theme.css' rel='stylesheet'>
     <link href='/css/jquery.iphone.toggle.css' rel='stylesheet'>
@@ -162,12 +164,13 @@
         </div>
 
     </div>
-    <hr>
 
-<footer>
-    <p class="pull-left">&copy; <a href="#" target="_blank">快播动漫影视文化</a> <?php echo date('Y') ?></p>
-    <p class="pull-right">Powered by: <a href="#">Abraham</a></p>
-</footer>
+    <hr/>
+
+    <footer>
+        <p class="pull-left">&copy; <a href="#" target="_blank">快播动漫影视文化</a> <?php echo date('Y') ?></p>
+        <p class="pull-right">Powered by: <a href="#">Abraham</a></p>
+    </footer>
 
 
 </div><!--/.fluid-container-->

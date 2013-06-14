@@ -31,23 +31,9 @@
 
 </div><!--/row-->
 
-<div class="modal hide fade" id="myModal">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h3>Active</h3>
-    </div>
-    <div class="modal-body">
-
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
-        <a href="#" class="btn btn-primary">Save changes</a>
-    </div>
-</div>
-
 
 <div id="table-edit-row-template" style="display: none">
-    <a class="btn btn-success edit-view" href="/admin/default/index#ACT_ID">
+    <a class="btn btn-success edit-view" href="/admin/default/detail#ACT_ID">
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
@@ -94,21 +80,6 @@
         ];
     }
 
-
-    /*
-     * 当框架已经全部加载好后会调用这个函数，初始化与当前页面有关的东西
-     */
-    function viewReady(){
-        $.Router.register({
-            "\\d+" : function(id) {
-                showActive(id);
-            }
-        }).start();
-    }
-
-    function showActive(id) {
-
-    }
 
     function delActive(id) {
         if(confirm("确认删除活动？", "删除")) {

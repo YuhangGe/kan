@@ -33,8 +33,7 @@ class TableController extends AController{
             $this->output();
         }
         if(!empty($_REQUEST['sOrderBy'])) {
-            $this->ord .= " ORDER BY :ord ";
-            $this->params[':ord'] = $_REQUEST['sOrderBy'];
+            $this->ord .= " ORDER BY ".$_REQUEST['sOrderBy']." desc";
         }
 
         $off = intval( $_REQUEST['iDisplayStart']);
@@ -63,10 +62,7 @@ class TableController extends AController{
         }
 
         $this->total_number = $c_r[0]['number'];
-//        $data = array();
-//        foreach($s_r as $r) {
-//            $data[] = array($r['act_id'],$r['act_name'],$r['act_type'],$r['begin_time'],$r['end_time'], $r['image'], "");
-//        }
+
         $this->data = $s_r;
 
         $this->output();

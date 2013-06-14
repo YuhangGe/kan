@@ -68,7 +68,7 @@ class PhotoList extends CFormModel{
             $lng_left = $this->lng - $S;
             $lng_right = $this->lng + $S;
 
-            $cdt = "user_level=1 AND user_id<>$uid AND (lat>$lat_top AND lat<$lat_bottom) AND (lng>$lng_left AND lng<$lng_right)";
+            $cdt = "user_level=1 AND user_id<>$uid AND (lat between $lat_top AND $lat_bottom) AND (lng between $lng_left AND $lng_right)";
             $r = Yii::app()->db->createCommand("SELECT count(*) as u_number FROM user_location WHERE $cdt")->queryAll();
             if($r === null || count($r)===0) {
                 return array();
@@ -93,13 +93,13 @@ class PhotoList extends CFormModel{
         $sql = "select p.*, ua2.distance
             from photo as p,
             (select p1.user_id,p1.photo_id,p1.act_id,u_a.distance
-              from photo as p1 left join
+              from photo as p1,
                 (select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance
                     from user_location
                       where $cdt
                       order by distance
                       limit {$this->offset}, {$this->length}
-                ) as u_a on u_a.user_id = p1.user_id where p1.user_id<>$uid order by photo_id desc
+                ) as u_a where u_a.user_id = p1.user_id and p1.user_id<>$uid order by photo_id desc
             ) as ua2
             where ua2.photo_id=p.photo_id
             group by ua2.user_id order by ua2.distance";
@@ -164,7 +164,7 @@ class PhotoList extends CFormModel{
             $this->offset = intval($this->offset);
         }
         if($this->length===null || $this->length>200) {
-            //一次最多取50条
+            //一次最多取200条
             $this->length = 200;
         } else {
             $this->length = intval($this->length);

@@ -27,8 +27,8 @@ class UserFriendList extends CFormModel {
             $this->offset = intval($this->offset);
         }
         if($this->length===null || $this->length>50) {
-            //一次最多取50条
-            $this->length = 50;
+            //一次最多取200条
+            $this->length = 200;
         } else {
             $this->length = intval($this->length);
         }

@@ -50,19 +50,7 @@ class ActiveController extends Controller{
         }
     }
 
-    public function actionCreate() {
-        //if(!Yii::app()->user->isAdmin()) {
-            //必须管理员
-            //return;
-        //}
-        $m = new Active();
-        $m->attributes = $_POST;
-        if($m->validate() && $m->save()) {
-            $this->sendAjax(true);
-        } else {
-            $this->sendAjax(null);
-        }
-    }
+
 
     public function actionJoin() {
         if(!isset($_POST['act_id'])) {

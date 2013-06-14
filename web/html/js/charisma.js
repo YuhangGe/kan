@@ -39,8 +39,15 @@ $(document).ready(function(){
 	
 	
 	//highlight current / active link
+    var cur_href = (function() {
+        var l = window.location.href, i = l.indexOf("#");
+        if(i>=0) {
+            l = l.substring(0, i);
+        }
+        return l;
+    })();
 	$('ul.main-menu li a').each(function(){
-		if($($(this))[0].href==String(window.location)) {
+		if($(this)[0].href===cur_href) {
             var t = $(this), p = t.parent();
             p.addClass('active');
             var bc = $(".breadcrumb li a");
@@ -114,7 +121,7 @@ function docReady(){
 	
 
 	//datepicker
-	$('.datepicker').datepicker();
+	$('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 	
 	//notifications
 	$('.noty').click(function(e){
