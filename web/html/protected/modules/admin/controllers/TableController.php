@@ -33,29 +33,33 @@ class TableController extends AController{
             $this->output();
         }
         if(!empty($_REQUEST['sOrderBy'])) {
-            $this->ord .= " ORDER BY ".$_REQUEST['sOrderBy']." desc";
+            $this->ord .= " ORDER BY ".strtr($_REQUEST['sOrderBy'],array(';'=>' ', '\''=>' ', '"'=>' '))." desc";
         }
 
         $off = intval( $_REQUEST['iDisplayStart']);
         $len = intval( $_REQUEST['iDisplayLength']);
-        if($off<0 || $len>50) {
+        if($off<0 || $len>200) {
             $off = 0;
-            $len = 50;
+            $len = 200;
         }
 
         $this->lmt .= " LIMIT $off , $len ";
 
 
     }
-    public function actionActive() {
+    private function getData($table, $select = " * ") {
         $this->check();
-        $c_sql = "select count(*) as number from active {$this->ord}";
+        $this->doGetData($table, $select);
+    }
+
+    private function doGetData($table, $select = " * ") {
+        $c_sql = "select count(*) as number from $table {$this->ord}";
         $c_r = Yii::app()->db->createCommand($c_sql)->queryAll(true, $this->params);
         if($c_r===null) {
             $this->output();
         }
 
-        $s_sql = "select act_id, act_name, act_type, begin_time, end_time, image from active {$this->ord} {$this->lmt}";
+        $s_sql = "select $select from $table {$this->ord} {$this->lmt}";
         $s_r = Yii::app()->db->createCommand($s_sql)->queryAll(true, $this->params);
         if($s_r===null) {
             $this->output();
@@ -63,6 +67,40 @@ class TableController extends AController{
 
         $this->total_number = $c_r[0]['number'];
 
+        $this->data = $s_r;
+
+        $this->output();
+    }
+    public function actionActive() {
+        $this->getData("active", " act_id, act_name, act_type, begin_time, end_time, image ");
+    }
+
+    public function actionUser() {
+        $this->getData("user", " user_id, level, sex, nick_name, birthday, email, phone, small_avatar, fan_number, friend_number ");
+    }
+
+    public function actionStarSelected() {
+        if(!isset($_POST['act_id'])) {
+            $this->output();
+        }
+        $this->check();
+        $this->ord = "order by act_score desc";
+        $this->doGetData("star", "star.*, 'selected' as table_type");
+    }
+
+    public function actionStarRank() {
+        if(!isset($_POST['act_id'])) {
+            $this->output();
+        }
+        $this->total_number = 30;
+        $sql = "select user_id, act_id, user_name, sum(vote_number) as act_vote, sum(view_number) as act_view, sum(vote_number) * 10 + sum(view_number)  as act_score, 'rank' as table_type from photo where act_id=:aId group by user_id, act_id order by act_score desc limit {$this->total_number}";
+        $this->params[':aId']=$_POST['act_id'];
+
+        $s_r = Yii::app()->db->createCommand($sql)->queryAll(true, $this->params);
+        if($s_r===null) {
+            $this->total_number = 0;
+            $this->output();
+        }
         $this->data = $s_r;
 
         $this->output();

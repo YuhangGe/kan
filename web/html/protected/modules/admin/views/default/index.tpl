@@ -37,10 +37,10 @@
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
-    {*<a class="btn btn-info" href="#">*}
-        {*<i class="icon-edit icon-white"></i>*}
-        {*编辑*}
-    {*</a>*}
+    <a class="btn btn-info" href="/admin/star/index#ACT_ID">
+        <i class="icon-edit icon-white"></i>
+        星客选拔
+    </a>
     <a class="btn btn-danger edit-del" href="javascript:delActive('ACT_ID');">
         <i class="icon-trash icon-white"></i>
         删除

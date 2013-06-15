@@ -14,7 +14,7 @@ class UserFanList extends CFormModel{
     public function rules() {
         return array(
             array("user_id", "required"),
-            array("offset", 'numerical', 'integerOnly'=>true, 'min'=>0),
+            array("offset, user_id", 'numerical', 'integerOnly'=>true, 'min'=>0),
             array('length', 'numerical', 'integerOnly'=>true, 'min'=>1)
         );
     }
@@ -34,14 +34,30 @@ class UserFanList extends CFormModel{
         }
 
 
-        $records = UserFan::model()->findAll("user_id=:userId LIMIT :offset, :length", array(":userId"=>$this->user_id, ":offset"=>$this->offset, ":length"=>$this->length));
-        if($records === null) {
-            return null;
+        $sql = "select uf.fan_id as user_id, u.nick_name as nick_name, u.small_avatar as small_avatar, u.fan_number as fan_number, u.friend_number as friend_number
+            from user_fan uf, user u where u.user_id = uf.fan_id and uf.user_id = {$this->user_id} limit {$this->offset}, {$this->length}";
+        $rs = Yii::app()->db->createCommand($sql)->queryAll();
+        return $rs;
+
+    }
+
+    public function getFollow() {
+        if($this->offset===null) {
+            $this->offset = 0;
+        } else {
+            $this->offset = intval($this->offset);
         }
-        $rtn = array();
-        foreach($records as $r) {
-            $rtn[] = array('user_id'=>$r->fan_id, 'nick_name'=>$r->fan_name, 'small_avatar'=>$r->fan_avatar);
+        if($this->length===null || $this->length>50) {
+            //一次最多取200条
+            $this->length = 200;
+        } else {
+            $this->length = intval($this->length);
         }
-        return $rtn;
+
+
+        $sql = "select uf.user_id as user_id, u.nick_name as nick_name, u.small_avatar as small_avatar, u.fan_number as fan_number, u.friend_number as friend_number
+            from user_fan uf, user u where u.user_id = uf.user_id and uf.fan_id = {$this->user_id} limit {$this->offset}, {$this->length}";
+        $rs = Yii::app()->db->createCommand($sql)->queryAll();
+        return $rs;
     }
 }

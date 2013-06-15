@@ -10,7 +10,7 @@
     [
         ['label'=>'所有用户', 'url'=>'/admin/user/index'],
         ['label'=>'用户详情', 'url'=>'/admin/user/detail'],
-        ['label'=>'星客选拔', 'url'=>'/admin/user/star']
+        ['label'=>'星客选拔', 'url'=>'/admin/star/index']
     ]
 ],
 ['label'=>'照片管理', 'child_items' =>

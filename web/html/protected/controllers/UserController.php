@@ -104,8 +104,22 @@ class UserController extends Controller {
             $this->sendAjax($data, true);
         }
     }
-
-
+    /*
+     * 得到某个用户关注的用户
+     */
+    public function actionFollow() {
+        $ufl = new UserFanList();
+        $ufl->attributes = $_POST;
+        if(!$ufl->validate()) {
+            $this->sendAjax(null);
+        }
+        $data = $ufl->getFollow();
+        if($data === null) {
+            $this->sendAjax(null);
+        } else {
+            $this->sendAjax($data, true);
+        }
+    }
     public function actionLocation() {
         if(!isset($_POST['user_id'])) {
             return;

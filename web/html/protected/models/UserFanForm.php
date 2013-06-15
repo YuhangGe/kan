@@ -25,14 +25,6 @@ class UserFanForm extends CFormModel {
         }
         $fid = Yii::app()->user->id;
 
-        $record = User::model()->findColumnByPk(array("nick_name","small_avatar"), $fid);
-        if($record===null) {
-            return false;
-        } else {
-            $fname = $record->nick_name;
-            $favatar = $record->small_avatar;
-        }
-
         $record = UserFan::model()->findByAttributes(array('user_id'=>$this->user_id, 'fan_id'=>$fid));
         if($type == "follow") {
             if($record!==null) {
@@ -50,8 +42,6 @@ class UserFanForm extends CFormModel {
             $uf = new UserFan();
             $uf->user_id = $this->user_id;
             $uf->fan_id = $fid;
-            $uf->fan_name = $fname;
-            $uf->fan_avatar = $favatar;
             if(!$uf->save(false)) {
                 return false;
             }

@@ -41,6 +41,11 @@
             </div>
 
         </div>
+        <style>
+            .act-content{
+                padding-left: 15px;
+            }
+        </style>
     </div><!--/span-->
 
     <div class="box span3">

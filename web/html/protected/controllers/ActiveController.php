@@ -51,8 +51,11 @@ class ActiveController extends Controller{
     }
 
 
-
     public function actionJoin() {
+
+    }
+
+    public function actionOldJoin() {
         if(!isset($_POST['act_id'])) {
             return;
         }

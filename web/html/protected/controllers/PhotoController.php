@@ -17,7 +17,8 @@ class PhotoController extends Controller{
         );
     }
 
-    public function actionPost() {
+
+    public function actionOldPost() {
         $m = new Photo();
         $m->attributes = $_POST;
         $m->user_id = Yii::app()->user->id;
@@ -102,6 +103,18 @@ class PhotoController extends Controller{
         $m = new PhotoList();
         $m->attributes = $_POST;
         $m->type="user";
+        if($m->validate()) {
+            $list = $m->get();
+            $this->sendAjax($list, true);
+        } else {
+            $this->sendAjax(null);
+        }
+    }
+
+    public function actionActiveList() {
+        $m = new PhotoList();
+        $m->attributes = $_POST;
+        $m->type = "active";
         if($m->validate()) {
             $list = $m->get();
             $this->sendAjax($list, true);

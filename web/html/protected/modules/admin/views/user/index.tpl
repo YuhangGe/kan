@@ -18,7 +18,7 @@
                     <td>等级</td>
                     <th>昵称</th>
                     <th>姓别</th>
-                    <th>Email</th>
+                    <th>邮箱</th>
                     <th>手机</th>
                     <th>生日</th>
                     <th>粉丝</th>
@@ -36,7 +36,7 @@
 
 
 <div id="table-edit-row-template" style="display: none">
-    <a class="btn btn-success edit-view" href="/admin/default/detail#ACT_ID">
+    <a class="btn btn-success edit-view" href="/admin/user/detail#USER_ID">
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
@@ -44,7 +44,7 @@
     {*<i class="icon-edit icon-white"></i>*}
     {*编辑*}
     {*</a>*}
-    <a class="btn btn-danger edit-del" href="javascript:delActive('ACT_ID');">
+    <a class="btn btn-danger edit-del" href="javascript:delActive('USER_ID');">
         <i class="icon-trash icon-white"></i>
         删除
     </a>
@@ -57,33 +57,40 @@
             window.aoColumns = [
                 { "mData": "user_id"},
                 { "mData" : "small_avatar", "mRender": function(data) {
-                    return "<img src='"+data+"' style='max-height:80px;max-width:80px;/>";
+                    var url = (typeof data !== 'string' || data.trim()==="") ? '/img/avatar.png' : data;
+                    return "<img src='"+url+"' style='max-height:50px;max-width:50px;'/>";
                 }
                 },
                 { "mData": "level", "mRender" : function(data) {
                     return ['普通','秀客','星客'][Number(data)];
                 }
                 },
-                { "mData": "act_type", "mRender" : function(data) {
-                    return ['才艺','表演','简历'][Number(data)];
+                { "mData": "nick_name"
+                },
+                { "mData": "sex","mRender": function(data) {
+                    return ['男','女'][Number(data)];
                 }
                 },
-                { "mData": "begin_time","mRender": function(data) {
-                    return $.datepicker.formatDate("yy年mm月dd日", new Date(Number(data)*1000));
+                { "mData": "email", "mRender" : function(data) {
+                    return data === null ? '(无)' : data;
                 }
                 },
-                { "mData": "end_time","mRender": function(data) {
-                    return $.datepicker.formatDate("yy年mm月dd日", new Date(Number(data)*1000));
-                } },
-                { "mData": "image" , "mRender" : function(data) {
-                    return "<a href='"+data+"' target='_blank'>"+(data.length<38?data:"http://..."+data.substr(data.length-30))+"</a>";
+                { "mData": "phone","mRender" : function(data) {
+                    return data === null ? '(无)' : data;
                 }
+                },
+                {"mData" : "birthday", "mRender" : function(data) {
+                    return data === null ? '(无)': $.datepicker.formatDate("yy年mm月dd日", new Date(Number(data)*1000));
+                }
+                },
+                { "mData": "fan_number"},
+                { "mData": "friend_number"
                 },
                 {
-                    "mData" : "act_id",
+                    "mData" : "user_id",
                     "sClass" : "editRow",
                     "mRender" : function(data) {
-                        return  document.getElementById("table-edit-row-template").innerHTML.replace(/ACT_ID/g, data);
+                        return  document.getElementById("table-edit-row-template").innerHTML.replace(/USER_ID/g, data);
                     }
                 }
             ];

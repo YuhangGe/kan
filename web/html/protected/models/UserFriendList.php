@@ -14,7 +14,7 @@ class UserFriendList extends CFormModel {
     public function  rules() {
         return array(
             array("user_id", "required"),
-            array("offset", 'numerical', 'integerOnly'=>true, 'min'=>0),
+            array("offset, user_id", 'numerical', 'integerOnly'=>true, 'min'=>0),
             array('length', 'numerical', 'integerOnly'=>true, 'min'=>1)
         );
     }
@@ -35,24 +35,17 @@ class UserFriendList extends CFormModel {
 
 //        echo $this->offset;
 //        echo $this->length;
+        $sql1 = "select uf.user_id_1 as user_id, u.nick_name, u.small_avatar, u.fan_number, u.friend_number
+            from user_friend uf, user u where u.user_id = uf.user_id_1 and uf.user_id_2 = {$this->user_id}";
 
-        $records = UserFriend::model()->findAll("user_id_1=:userId OR user_id_2=:userId LIMIT :offset, :length", array(":userId"=>$this->user_id,":offset"=>$this->offset, ":length"=>$this->length));
-        if($records === null) {
-            return null;
-        }
-        $rtn = array();
-        foreach($records as $r) {
-            if($r->user_id_1 == $this->user_id) {
-                $id = $r->user_id_2;
-                $nm = $r->user_name_2;
-                $av = $r->user_avatar_2;
-            } else {
-                $id = $r->user_id_1;
-                $nm = $r->user_name_1;
-                $av = $r->user_avatar_1;
-            }
-            $rtn[] = array('user_id'=>$id, 'nick_name'=>$nm, 'small_avatar'=>$av);
-        }
-        return $rtn;
+        $rs1 = Yii::app()->db->createCommand($sql1)->queryAll();
+
+        $sql2 = "select uf.user_id_2 as user_id, u.nick_name, u.small_avatar, u.fan_number, u.friend_number
+            from user_friend uf, user u where u.user_id = uf.user_id_2 and uf.user_id_1 = {$this->user_id}";
+
+        $rs2 = Yii::app()->db->createCommand($sql2)->queryAll();
+
+        return array_merge($rs1, $rs2);
+
     }
 }

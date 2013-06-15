@@ -14,12 +14,13 @@ class PhotoList extends CFormModel{
     public $lng;
     public $time;
     public $user_id;
+    public $act_id;
 
     public function rules(){
         return array(
             array('type', 'required'),
-            array('type', 'in', 'range'=>array("location", "time", "view", "rand", "user")),
-            array("time, user_id", 'numerical', 'integerOnly'=>true),
+            array('type', 'in', 'range'=>array("location", "time", "view", "rand", "user", "active")),
+            array("time, act_id, user_id", 'numerical', 'integerOnly'=>true),
             array("offset", 'numerical', 'integerOnly'=>true, 'min'=>0),
             array('length', 'numerical', 'integerOnly'=>true, 'min'=>1),
             array('lat, lng', 'numerical')
@@ -125,7 +126,7 @@ class PhotoList extends CFormModel{
         return $rs;
     }
     private function getViewList() {
-        $sql = "select * from photo order by HOT(vote_number, view_number) desc limit {$this->offset},{$this->length}";
+        $sql = "select p.* from photo p order by vote_number*10 + view_number desc limit {$this->offset},{$this->length}";
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
     }
@@ -157,6 +158,21 @@ class PhotoList extends CFormModel{
         $sql = "select * from photo where user_id={$this->user_id} order by upload_time desc limit {$this->offset},{$this->length}";
         return Yii::app()->db->createCommand($sql)->queryAll();
     }
+
+    private function getActiveList() {
+        if($this->act_id===null) {
+            return array();
+        }
+        $rs = Photo::model()->findAll(array(
+            "condition"=>"act_id=:aId order by upload_time desc limit {$this->offset},{$this->length}",
+            "params" => array(":aId"=>$this->act_id)
+        ));
+        if($rs!==null) {
+            return $rs;
+        } else {
+            return array();
+        }
+    }
     public function get() {
         if($this->offset===null) {
             $this->offset = 0;
@@ -184,6 +200,9 @@ class PhotoList extends CFormModel{
                 break;
             case "user" :
                 return $this->getUserList();
+                break;
+            case "active":
+                return $this->getActiveList();
                 break;
             default:
                 return array();

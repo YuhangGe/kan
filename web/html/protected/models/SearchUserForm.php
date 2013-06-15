@@ -8,6 +8,7 @@
 
 
 class SearchUserForm extends CFormModel{
+    public $user_id;
     public $nick_name;
     public $sex;
     public $constellation;
@@ -27,17 +28,20 @@ class SearchUserForm extends CFormModel{
     public $lat;
     public $lng;
 
+    public $select;
+
+    const ADMIN_SELECT = "user.user_id, nick_name";
     const USER_COLUMN = "user.user_id,level,email,phone,nick_name,sex,constellation,birthday,personalsay,company,hobby,big_avatar,small_avatar,fan_number,friend_number";
 
    // const USER_COLUMN = "user.user_id,level,email,phone,nick_name,sex,constellation,birthday,personalsay,company,hobby,big_avatar,small_avatar,fan_number,friend_number";
 
     public function rules() {
         return array(
-            array('sex, constellation, fan_number, friend_number, phone, age_from, age_to, distance','numerical', 'integerOnly'=>true),
+            array('user_id, sex, constellation, fan_number, friend_number, phone, age_from, age_to, distance','numerical', 'integerOnly'=>true),
             array('sex', 'in', 'range'=>array(0,1)),
             array('constellation', 'numerical', 'min'=>1, 'max'=>12),
             array('age_from, age_to', 'numerical', 'min'=>0, 'max'=>100),
-            array('nick_name, company, hobby', 'length', 'min'=>3),
+            array('nick_name, company, hobby', 'length', 'min'=>1),
             array("offset", 'numerical', 'integerOnly'=>true, 'min'=>0),
             array('length', 'numerical', 'integerOnly'=>true, 'min'=>1),
             array('email', 'length', 'min'=>5, 'max'=>20),
@@ -48,8 +52,8 @@ class SearchUserForm extends CFormModel{
     private function searchEmail() {
         $uid = Yii::app()->user->id;
 
-        $r = User::model()->find(array(
-            'select'=> self::USER_COLUMN,
+        $r = User::model()->findAll(array(
+            'select'=> $this->select,
             'condition'=>"user_id<>$uid and email=:e",
             'params'=>array(':e'=>$this->email)
         ));
@@ -58,14 +62,20 @@ class SearchUserForm extends CFormModel{
     private function searchPhone() {
         $uid = Yii::app()->user->id;
 
-        $r = User::model()->find(array(
-            'select'=> self::USER_COLUMN,
+        $r = User::model()->findAll(array(
+            'select'=> $this->select,
             'condition'=>"user_id<>$uid and phone=:p",
             'params'=>array(':p'=>$this->phone)
         ));
         return $r;
     }
-    public function search() {
+    private function searchId() {
+        $r = User::model()->findAllByPk($this->user_id);
+        return $r;
+    }
+    public function search($select = self::USER_COLUMN) {
+        $this->select = $select;
+
         if($this->offset===null) {
             $this->offset = 0;
         } else {
@@ -78,6 +88,9 @@ class SearchUserForm extends CFormModel{
             $this->length = intval($this->length);
         }
 
+        if($this->user_id!==null) {
+            return $this->searchId();
+        }
         if($this->email!==null) {
             return $this->searchEmail();
         }
@@ -153,7 +166,7 @@ class SearchUserForm extends CFormModel{
 
         $cdt_str = join("  AND  ", $cdt);
 
-        $sql = "select ".self::USER_COLUMN.($s_dis?", ua.distance, ua.address ":"").($s_add?", ua.address ":"")." from user ".(($s_dis||$s_add)? (", $join".($cdt_str==""?"":" and $cdt_str ")) : " where $cdt_str").($s_dis?" order by ua.distance ":"")." limit {$this->offset},{$this->length}";
+        $sql = "select {$this->select} ".($s_dis?", ua.distance, ua.address ":"").($s_add?", ua.address ":"")." from user ".(($s_dis||$s_add)? (", $join".($cdt_str==""?"":" and $cdt_str ")) : " where $cdt_str").($s_dis?" order by ua.distance ":"")." limit {$this->offset},{$this->length}";
 
         return Yii::app()->db->createCommand($sql)->queryAll(true, $par);
 
