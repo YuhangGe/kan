@@ -184,6 +184,9 @@
 使用：得到某人互粉好友
 参数和返回同上。
 
+/user/follows
+使用：得到某人关注的好友
+参数和返回同上
 
 /active/list
 使用：得到活动列表
@@ -211,15 +214,34 @@
     'description' : xxx
 }
 
+
+#/active/join
+#使用：活动报名
+#参数：{
+#    'act_id' : xxx,
+#    'intro' : xxx //个人简介
+##    'slogan' : xxx //宣言
+#}
+#返回：true/false
+#说明：个人简介和宣言是报名时可选的内容，用于用户添加信息来作自我宣传。
+
 /active/join
 使用：活动报名
 参数：{
-    'act_id' : xxx,
-    'intro' : xxx //个人简介
-    'slogan' : xxx //宣言
+    'act_id' : xxx
+    'intro' : xxx
+    'slogan' : xxx
+    'photo_number' : 1-8
+    'image-0' : file
+    'thumb-0' : file
+    'image-1' : file
+    'thumb-1' : file
+    ...
 }
 返回：true/false
-说明：个人简介和宣言是报名时可选的内容，用于用户添加信息来作自我宣传。
+说明：photo_number是用户选中的图片数量，最少一张，最多8张。
+      image-XX和thumb-XX分别是图片和缩略图，有多少张就有个多个这两个字段
+* 活动报名不再采用分步骤的方式。/upload/photo和/photo/post不再使用
 
 /active/isjoin
 使用：当前用户是否参与了活动
@@ -260,6 +282,7 @@
     再调用/photo/post将图片信息加入。（这个流程思路还值得商榷）
     php服务器生成缩略图性能不好，而且据说没有靠谱的库，生成的效果不好看。所以直接在客户端生成。
     而且有手机可能直接拍的照片很大，也需要先压缩下。
+    （该接口已经废除，直接在/active/join接口时传入照片）
 
 
 /photo/post
@@ -275,6 +298,8 @@
 返回：true/false
 说明：user_name和act_name是为了冗余方便下次查询，不要联表，因为图片数量巨大。
      客户端需要把这两个字段传给服务器。
+     （该接口已经废除，直接在/active/join接口时传入照片）
+     
 
 /photo/locationList
 使用：根据距离得到照片列表。(会返回选手的大头像)

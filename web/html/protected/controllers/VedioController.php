@@ -7,5 +7,7 @@
 
 
 class VedioController extends Controller{
-    
+    public function locationList() {
+
+    }
 }

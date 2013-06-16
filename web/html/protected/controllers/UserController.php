@@ -107,7 +107,7 @@ class UserController extends Controller {
     /*
      * 得到某个用户关注的用户
      */
-    public function actionFollow() {
+    public function actionFollows() {
         $ufl = new UserFanList();
         $ufl->attributes = $_POST;
         if(!$ufl->validate()) {
@@ -120,6 +120,7 @@ class UserController extends Controller {
             $this->sendAjax($data, true);
         }
     }
+
     public function actionLocation() {
         if(!isset($_POST['user_id'])) {
             return;

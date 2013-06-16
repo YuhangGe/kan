@@ -44,7 +44,7 @@ class UserActive extends CActiveRecord
 			array('slogan', 'length', 'max'=>25),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('user_id, act_id, photo_number, intro, slogan', 'safe', 'on'=>'search'),
+//			array('user_id, act_id, photo_number, intro, slogan', 'safe', 'on'=>'search'),
 		);
 	}
 

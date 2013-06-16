@@ -52,7 +52,13 @@ class ActiveController extends Controller{
 
 
     public function actionJoin() {
-
+        $m = new ActiveJoinForm();
+        $m->attributes = $_POST;
+        if($m->validate() && $m->join()) {
+            $this->sendAjax(true, true);
+        } else {
+            $this->sendAjax(null);
+        }
     }
 
     public function actionOldJoin() {
