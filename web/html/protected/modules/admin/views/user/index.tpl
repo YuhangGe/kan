@@ -10,7 +10,7 @@
         </div>
         <div class="box-content">
 
-            <table data-source="/admin/table/user" order-by="user_id" {*="{$act_list['start']}" iEnd="{$act_list['end']}" iTotal="{$act_list['total']}"*}  class="table table-striped table-bordered bootstrap-datatable datatable">
+            <table aoDataSource="/admin/table/user" aoOrderBy="user_id" aoColumns="user"  class="table table-striped table-bordered bootstrap-datatable datatable">
                 <thead>
                 <tr>
                     <td>ID</td>
@@ -54,7 +54,7 @@
 
     <script type="text/javascript">
         function viewStart() {
-            window.aoColumns = [
+            window.aoColumns = {'user' : [
                 { "mData": "user_id"},
                 { "mData" : "small_avatar", "mRender": function(data) {
                     var url = (typeof data !== 'string' || data.trim()==="") ? '/img/avatar.png' : data;
@@ -93,7 +93,8 @@
                         return  document.getElementById("table-edit-row-template").innerHTML.replace(/USER_ID/g, data);
                     }
                 }
-            ];
+            ]};
+
         }
 
 

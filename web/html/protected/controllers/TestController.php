@@ -10,7 +10,9 @@ class TestController extends Controller {
     public $t_aa;
 
     function actionIndex() {
-     
+        $sql = "select * from user where user_id=1";
+        $r = Yii::app()->db->createCommand($sql)->queryAll();
+        print_r($r);
     }
 
     function actionDo() {

@@ -308,14 +308,14 @@ function docReady(){
 //            "fnInfoCallback": typeof onTableInfo === 'function' ? onTableInfo : function() {},
 //            "fnHeaderCallback": typeof onTableHeader === 'function' ? onTableHeader : function() {}
         };
-        if(typeof _t.attr("data-source") !== 'undefined') {
+        if(typeof _t.attr("aoDataSource") !== 'undefined') {
             $.extend(params, {
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": _t.attr("data-source"),
+                "sAjaxSource": _t.attr("aoDataSource"),
                 "sServerMethod": "POST",
                 "fnServerParams": function ( aoData ) {
-                    var _o = _t.attr("order-by");
+                    var _o = _t.attr("aoOrderBy");
                     if(typeof _o !== 'undefined' && _o.trim()!=="") {
                         aoData.push( { "name": "sOrderBy", "value": _o.trim() } );
                     }
@@ -326,9 +326,9 @@ function docReady(){
             });
         }
 
-        if(typeof aoColumns !== 'undefined') {
+        if(typeof _t.attr("aoColumns") !== 'undefined' && typeof window.aoColumns !== 'undefined') {
             $.extend(params, {
-                "aoColumns" : aoColumns
+                "aoColumns" :  window.aoColumns[_t.attr("aoColumns")]
             });
         }
         _t.dataTable(params);

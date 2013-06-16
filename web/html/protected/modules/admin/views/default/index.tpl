@@ -10,7 +10,7 @@
         </div>
         <div class="box-content">
 
-            <table data-source="/admin/table/active" order-by="end_time" {*="{$act_list['start']}" iEnd="{$act_list['end']}" iTotal="{$act_list['total']}"*}  class="table table-striped table-bordered bootstrap-datatable datatable">
+            <table aoDataSource="/admin/table/active" aoOrderBy="end_time" aoColumns="active"  class="table table-striped table-bordered bootstrap-datatable datatable">
                 <thead>
                 <tr>
                     <td>ID</td>
@@ -52,7 +52,7 @@
 
 <script type="text/javascript">
     function viewStart() {
-        window.aoColumns = [
+        window.aoColumns = {'active' : [
             { "mData": "act_id"},
             { "mData": "act_name" },
             { "mData": "act_type", "mRender" : function(data) {
@@ -77,7 +77,7 @@
                     return  document.getElementById("table-edit-row-template").innerHTML.replace(/ACT_ID/g, data);
                 }
             }
-        ];
+        ]};
     }
 
 

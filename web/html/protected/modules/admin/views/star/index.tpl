@@ -21,7 +21,7 @@
                 <hr/>
                 <div class="row-fluid">
                     <h3>已选星客</h3>
-                    <table data-source="/admin/table/starSelected" class="table table-star-selected table-striped table-bordered bootstrap-datatable datatable">
+                    <table aoDataSource="/admin/table/starSelected" aoSortedBy="act_score" aoColumns="selected" class="table table-star-selected table-striped table-bordered bootstrap-datatable datatable">
                         <thead>
                         <tr>
                             <td>ID</td>
@@ -29,6 +29,7 @@
                             <th>喜欢</th>
                             <th>浏览</th>
                             <th>人气</th>
+                            <th>海报</th>
                             <th>操作</th>
                         </tr>
                         </thead>
@@ -41,7 +42,7 @@
                 <hr/>
                 <div class="row-fluid">
                     <h3>人气排名</h3>
-                    <table data-source="/admin/table/starRank" class="table table-star-rank table-striped table-bordered bootstrap-datatable datatable">
+                    <table aoDataSource="/admin/table/starRank" aoSortedBy="act_score" aoColumns="rank" class="table table-star-rank table-striped table-bordered bootstrap-datatable datatable">
                         <thead>
                         <tr>
                             <td>ID</td>
@@ -72,7 +73,7 @@
             {*<a href="#" class="btn btn-close btn-round"><i class="icon-remove"></i></a>*}
             {*</div>*}
         </div>
-        <div class="box-content" id="act-search" style="min-height: 400px">
+        <div class="box-content" id="score-search" style="min-height: 400px">
             <div class="control-group">
                 <div class="controls">
                     <label class="radio">
@@ -114,40 +115,63 @@
 </div>
 
 <div id="table-row-selected-template" style="display: none">
-    <a class="btn btn-success edit-view" href="/admin/user/detail#USER_ID">
+    <a class="btn btn-success" href="/admin/user/detail#USER_ID">
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
-    {*<a class="btn btn-info" href="#">*}
-    {*<i class="icon-edit icon-white"></i>*}
-    {*编辑*}
-    {*</a>*}
-    <a class="btn btn-danger edit-del" href="javascript:delActive('USER_ID');">
+    <a class="btn btn-info" href="javascript:uploadPoster('USER_ID');">
+    <i class="icon-edit icon-white"></i>
+       上传海报
+    </a>
+    <a class="btn btn-danger" href="javascript:cancelStar('USER_ID');">
         <i class="icon-trash icon-white"></i>
-        删除
+        取消星客
     </a>
 </div>
 
 <div id="table-row-rank-template" style="display: none">
-    <a class="btn btn-success edit-view" href="/admin/user/detail#USER_ID">
+    <a class="btn btn-success" href="/admin/user/detail#USER_ID">
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
-    {*<a class="btn btn-info" href="#">*}
-    {*<i class="icon-edit icon-white"></i>*}
-    {*编辑*}
-    {*</a>*}
-    <a class="btn btn-danger edit-del" href="javascript:delActive('USER_ID');">
-        <i class="icon-trash icon-white"></i>
-        删除
+    <a class="btn btn-info" href="javascript:chooseStar('USER_ID');">
+        <i class="icon-edit icon-white"></i>
+        选为星客
     </a>
+    {*<a class="btn btn-danger edit-del" href="javascript:delActive('USER_ID');">*}
+        {*<i class="icon-trash icon-white"></i>*}
+        {**}
+    {*</a>*}
+</div>
+
+<div class="modal hide fade" id="posterDialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3>上传海报</h3>
+    </div>
+    <div class="modal-body">
+        <div class="control-group" id="act-detail">
+            <label class="control-label" for="fileImage">上传海报</label>
+            <div class="controls">
+                <input class="input-file uniform_on" id="fileImage" type="file">
+                            <span>
+                                <img style="max-height: 200px; max-width: 200px; display: none;" alt="海报预览"/>
+                                <span class="alert alert-info act-upload" style="position: relative; top: 5px;">为星客上传获奖海报</span>
+                            </span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+        {*<a href="#" class="btn btn-primary">Save changes</a>*}
+    </div>
 </div>
 {literal}
     <script type="text/javascript">
-        var SType = "act_name", CUR_ACT = null;
+        var SType = "act_name", CUR_ACT = null, CUR_USER = null;
 
         function viewStart() {
-            window.aoColumns = [
+            window.aoColumns = {'selected' : [
                 { "mData": "user_id"},
                 { "mData": "user_name" },
                 { "mData": "act_vote"
@@ -155,15 +179,42 @@
                 { "mData": "act_view"
                 },
                 { "mData": "act_score"},
+                { "mData" : "poster_url", "mRender" : function(data) {
+                    if(data===null) {
+                        return "未上传"
+                    } else {
+                        return "<img style='max-width: 200px;max-height: 200px' src='"+data+"'/>";
+                    }
+                }},
+                { "mData" : "video_id", "mRender" : function(data) {
+                    if(data===null) {
+                        return "未上传"
+                    } else {
+                        return "<a href=''>查看视频</a>";
+                    }
+                }},
                 {
-                    "mData" : "table_type",
-                    "sClass" : "editRow",
-                    "mRender" : function(data, type, ooData) {
-                        return data + ooData.user_id;
-                       // return  document.getElementById("table-edit-row-template").innerHTML.replace(/USER_ID/g, data);
+                    "mData" : "user_id",
+                    "mRender" : function(data) {
+                        return document.getElementById("table-row-selected-template").innerHTML.replace(/USER_ID/g, data);
                     }
                 }
-            ];
+            ], "rank" : [
+                { "mData": "user_id"},
+                { "mData": "user_name" },
+                { "mData": "act_vote"
+                },
+                { "mData": "act_view"
+                },
+                { "mData": "act_score"},
+
+                {
+                    "mData" : "user_id",
+                    "mRender" : function(data) {
+                        return document.getElementById("table-row-rank-template").innerHTML.replace(/USER_ID/g, data);
+                    }
+                }
+            ]};
         }
         function setSearchType() {
             if($("#nameRadio").parent().hasClass("checked")) {
@@ -183,7 +234,7 @@
                 $("#score-search .score-require").show();
                 return;
             }
-            $.post("/admin/star/search", {
+            $.post("/admin/default/search", {
                 search_type : SType,
                 search_value : _v
             }, function(rtn) {
@@ -218,6 +269,7 @@
             $("#nameRadio").change(setSearchType);
             $("#idRadio").change(setSearchType);
             $("#btnSearch").click(doSearch);
+            $("#fileImage").change(uploadImage);
         }
 
         function showActive(id) {
@@ -251,5 +303,82 @@
             }
         }
 
+        function chooseStar(user_id) {
+            $.post("/admin/star/choose", {
+                user_id : user_id,
+                act_id : CUR_ACT
+            }, function(rtn) {
+                if(!rtn.success) {
+                    alert('网络错误，请重试.');
+                    return;
+                }
+                $(".table-star-selected").DataTable().fnReloadAjax();
+            }, "json");
+        }
+
+        function cancelStar(user_id) {
+            $.post("/admin/star/cancel", {
+                user_id : user_id,
+                act_id : CUR_ACT
+            }, function(rtn) {
+                if(!rtn.success) {
+                    alert('网络错误，请重试.');
+                    return;
+                }
+                $(".table-star-selected").DataTable().fnReloadAjax();
+            }, "json");
+        }
+
+        function uploadPoster(user_id) {
+            CUR_USER = user_id;
+            $("#posterDialog").modal("show");
+        }
+        function uploadImage() {
+            var fs = $("#fileImage")[0].files;
+            if(fs.length===0) {
+                return;
+            }
+            $("#act-detail .act-upload").show().text("正在上传(0%)...");
+            var img = fs[0];
+            var fd = new FormData();
+            fd.append("image_file", img);
+            fd.append("user_id", CUR_USER);
+            fd.append("act_id", CUR_ACT);
+
+            $.ajax({
+                url: "/admin/star/poster",
+                data: fd,
+                dataType : "json",
+                //Options to tell JQuery not to process data or worry about content-type
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: 'POST',
+
+                xhr: function() {  // custom xhr
+                    var myXhr = $.ajaxSettings.xhr();
+                    if(myXhr.upload){ // check if upload property exists
+                        myXhr.upload.addEventListener('progress', uploadProcess, false); // for handling the progress of the upload
+                    }
+                    return myXhr;
+                },
+                success : showImage
+            });
+        }
+
+        function uploadProcess(e) {
+            if(e.lengthComputable){
+                $("#act-detail .act-upload").text("正在上传("+Math.round(e.loaded/ e.total * 100)+"%)...");
+            }
+        }
+
+        function showImage(rtn) {
+            if(!rtn.success) {
+                alert('网络错误，请重试。');
+                return;
+            }
+            $("#posterDialog").modal("hide");
+            $(".table-star-selected").DataTable().fnReloadAjax();
+        }
     </script>
 {/literal}

@@ -19,6 +19,32 @@ class FileHelper {
             return false;
         }
     }
+
+    public static function saveVideo($name, $dir, $file_name) {
+        if(!isset($_FILES[$name])) {
+            return false;
+        }
+        $file = $_FILES[$name];
+        if(!empty($file['error'])) {
+            return false;
+        }
+        $ftype = $file['type'];
+        if(!in_array($ftype, array(''))) {
+            return false;
+        }
+
+//        echo CJSON::encode($file);
+
+
+        $temp_arr = explode(".", $file['name']);
+        $file_ext = array_pop($temp_arr);
+        $file_ext = trim($file_ext);
+        $file_ext = strtolower($file_ext);
+
+        if(!in_array($file_ext, array('jpg', 'jpeg', 'png', 'bmp', 'gif'))) {
+            return false;
+        }
+    }
     public static function savePhoto($name, $dir, $file_name) {
         if(!isset($_FILES[$name])) {
             return false;

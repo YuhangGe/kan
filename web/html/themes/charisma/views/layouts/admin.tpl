@@ -20,13 +20,8 @@
 ],
 ['label'=>'视频管理', 'child_items' =>
     [
-        ['label'=>'查看照片', 'url'=>'/admin/video/index'],
-        ['label'=>'上传视频', 'url'=>'/admin/video/post']
-    ]
-],
-['label'=>'聊天管理', 'child_items' =>
-    [
-        ['label'=>'查看记录', 'url'=>'/admin/photo/index']
+        ['label'=>'所有视频', 'url'=>'/admin/video/index'],
+        ['label'=>'视频详情', 'url'=>'/admin/video/detail']
     ]
 ]
 

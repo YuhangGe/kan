@@ -51,6 +51,7 @@ class UserFanForm extends CFormModel {
             }
         }
 
+        User::model()->updateCounters(array("follow_number"=>$type=="follow"?1:-1), "user_id=:fanId", array(":fanId"=>$this->fan_id));
         User::model()->updateCounters(array("fan_number"=>($type=="follow"?1:-1)), "user_id=:userId", array(":userId"=>$this->user_id));
 
         return true;
