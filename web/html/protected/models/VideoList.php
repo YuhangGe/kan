@@ -1,12 +1,12 @@
 <?php
 /**
  * User: xiaoge
- * At: 13-6-7 10:43
+ * At: 13-6-16 1:54
  * Email: abraham1@163.com
  */
 
 
-class PhotoList extends CFormModel{
+class VideoList extends CFormModel{
     public $type;
     public $offset;
     public $length;
@@ -26,31 +26,6 @@ class PhotoList extends CFormModel{
             array('lat, lng', 'numerical')
         );
     }
-
-//    /**
-//     *计算某个经纬度的周围某段距离的正方形的四个点
-//     *
-//     *@param lng float 经度
-//     *@param lat float 纬度
-//     *@param distance float 该点所在圆的半径，该圆与此正方形内切，默认值为0.5千米
-//     *@return array 正方形的四个点的经纬度坐标
-//     */
-//    private function returnSquarePoint($lat, $lng,$distance = 0.5){
-//        define(EARTH_RADIUS, 6371);//地球半径，平均半径为6371km
-//
-//        $dlng =  2 * asin(sin($distance / (2 * EARTH_RADIUS)) / cos(deg2rad($lat)));
-//        $dlng = rad2deg($dlng);
-//
-//        $dlat = $distance/EARTH_RADIUS;
-//        $dlat = rad2deg($dlat);
-//
-//        return array(
-//            'left-top'=>array('lat'=>$lat + $dlat,'lng'=>$lng-$dlng),
-//            'right-top'=>array('lat'=>$lat + $dlat, 'lng'=>$lng + $dlng),
-//            'left-bottom'=>array('lat'=>$lat - $dlat, 'lng'=>$lng - $dlng),
-//            'right-bottom'=>array('lat'=>$lat - $dlat, 'lng'=>$lng + $dlng)
-//        );
-//    }
 
     private  function getLocationList() {
         if($this->lat === null || $this->lng === null) {
@@ -82,7 +57,6 @@ class PhotoList extends CFormModel{
                 break;
             }elseif($total>$this->offset) {
                 $got = true;
-//                break;
             }
         }
 
@@ -92,17 +66,17 @@ class PhotoList extends CFormModel{
 
 
         $sql = "select p.*, ua2.distance
-            from photo as p,
-            (select p1.user_id,p1.photo_id,p1.act_id,u_a.distance
-              from photo as p1,
+            from video as p,
+            (select p1.user_id,p1.video_id,p1.act_id,u_a.distance
+              from video as p1,
                 (select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance
                     from user_location
                       where $cdt
                       order by distance
                       limit {$this->offset}, {$this->length}
-                ) as u_a where u_a.user_id = p1.user_id and p1.user_id<>$uid order by photo_id desc
+                ) as u_a where u_a.user_id = p1.user_id and p1.user_id<>$uid order by video_id desc
             ) as ua2
-            where ua2.photo_id=p.photo_id
+            where ua2.video_id=p.video_id
             group by ua2.user_id order by ua2.distance";
 
 
@@ -116,8 +90,11 @@ class PhotoList extends CFormModel{
     }
 
     private function getTimeList() {
+        if($this->time===null) {
+            $this->time = time();
+        }
         $sql = "select *
-                from (select * from photo order by photo_id desc) p2
+                from (select * from video order by video_id desc) p2
                 group by user_id
                 having upload_time<={$this->time}
                 order by upload_time limit {$this->offset},{$this->length}";
@@ -126,20 +103,20 @@ class PhotoList extends CFormModel{
         return $rs;
     }
     private function getViewList() {
-        $sql = "select p.* from photo p order by vote_number*10 + view_number desc limit {$this->offset},{$this->length}";
+        $sql = "select p.* from video p order by vote_number*10 + view_number desc limit {$this->offset},{$this->length}";
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
     }
 
     private function getRandList() {
         $sql = "SELECT *
-              FROM photo AS r1 JOIN
+              FROM video AS r1 JOIN
                    (SELECT (RAND() *
-                                 (SELECT MAX(photo_id)
-                                    FROM photo)) AS id)
+                                 (SELECT MAX(video_id)
+                                    FROM video)) AS id)
                     AS r2
-             WHERE r1.photo_id >= r2.id
-             ORDER BY r1.photo_id ASC
+             WHERE r1.video_id >= r2.id
+             ORDER BY r1.video_id ASC
              LIMIT 1";
         $rs = array();
         for($i=0;$i<$this->length;$i++) {
@@ -155,7 +132,7 @@ class PhotoList extends CFormModel{
         if($this->user_id===null) {
             return array();
         }
-        $sql = "select * from photo where user_id={$this->user_id} order by upload_time desc limit {$this->offset},{$this->length}";
+        $sql = "select * from video where user_id={$this->user_id} order by upload_time desc limit {$this->offset},{$this->length}";
         return Yii::app()->db->createCommand($sql)->queryAll();
     }
 
@@ -163,7 +140,7 @@ class PhotoList extends CFormModel{
         if($this->act_id===null) {
             return array();
         }
-        $rs = Photo::model()->findAll(array(
+        $rs = Video::model()->findAll(array(
             "condition"=>"act_id=:aId order by upload_time desc limit {$this->offset},{$this->length}",
             "params" => array(":aId"=>$this->act_id)
         ));

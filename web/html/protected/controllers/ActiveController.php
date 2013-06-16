@@ -115,4 +115,8 @@ class ActiveController extends Controller{
             $this->sendAjax(null);
         }
     }
+
+    public function actionStar() {
+        
+    }
 }

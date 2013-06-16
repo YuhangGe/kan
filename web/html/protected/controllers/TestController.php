@@ -10,14 +10,7 @@ class TestController extends Controller {
     public $t_aa;
 
     function actionIndex() {
-        $m = new ActiveJoinForm();
-        $m->act_id = 10;
-        $m->photo_number = 5;
-        if($m->validate() && $m->join()) {
-            $this->sendAjax(true, true);
-        } else {
-            $this->sendAjax(null);
-        }
+     
     }
 
     function actionDo() {
