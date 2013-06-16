@@ -29,7 +29,7 @@ class FileHelper {
             return false;
         }
         $ftype = $file['type'];
-        if(!in_array($ftype, array(''))) {
+        if(!in_array($ftype, array('video/mp4'))) {
             return false;
         }
 
@@ -41,7 +41,7 @@ class FileHelper {
         $file_ext = trim($file_ext);
         $file_ext = strtolower($file_ext);
 
-        if(!in_array($file_ext, array('jpg', 'jpeg', 'png', 'bmp', 'gif'))) {
+        if(!in_array($file_ext, array('mp4', 'jpeg', 'png', 'bmp', 'gif'))) {
             return false;
         }
     }
