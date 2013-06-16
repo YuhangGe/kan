@@ -59,7 +59,11 @@ class DefaultController extends AController
         $m = new Active();
         $m->attributes = $_POST;
         if($m->validate() && $m->save()) {
-            $this->sendAjax(array("act_id"=>$m->act_id), true);
+            if(mkdir(Yii::app()->params['uploadDir']."/photo/".$m->act_id)) {
+                $this->sendAjax(array("act_id"=>$m->act_id), true);
+            } else {
+                $this->sendAjax(null);
+            }
         } else {
             $this->sendAjax(null);
         }
