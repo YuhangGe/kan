@@ -123,4 +123,9 @@ class TableController extends AController{
 
         $this->output();
     }
+
+    public function actionVideo() {
+        $this->getData("video", " * ");
+
+    }
 }
