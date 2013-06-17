@@ -30,6 +30,7 @@
                             <th>浏览</th>
                             <th>人气</th>
                             <th>海报</th>
+                            <th>视频</th>
                             <th>操作</th>
                         </tr>
                         </thead>
@@ -117,11 +118,15 @@
 <div id="table-row-selected-template" style="display: none">
     <a class="btn btn-success" href="/admin/user/detail#USER_ID">
         <i class="icon-zoom-in icon-white"></i>
-        查看详情
+        详情
     </a>
     <a class="btn btn-info" href="javascript:uploadPoster('USER_ID');">
     <i class="icon-edit icon-white"></i>
-       上传海报
+       海报
+    </a>
+    <a class="btn btn-info" href="javascript:showUploadVideo('USER_ID');">
+        <i class="icon-edit icon-white"></i>
+        视频
     </a>
     <a class="btn btn-danger" href="javascript:cancelStar('USER_ID');">
         <i class="icon-trash icon-white"></i>
@@ -150,20 +155,57 @@
         <h3>上传海报</h3>
     </div>
     <div class="modal-body">
+        <div class="alert alert-info" id="poster-process" style="position: relative; top: 5px;">为星客上传获奖海报</div>
+
         <div class="control-group" id="act-detail">
             <label class="control-label" for="fileImage">上传海报</label>
             <div class="controls">
                 <input class="input-file uniform_on" id="fileImage" type="file">
-                            <span>
-                                <img style="max-height: 200px; max-width: 200px; display: none;" alt="海报预览"/>
-                                <span class="alert alert-info act-upload" style="position: relative; top: 5px;">为星客上传获奖海报</span>
-                            </span>
             </div>
         </div>
     </div>
     <div class="modal-footer">
         <a href="#" class="btn" data-dismiss="modal">取消</a>
         {*<a href="#" class="btn btn-primary">Save changes</a>*}
+    </div>
+</div>
+
+<div class="modal hide fade" id="videoDialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3>上传视频</h3>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-info" id="video-process">为星客上传视频节目</div>
+        <div class="alert alert-warning">视频格式必须是mp4的h264格式，并且使用<a href='#'>qt-faststart（点击下载）</a>程序将视频文件进行头部转换，以支持边缓冲边播放！</div>
+        <div class="control-group">
+            <label class="control-label" for="fileImage">节目名称</label>
+            <div class="controls">
+                <input class="input-file uniform_on" id="txtVideoName" type="text">
+            </div>
+        </div>
+        {*<div class="control-group">*}
+            {*<label class="control-label" for="fileImage">视频预览</label>*}
+            {*<div class="controls">*}
+                {*<input class="input-file uniform_on" id="fileVideoPoster" type="file">*}
+            {*</div>*}
+        {*</div>*}
+        <div class="control-group">
+            <label class="control-label" for="fileImage">高清视频</label>
+            <div class="controls">
+                <input class="input-file uniform_on" id="fileBigVideo" type="file">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="fileImage">普清视频</label>
+            <div class="controls">
+                <input class="input-file uniform_on" id="fileSmallVideo" type="file">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+        <a href="#" id="btnUploadVideo" class="btn btn-primary">上传</a>
     </div>
 </div>
 {literal}
@@ -190,7 +232,7 @@
                     if(data===null) {
                         return "未上传"
                     } else {
-                        return "<a href=''>查看视频</a>";
+                        return "<a href='/admin/video/detail#"+data+"'>查看视频</a>";
                     }
                 }},
                 {
@@ -270,6 +312,7 @@
             $("#idRadio").change(setSearchType);
             $("#btnSearch").click(doSearch);
             $("#fileImage").change(uploadImage);
+            $("#btnUploadVideo").click(uploadVideo);
         }
 
         function showActive(id) {
@@ -338,7 +381,7 @@
             if(fs.length===0) {
                 return;
             }
-            $("#act-detail .act-upload").show().text("正在上传(0%)...");
+            $("#poster-process").show().text("正在上传(0%)...");
             var img = fs[0];
             var fd = new FormData();
             fd.append("image_file", img);
@@ -368,7 +411,7 @@
 
         function uploadProcess(e) {
             if(e.lengthComputable){
-                $("#act-detail .act-upload").text("正在上传("+Math.round(e.loaded/ e.total * 100)+"%)...");
+                $("#poster-process").text("正在上传("+Math.round(e.loaded/ e.total * 100)+"%)...");
             }
         }
 
@@ -378,6 +421,78 @@
                 return;
             }
             $("#posterDialog").modal("hide");
+            $(".table-star-selected").DataTable().fnReloadAjax();
+        }
+
+        function showUploadVideo(user_id) {
+            CUR_USER = user_id;
+            $("#videoDialog").modal("show");
+        }
+        function uploadVideo() {
+//            var ps = $("#fileVideoPoster")[0].files;
+//            if(ps.length===0) {
+//                alert("请选择视频的预览图片！");
+//                return;
+//            }
+            var bf = $("#fileBigVideo")[0].files;
+            if(bf.length===0) {
+                alert("请选择要上传的高清视频！");
+                return;
+            }
+            var sf = $("#fileSmallVideo")[0].files;
+            if(sf.length===0) {
+                alert("请选择要上传的普清视频！");
+                return;
+            }
+            var v_n = $("#txtVideoName").val().trim();
+            if(v_n==="") {
+                alert("请输入节目名称！");
+                return;
+            }
+            $("#video-process").show().text("正在上传(0%)...");
+
+            var fd = new FormData();
+//            fd.append("video_poster", ps[0]);
+            fd.append("big_file", bf[0]);
+            fd.append("small_file", sf[0]);
+            fd.append("video_name", v_n);
+            fd.append("user_id", CUR_USER);
+            fd.append("act_id", CUR_ACT);
+
+            $.ajax({
+                url: "/admin/star/video",
+                data: fd,
+                dataType : "json",
+                //Options to tell JQuery not to process data or worry about content-type
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: 'POST',
+
+                xhr: function() {  // custom xhr
+                    var myXhr = $.ajaxSettings.xhr();
+                    if(myXhr.upload){ // check if upload property exists
+                        myXhr.upload.addEventListener('progress', uploadVideoProcess, false); // for handling the progress of the upload
+                    }
+                    return myXhr;
+                },
+                success : afterVideo
+            });
+        }
+
+        function uploadVideoProcess(e) {
+            if(e.lengthComputable){
+                $("#video-process").text("正在上传 ，请耐心等待("+Math.round(e.loaded/ e.total * 100)+"%)...");
+            }
+        }
+
+        function afterVideo(rtn) {
+            if(!rtn.success) {
+                alert('网络错误，请重试。');
+                return;
+            }
+            $("#video-process").text("为星客上传视频节目");
+            $("#videoDialog").modal("hide");
             $(".table-star-selected").DataTable().fnReloadAjax();
         }
     </script>

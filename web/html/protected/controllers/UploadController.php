@@ -64,36 +64,29 @@ class UploadController extends Controller{
     }
 
     public function actionAvatar() {
-        if(!isset($_FILES['image_file']) || !isset($_FILES['thumb_file']) || !isset($_FILES['small_file'])) {
+        if(!isset($_FILES['image_file']) || !isset($_FILES['small_file'])) {
             $this->sendAjax(null);
         }
         $uid = Yii::app()->user->id;
         $dir = "avatar";
         $_tag = time().rand(0, 1000000);
         $i_fn = "large_".$uid."_".$_tag;
-        $t_fn = "thumb_".$uid."_".$_tag;
         $s_fn = "small_".$uid."_".$_tag;
 
         $iif = FileHelper::savePhoto("image_file", $dir, $i_fn);
         if($iif==false) {
             $this->sendAjax(null);
         }
-        $tif =FileHelper::savePhoto("thumb_file", $dir, $t_fn);
-        if($tif==false) {
-            unlink(Yii::app()->params['uploadDir']."/".$iif);
-            $this->sendAjax(null);
-        }
+
         $sif = FileHelper::savePhoto("small_file", $dir, $s_fn);
         if($sif==false) {
             unlink(Yii::app()->params['uploadDir']."/".$iif);
-            unlink(Yii::app()->params['uploadDir']."/".$tif);
             $this->sendAjax(null);
         }
 
         $s_path = Yii::app()->params['staticServer'];
         $this->sendAjax(array(
             'image_url'=>  $s_path.'/'.$iif,
-            'thumb_url'=> $s_path.'/'.$tif,
             'small_url'=> $s_path.'/'.$sif
         ), true);
 

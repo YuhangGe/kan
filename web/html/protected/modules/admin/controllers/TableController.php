@@ -86,7 +86,24 @@ class TableController extends AController{
         $this->check();
         $this->ord = "order by act_score desc";
         $this->params[':aId'] = $_POST['act_id'];
-        $this->doGetData("star", " * ", "where act_id=:aId");
+
+        $c_sql = "select count(*) as number from star where act_id=:aId {$this->ord}";
+        $c_r = Yii::app()->db->createCommand($c_sql)->queryAll(true, $this->params);
+        if($c_r===null) {
+            $this->output();
+        }
+
+        $s_sql = "select star.*, video.video_id from star, video where star.act_id=:aId and star.user_id=video.user_id and video.act_id=:aId {$this->ord} {$this->lmt}";
+        $s_r = Yii::app()->db->createCommand($s_sql)->queryAll(true, $this->params);
+        if($s_r===null) {
+            $this->output();
+        }
+
+        $this->total_number = $c_r[0]['number'];
+
+        $this->data = $s_r;
+
+        $this->output();
     }
 
     public function actionStarRank() {

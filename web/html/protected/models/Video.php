@@ -5,7 +5,9 @@
  *
  * The followings are the available columns in table 'video':
  * @property integer $video_id
- * @property string $url
+ * @property string $big_url
+ * @property string $small_url
+
  * @property integer $user_id
  * @property integer $act_id
  * @property string $user_name
@@ -13,6 +15,7 @@
  * @property integer $upload_time
  * @property integer $vote_num
  * @property integer $view_num
+ * @property string $video_name
  */
 class Video extends CActiveRecord
 {
@@ -42,13 +45,15 @@ class Video extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('url, user_id, act_id, user_name, act_name, upload_time', 'required'),
+			array('user_id, act_id, user_name, act_name, video_name, big_url, small_url, upload_time', 'required'),
 			array('user_id, act_id, upload_time, vote_num, view_num', 'numerical', 'integerOnly'=>true),
-			array('url, act_name', 'length', 'max'=>25),
+			array('act_name, video_name', 'length', 'max'=>25),
 			array('user_name', 'length', 'max'=>15),
-			// The following rule is used by search().
+            array('big_url, small_url', 'length', 'max'=>150),
+
+            // The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('video_id, url, user_id, act_id, user_name, act_name, upload_time, vote_num, view_num', 'safe', 'on'=>'search'),
+//			array('video_id, url, user_id, act_id, user_name, act_name, upload_time, vote_num, view_num', 'safe', 'on'=>'search'),
 		);
 	}
 

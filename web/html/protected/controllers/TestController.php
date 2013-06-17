@@ -19,7 +19,7 @@ class TestController extends Controller {
 //        echo CJSON::encode($_GET);
         $this->render("do");
     }
-    function actionGoodInfo() {
+    function actionInfo() {
         phpinfo();
     }
     function actionAvatar() {

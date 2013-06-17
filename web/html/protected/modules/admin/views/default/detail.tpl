@@ -6,8 +6,13 @@
                 {*<a href="#" class="btn btn-setting btn-round"><i class="icon-cog"></i></a>*}
                 {*<a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>*}
                 {*<a href="#" class="btn btn-close btn-round"><i class="icon-remove"></i></a>*}
+                <a class="btn btn-info"  id="starBtn" href="javascript:;" onclick="openStar(this);" style="width: 70px;">
+                    <i class="icon-edit icon-white"></i>
+                    星客选拔
+                </a>
             </div>
         </div>
+
         <div class="box-content" id="act-detail" style="min-height: 400px;">
             <div class="alert alert-info">
                 <button type="button" class="close" data-dismiss="alert">×</button>
@@ -16,6 +21,7 @@
             <div class="row-fluid hide act-content">
                 <div class="page-header">
                     <h3>活动标题   <small>活动类型</small></h3>
+
                 </div>
                 <div class="begin-time row-fluid">
                     <div class="span2"><strong>开始时间</strong></div>
@@ -48,13 +54,14 @@
         </style>
     </div><!--/span-->
 
-    <div class="box span3">
+    <div class="box span3" >
         <div class="box-header well" data-original-title>
             <h3>查找活动</h3>
             {*<div class="box-icon">*}
                 {*<a href="#" class="btn btn-close btn-round"><i class="icon-remove"></i></a>*}
             {*</div>*}
         </div>
+
         <div class="box-content" id="act-search" style="min-height: 400px">
             <div class="control-group">
                 <div class="controls">
@@ -166,11 +173,16 @@
             $("#act-detail .alert").hide();
             $("#act-detail .act-content").show();
             $("#act-detail .page-header h3").html(act.act_name+"<small style='margin-left: 10px;'>"+TYPE[Number(act.act_type)]+"</small>");
+            $("#starBtn").attr("act_id",act.act_id);
             $("#act-detail .begin-time .span10").text($.datepicker.formatDate("yy年mm月dd日", new Date(Number(act.begin_time)*1000)));
             $("#act-detail .end-time .span10").text($.datepicker.formatDate("yy年mm月dd日", new Date(Number(act.end_time)*1000)));
             $("#act-detail .act-image img").attr("src", act.image);
             $("#act-detail .act-description .span10").html(act.description);
         }, 'json');
+    }
+
+    function openStar(btn) {
+        window.location.href="/admin/star/index#"+$(btn).attr("act_id");
     }
 </script>
 {/literal}

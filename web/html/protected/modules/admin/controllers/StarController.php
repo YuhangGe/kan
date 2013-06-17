@@ -40,4 +40,15 @@ class StarController extends AController{
             $this->sendAjax(null);
         }
     }
+
+     public function actionVideo() {
+            $m = new StarForm();
+            $m->attributes = $_POST;
+
+            if($m->validate() && $m->video()) {
+                $this->sendAjax(true, true);
+            } else {
+                $this->sendAjax(null);
+            }
+        }
 }

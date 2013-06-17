@@ -22,14 +22,17 @@ class FileHelper {
 
     public static function saveVideo($name, $dir, $file_name) {
         if(!isset($_FILES[$name])) {
+            echo $name;
             return false;
         }
         $file = $_FILES[$name];
         if(!empty($file['error'])) {
+            echo "error";
             return false;
         }
         $ftype = $file['type'];
         if(!in_array($ftype, array('video/mp4'))) {
+            echo "err type";
             return false;
         }
 
@@ -41,7 +44,13 @@ class FileHelper {
         $file_ext = trim($file_ext);
         $file_ext = strtolower($file_ext);
 
-        if(!in_array($file_ext, array('mp4', 'jpeg', 'png', 'bmp', 'gif'))) {
+        if(!in_array($file_ext, array('mp4'))) {
+            echo "err mp4";
+            return false;
+        }
+        if(move_uploaded_file($file['tmp_name'], Yii::app()->params['uploadDir']."/".$dir."/".$file_name.".".$file_ext)) {
+            return $dir."/".$file_name.".".$file_ext;
+        } else {
             return false;
         }
     }
