@@ -38,9 +38,9 @@ class TableController extends AController{
 
         $off = intval( $_REQUEST['iDisplayStart']);
         $len = intval( $_REQUEST['iDisplayLength']);
-        if($off<0 || $len>200) {
+        if($off<0 || $len>100) {
             $off = 0;
-            $len = 200;
+            $len = 100;
         }
 
         $this->lmt .= " LIMIT $off , $len ";
@@ -110,9 +110,13 @@ class TableController extends AController{
         if(!isset($_POST['act_id'])) {
             $this->output();
         }
-        $this->total_number = 30;
-        $sql = "select photo.user_id, photo.act_id, photo.user_name, sum(vote_number) as act_vote, sum(view_number) as act_view, sum(vote_number) * 10 + sum(view_number)  as act_score, star.user_id as star_id from photo left join star on photo.user_id=star.user_id and photo.act_id=star.act_id where photo.act_id=:aId group by user_id, act_id order by act_score desc limit {$this->total_number} ";
+        $this->check();
         $this->params[':aId']=$_POST['act_id'];
+
+        $this->total_number = UserActive::model()->count("act_id=:aId", $this->params);
+
+
+        $sql = "select photo.user_id, photo.act_id, photo.user_name, sum(vote_number) as act_vote, sum(view_number) as act_view, sum(vote_number) * 10 + sum(view_number)  as act_score, star.user_id as star_id from photo left join star on photo.user_id=star.user_id and photo.act_id=star.act_id where photo.act_id=:aId group by user_id, act_id order by act_score desc {$this->lmt} ";
 
         $s_r = Yii::app()->db->createCommand($sql)->queryAll(true, $this->params);
         if($s_r===null || count($s_r)===0) {
