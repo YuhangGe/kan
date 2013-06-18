@@ -21,7 +21,7 @@
                 <hr/>
                 <div class="row-fluid">
                     <h3>已选星客</h3>
-                    <table aoDataSource="/admin/table/starSelected" aoSortedBy="act_score" aoColumns="selected" class="table table-star-selected table-striped table-bordered bootstrap-datatable datatable">
+                    <table aoDataSource="/admin/table/starSelected" aoSortedBy="act_score" fnDrawCallback="selected" aoColumns="selected" class="table table-star-selected table-striped table-bordered bootstrap-datatable datatable">
                         <thead>
                         <tr>
                             <td>ID</td>
@@ -184,12 +184,12 @@
                 <input class="input-file uniform_on" id="txtVideoName" type="text">
             </div>
         </div>
-        {*<div class="control-group">*}
-            {*<label class="control-label" for="fileImage">视频预览</label>*}
-            {*<div class="controls">*}
-                {*<input class="input-file uniform_on" id="fileVideoPoster" type="file">*}
-            {*</div>*}
-        {*</div>*}
+        <div class="control-group">
+            <label class="control-label" for="fileImage">视频海报</label>
+            <div class="controls">
+                <input class="input-file uniform_on" id="fileVideoPoster" type="file">
+            </div>
+        </div>
         <div class="control-group">
             <label class="control-label" for="fileImage">高清视频</label>
             <div class="controls">
@@ -213,6 +213,12 @@
         var SType = "act_name", CUR_ACT = null, CUR_USER = null;
 
         function viewStart() {
+            window.fnDrawCallback = {
+                'selected' : function() {
+                    $.colorbox.remove();
+                    $(".poster_image").colorbox({transition:"elastic", maxWidth:"95%", maxHeight:"95%"});
+                }
+            };
             window.aoColumns = {'selected' : [
                 { "mData": "user_id"},
                 { "mData": "user_name" },
@@ -225,7 +231,7 @@
                     if(data===null) {
                         return "未上传"
                     } else {
-                        return "<img style='max-width: 200px;max-height: 200px' src='"+data+"'/>";
+                        return "<a class='poster_image' href='"+data+"'/>查看图片</a>";
                     }
                 }},
                 { "mData" : "video_id", "mRender" : function(data) {
@@ -238,7 +244,7 @@
                 {
                     "mData" : "user_id",
                     "mRender" : function(data) {
-                        return document.getElementById("table-row-selected-template").innerHTML.replace(/USER_ID/g, data);
+                        return document.getElementById("table-row-selected-template").innerHTML.replace(/USER_ID/g, data===null? "-1" :data);
                     }
                 }
             ], "rank" : [
@@ -251,9 +257,9 @@
                 { "mData": "act_score"},
 
                 {
-                    "mData" : "user_id",
-                    "mRender" : function(data) {
-                        return document.getElementById("table-row-rank-template").innerHTML.replace(/USER_ID/g, data);
+                    "mData" : "star_id",
+                    "mRender" : function(data, type, aoData) {
+                        return document.getElementById("table-row-rank-template").innerHTML.replace(/USER_ID/g, data===null?aoData.user_id:"-1");
                     }
                 }
             ]};
@@ -334,9 +340,10 @@
                       + $.datepicker.formatDate("yy年mm月dd日", new Date(Number(act.end_time)*1000))
                 );
                 CUR_ACT = act.act_id;
-                $('.datatable').each(function() {
-                    $(this).DataTable().fnReloadAjax();
+                $(".datatable").each(function(){
+                    $(this).DataTable().fnDraw();
                 });
+
             }, 'json');
         }
 
@@ -347,6 +354,10 @@
         }
 
         function chooseStar(user_id) {
+            if(user_id==="-1") {
+                alert("已经是星客！");
+                return;
+            }
             $.post("/admin/star/choose", {
                 user_id : user_id,
                 act_id : CUR_ACT
@@ -355,7 +366,8 @@
                     alert('网络错误，请重试.');
                     return;
                 }
-                $(".table-star-selected").DataTable().fnReloadAjax();
+                reloadStarSelected();
+
             }, "json");
         }
 
@@ -368,7 +380,8 @@
                     alert('网络错误，请重试.');
                     return;
                 }
-                $(".table-star-selected").DataTable().fnReloadAjax();
+                reloadStarSelected();
+
             }, "json");
         }
 
@@ -421,19 +434,23 @@
                 return;
             }
             $("#posterDialog").modal("hide");
-            $(".table-star-selected").DataTable().fnReloadAjax();
+            reloadStarSelected();
         }
 
+        function reloadStarSelected() {
+            $(".table-star-selected").DataTable().fnDraw();
+
+        }
         function showUploadVideo(user_id) {
             CUR_USER = user_id;
             $("#videoDialog").modal("show");
         }
         function uploadVideo() {
-//            var ps = $("#fileVideoPoster")[0].files;
-//            if(ps.length===0) {
-//                alert("请选择视频的预览图片！");
-//                return;
-//            }
+            var ps = $("#fileVideoPoster")[0].files;
+            if(ps.length===0) {
+                alert("请选择视频的预览图片！");
+                return;
+            }
             var bf = $("#fileBigVideo")[0].files;
             if(bf.length===0) {
                 alert("请选择要上传的高清视频！");
@@ -452,7 +469,7 @@
             $("#video-process").show().text("正在上传(0%)...");
 
             var fd = new FormData();
-//            fd.append("video_poster", ps[0]);
+            fd.append("video_poster", ps[0]);
             fd.append("big_file", bf[0]);
             fd.append("small_file", sf[0]);
             fd.append("video_name", v_n);

@@ -53,7 +53,7 @@ class TableController extends AController{
     }
 
     private function doGetData($table, $select=" * ", $condition = "") {
-        $c_sql = "select count(*) as number from $table $condition {$this->ord}";
+        $c_sql = "select count(*) as number from $table $condition";
         $c_r = Yii::app()->db->createCommand($c_sql)->queryAll(true, $this->params);
         if($c_r===null) {
             $this->output();
@@ -87,13 +87,13 @@ class TableController extends AController{
         $this->ord = "order by act_score desc";
         $this->params[':aId'] = $_POST['act_id'];
 
-        $c_sql = "select count(*) as number from star where act_id=:aId {$this->ord}";
+        $c_sql = "select count(*) as number from star where act_id=:aId";
         $c_r = Yii::app()->db->createCommand($c_sql)->queryAll(true, $this->params);
         if($c_r===null) {
             $this->output();
         }
 
-        $s_sql = "select star.*, video.video_id from star, video where star.act_id=:aId and star.user_id=video.user_id and video.act_id=:aId {$this->ord} {$this->lmt}";
+        $s_sql = "select star.* , v.video_id from star left join video v  on star.user_id=v.user_id and v.act_id=:aId where star.act_id=:aId {$this->ord} {$this->lmt}";
         $s_r = Yii::app()->db->createCommand($s_sql)->queryAll(true, $this->params);
         if($s_r===null) {
             $this->output();
@@ -111,7 +111,7 @@ class TableController extends AController{
             $this->output();
         }
         $this->total_number = 30;
-        $sql = "select user_id, act_id, user_name, sum(vote_number) as act_vote, sum(view_number) as act_view, sum(vote_number) * 10 + sum(view_number)  as act_score from photo where act_id=:aId group by user_id, act_id order by act_score desc limit {$this->total_number}";
+        $sql = "select photo.user_id, photo.act_id, photo.user_name, sum(vote_number) as act_vote, sum(view_number) as act_view, sum(vote_number) * 10 + sum(view_number)  as act_score, star.user_id as star_id from photo left join star on photo.user_id=star.user_id and photo.act_id=star.act_id where photo.act_id=:aId group by user_id, act_id order by act_score desc limit {$this->total_number} ";
         $this->params[':aId']=$_POST['act_id'];
 
         $s_r = Yii::app()->db->createCommand($sql)->queryAll(true, $this->params);

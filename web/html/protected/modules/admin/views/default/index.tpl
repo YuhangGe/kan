@@ -10,7 +10,7 @@
         </div>
         <div class="box-content">
 
-            <table aoDataSource="/admin/table/active" aoOrderBy="end_time" aoColumns="active"  class="table table-striped table-bordered bootstrap-datatable datatable">
+            <table aoDataSource="/admin/table/active" aoOrderBy="end_time" aoColumns="active" fnDrawCallback="active" class="table table-striped table-bordered bootstrap-datatable datatable">
                 <thead>
                 <tr>
                     <td>ID</td>
@@ -37,6 +37,10 @@
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
+    <a class="btn btn-info" href="javascript:modifyActive('ACT_ID');">
+        <i class="icon-edit icon-white"></i>
+        修改活动
+    </a>
     <a class="btn btn-info" href="/admin/star/index#ACT_ID">
         <i class="icon-edit icon-white"></i>
         星客选拔
@@ -52,6 +56,12 @@
 
 <script type="text/javascript">
     function viewStart() {
+        window.fnDrawCallback = {
+            'active' : function() {
+                $.colorbox.remove();
+                $(".active_image").colorbox({transition:"elastic", maxWidth:"95%", maxHeight:"95%"});
+            }
+        };
         window.aoColumns = {'active' : [
             { "mData": "act_id"},
             { "mData": "act_name" },
@@ -67,7 +77,11 @@
                 return $.datepicker.formatDate("yy年mm月dd日", new Date(Number(data)*1000));
             } },
             { "mData": "image" , "mRender" : function(data) {
-                return "<a href='"+data+"' target='_blank'>"+(data.length<38?data:"http://..."+data.substr(data.length-30))+"</a>";
+                if(data===null || data.trim() === "") {
+                    return "未上传";
+                } else {
+                    return "<a href='"+data+"' class='active_image'>显示图片</a>";
+                }
             }
             },
             {
