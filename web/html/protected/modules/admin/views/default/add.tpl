@@ -1,3 +1,5 @@
+{assign 'url_prefix' $Yii->params['url_prefix']}
+{assign 'link_prefix' $Yii->params['link_prefix']}
 
 <div class="row-fluid sortable">
     <div class="box span12">
@@ -10,7 +12,7 @@
             </div>
         </div>
         <div class="box-content">
-            <form class="form-horizontal" action="/admin/default/add" method="post">
+            <form class="form-horizontal" action="{$link_prefix}admin/default/add" method="post">
                 <fieldset>
                     {*<legend></legend>*}
                     <div class="control-group">
@@ -89,7 +91,7 @@
         }
 
         $("#btnCreate").text("正在处理...").attr('disabled', true);
-        $.post("/admin/default/create", {
+        $.post($.__link_prefix__ + "admin/default/create", {
             'act_name' : $("#txtName").val().trim(),
             'act_type' : $("#typeSelect").val(),
             'begin_time' : Math.round($("#dataBeginTime").datepicker("getDate").getTime() / 1000),
@@ -104,7 +106,7 @@
             } else {
                 noty({text: '新建活动成功！5秒后跳转到该活动页面。', layout:'topCenter', 'type' : 'success'});
                 window.setTimeout(function() {
-                    window.location.href = "/admin/default/detail#"+rtn.data.act_id;
+                    window.location.href = $.__link_prefix__ + "admin/default/detail#"+rtn.data.act_id;
                 }, 5000);
             }
 
@@ -121,7 +123,7 @@
         var fd = new FormData();
         fd.append("image_file", img);
         $.ajax({
-            url: "/admin/upload/image",
+            url: $.__link_prefix__ + "admin/upload/image",
             data: fd,
             dataType : "json",
             //Options to tell JQuery not to process data or worry about content-type

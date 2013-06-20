@@ -1,3 +1,7 @@
+{assign 'url_prefix' $Yii->params['url_prefix']}
+{assign 'link_prefix' $Yii->params['link_prefix']}
+
+
 <div class="row-fluid sortable">
     <div class="box span9">
         <div class="box-header well" data-original-title>
@@ -15,7 +19,7 @@
             </div>
             <div class="row-fluid hide user-content">
                 <div class="user-base row-fluid">
-                    <div class="span3"><img style="width: 100px;height: 100px;" src="/img/avatar.png" /></div>
+                    <div class="span3"><img style="width: 100px;height: 100px;" src="{$url_prefix}img/avatar.png" /></div>
                     <div class="span7">
                         <h4>白羊座小葛</h4>
                         <p>秀客(0粉丝，0好友)</p>
@@ -134,7 +138,7 @@
             $("#user-search .user-require").show();
             return;
         }
-        $.post("/admin/user/search", {
+        $.post($.__link_prefix__ + "admin/user/search", {
             search_type : SType,
             search_value : _v
         }, function(rtn) {
@@ -151,7 +155,7 @@
             }
             for(var i=0;i<list.length;i++) {
                 var user = list[i];
-                $("<li></li>").html("<a href='/admin/user/detail#"+user.user_id+"'>"+user.nick_name+"</a>")
+                $("<li></li>").html("<a href='"+$.__link_prefix__ + "admin/user/detail#"+user.user_id+"'>"+user.nick_name+"</a>")
                         .appendTo(_u);
             }
         }, "json");
@@ -174,7 +178,7 @@
     var CO = "摩羯座,水瓶座,双鱼座,白羊座,金牛座,双子座,巨蟹座,狮子座,处女座,天秤座,天蝎座,射手座".split(",");
 
     function showUser(id) {
-        $.post("/admin/user/getDetail", {
+        $.post($.__link_prefix__ + "admin/user/getDetail", {
             'user_id' : id
         }, function(rtn) {
             if(!rtn.success) {
@@ -184,7 +188,7 @@
             var user = rtn.data;
             $("#user-detail .alert").hide();
             $("#user-detail .user-content").show();
-            $("#user-detail .user-base .span3 img").attr('src', user.small_avatar===null?'/img/avatar.png':user.small_avatar);
+            $("#user-detail .user-base .span3 img").attr('src', user.small_avatar===null?$.__url_prefix__ + 'img/avatar.png':user.small_avatar);
             $("#user-detail .user-base .span7").html(
                 "<h4>"+user.nick_name+"</h4><br/>"
                +"<p>"+['普客','秀客','星客'][Number(user.level)]+"("+user.fan_number+"粉丝，"+user.friend_number+"好友)</p>"

@@ -1,3 +1,6 @@
+{assign 'url_prefix' $Yii->params['url_prefix']}
+{assign 'link_prefix' $Yii->params['link_prefix']}
+
 <div class="row-fluid sortable">
     <div class="box span9">
         <div class="box-header well" data-original-title>
@@ -15,13 +18,13 @@
             </div>
             <div class="row-fluid hide score-content">
                 <div class="score-info score-info row-fluid">
-                    <div class="span3"><h2>活动标题   <small>活动类型</small></h2></div>
-                    <div class="span9">2013年6月13日 - 2013年6月13日</div>
+                    <div class="span4"><h2>活动标题   <small>活动类型</small></h2></div>
+                    <div class="span8">2013年6月13日 - 2013年6月13日</div>
                 </div>
                 <hr/>
                 <div class="row-fluid">
                     <h3>已选星客</h3>
-                    <table aoDataSource="/admin/table/starSelected" aoSortedBy="act_score" fnDrawCallback="selected" aoColumns="selected" class="table table-star-selected table-striped table-bordered bootstrap-datatable datatable">
+                    <table aoDataSource="{$link_prefix}admin/table/starSelected" aoSortedBy="act_score" fnDrawCallback="selected" aoColumns="selected" class="table table-star-selected table-striped table-bordered bootstrap-datatable datatable">
                         <thead>
                         <tr>
                             <td>ID</td>
@@ -43,7 +46,7 @@
                 <hr/>
                 <div class="row-fluid">
                     <h3>人气排名</h3>
-                    <table aoDataSource="/admin/table/starRank" aoSortedBy="act_score" aoColumns="rank" class="table table-star-rank table-striped table-bordered bootstrap-datatable datatable">
+                    <table aoDataSource="{$link_prefix}admin/table/starRank" aoSortedBy="act_score" aoColumns="rank" class="table table-star-rank table-striped table-bordered bootstrap-datatable datatable">
                         <thead>
                         <tr>
                             <td>ID</td>
@@ -116,7 +119,7 @@
 </div>
 
 <div id="table-row-selected-template" style="display: none">
-    <a class="btn btn-success" href="/admin/user/detail#USER_ID">
+    <a class="btn btn-success" href="{$link_prefix}admin/user/detail#USER_ID">
         <i class="icon-zoom-in icon-white"></i>
         详情
     </a>
@@ -135,7 +138,7 @@
 </div>
 
 <div id="table-row-rank-template" style="display: none">
-    <a class="btn btn-success" href="/admin/user/detail#USER_ID">
+    <a class="btn btn-success" href="{$link_prefix}admin/user/detail#USER_ID">
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
@@ -238,7 +241,8 @@
                     if(data===null) {
                         return "未上传"
                     } else {
-                        return "<a href='/admin/video/detail#"+data+"'>查看视频</a>";
+                        return "<a href='"+$.__link_prefix__ + +"admin/video/detail#"+data+"'>查看视频</a>";
+
                     }
                 }},
                 {
@@ -282,7 +286,7 @@
                 $("#score-search .score-require").show();
                 return;
             }
-            $.post("/admin/default/search", {
+            $.post("{$link_prefix}admin/default/search", {
                 search_type : SType,
                 search_value : _v
             }, function(rtn) {
@@ -299,7 +303,7 @@
                 }
                 for(var i=0;i<list.length;i++) {
                     var act = list[i];
-                    $("<li></li>").html("<a href='/admin/star/index#"+act.act_id+"'>"+act.act_name+"</a>")
+                    $("<li></li>").html("<a href='"+$.__link_prefix__ + +"admin/star/index#"+act.act_id+"'>"+act.act_name+"</a>")
                             .appendTo(_u);
                 }
             }, "json");
@@ -323,7 +327,7 @@
 
         function showActive(id) {
             $(".dataTables_info").hide();
-            $.post("/admin/default/getDetail", {
+            $.post($.__link_prefix__+"admin/default/getDetail", {
                 'act_id' : id
             }, function(rtn) {
                 if(!rtn.success) {
@@ -358,7 +362,7 @@
                 alert("已经是星客！");
                 return;
             }
-            $.post("/admin/star/choose", {
+            $.post($.__link_prefix__ + "admin/star/choose", {
                 user_id : user_id,
                 act_id : CUR_ACT
             }, function(rtn) {
@@ -372,7 +376,7 @@
         }
 
         function cancelStar(user_id) {
-            $.post("/admin/star/cancel", {
+            $.post($.__link_prefix__ + "admin/star/cancel", {
                 user_id : user_id,
                 act_id : CUR_ACT
             }, function(rtn) {
@@ -402,7 +406,7 @@
             fd.append("act_id", CUR_ACT);
 
             $.ajax({
-                url: "/admin/star/poster",
+                url: $.__link_prefix__ + "admin/star/poster",
                 data: fd,
                 dataType : "json",
                 //Options to tell JQuery not to process data or worry about content-type
@@ -477,7 +481,7 @@
             fd.append("act_id", CUR_ACT);
 
             $.ajax({
-                url: "/admin/star/video",
+                url: $.__link_prefix__ + "admin/star/video",
                 data: fd,
                 dataType : "json",
                 //Options to tell JQuery not to process data or worry about content-type

@@ -1,3 +1,7 @@
+{assign 'url_prefix' $Yii->params['url_prefix']}
+{assign 'link_prefix' $Yii->params['link_prefix']}
+
+
 <div class="row-fluid sortable">
     <div class="box span12">
         <div class="box-header well" data-original-title>
@@ -36,7 +40,7 @@
     CUR_PAGE = 0;
     MAX_PAGE = 1;
     function loadPage(idx) {
-        $.post("/admin/photo/page", {
+        $.post($.__link_prefix__ + "admin/photo/page", {
             'page_index' : idx
         }, function(rtn) {
             if(!rtn.success) {
@@ -52,8 +56,8 @@
                 $("<li class='thumbnail'></li>").append(
                     $("<a class='kan-photo' href='"+ p.image_url +"' title='所属用户："+ p.user_name+"，所属活动："+ p.act_name+"'></a>").append($("<img src='"+p.thumb_url+"'/>"))
                 ).append(
-                    "<p>所属用户：<a href='/admin/user/detail#"+ p.user_id+"'>"+ p.user_name+"</a></p>"
-                   +"<p>所属活动：<a href='/admin/default/detail#"+ p.act_id+"'>"+ p.act_name+"</a></p>"
+                    "<p>所属用户：<a href='"+$.__link_prefix__ + +"admin/user/detail#"+ p.user_id+"'>"+ p.user_name+"</a></p>"
+                   +"<p>所属活动：<a href='"+$.__link_prefix__ + "admin/default/detail#"+ p.act_id+"'>"+ p.act_name+"</a></p>"
                    +'<p onclick="delPhoto('+ p.photo_id+');" class="gallery-delete btn hide"><i class="icon icon-red icon-close"></i></p>'
                         ).appendTo(_u);
             }

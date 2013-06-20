@@ -1,3 +1,6 @@
+{assign 'url_prefix' $Yii->params['url_prefix']}
+{assign 'link_prefix' $Yii->params['link_prefix']}
+
 <div class="row-fluid sortable">
     <div class="box span9">
         <div class="box-header well" data-original-title>
@@ -124,7 +127,7 @@
             $("#act-search .act-require").show();
             return;
         }
-        $.post("/admin/default/search", {
+        $.post($.__link_prefix__ + "admin/default/search", {
             search_type : SType,
             search_value : _v
         }, function(rtn) {
@@ -141,7 +144,7 @@
             }
             for(var i=0;i<list.length;i++) {
                 var act = list[i];
-                $("<li></li>").html("<a href='/admin/default/detail#"+act.act_id+"'>"+act.act_name+"</a>")
+                $("<li></li>").html("<a href='"+ $.__link_prefix__ + "admin/default/detail#"+act.act_id+"'>"+act.act_name+"</a>")
                         .appendTo(_u);
             }
         }, "json");
@@ -162,7 +165,7 @@
     }
 
     function showActive(id) {
-        $.post("/admin/default/getDetail", {
+        $.post($.__link_prefix__ + "admin/default/getDetail", {
             'act_id' : id
         }, function(rtn) {
             if(!rtn.success) {
@@ -182,7 +185,7 @@
     }
 
     function openStar(btn) {
-        window.location.href="/admin/star/index#"+$(btn).attr("act_id");
+        window.location.href=$.__link_prefix__ + "admin/star/index#"+$(btn).attr("act_id");
     }
 </script>
 {/literal}

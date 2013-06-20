@@ -1,3 +1,7 @@
+{assign 'url_prefix' $Yii->params['url_prefix']}
+{assign 'link_prefix' $Yii->params['link_prefix']}
+
+
 <div class="row-fluid sortable">
     <div class="box span12">
         <div class="box-header well" data-original-title>

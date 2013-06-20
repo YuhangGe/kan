@@ -19,6 +19,7 @@ class LoginController extends AController{
     public function actionIndex() {
         $login_failed = false;
 
+
         if(isset($_POST['ALoginForm']))
         {
             $model = new ALoginForm();
@@ -27,8 +28,8 @@ class LoginController extends AController{
 
 
             if($model->validate() && $model->login()) {
-                //echo CJSON::encode(Yii::app()->user);
-                $this->redirect("/admin/default/index");
+//                echo CJSON::encode(Yii::app()->user);
+                $this->redirect(Yii::app()->params['link_prefix']."admin/default/index");
             }
 
             $login_failed = true;
@@ -40,6 +41,6 @@ class LoginController extends AController{
 
     public function actionLogout() {
         Yii::app()->user->logout();
-        $this->redirect("/admin/login");
+        $this->redirect(Yii::app()->params['link_prefix']."admin/login");
     }
 }

@@ -1,18 +1,6 @@
+{assign 'url_prefix' $Yii->params['url_prefix']}
+{assign 'link_prefix' $Yii->params['link_prefix']}
 
-{*<h4>登陆后台</h4>*}
-{*{assign "form"  $this->beginWidget('bootstrap.widgets.TbActiveForm',*}
-{*[*}
-{*'id'=>'verticalForm',*}
-{*'htmlOptions' => ['class'=>'well']*}
-{*]*}
-{*)}*}
-
-{*{$form->textFieldRow($model, 'username', ['class'=>'span3'])}*}
-{*{$form->passwordFieldRow($model, 'password', ['class'=>'span3'])}*}
-{*<br/>*}
-{*{$this->widget('bootstrap.widgets.TbButton', ['buttonType'=>'submit', 'label'=>'登陆'], true)}*}
-
-{*{assign "form_end" $this->endWidget()}*}
 
 
 <div class="container-fluid">
@@ -38,7 +26,7 @@
                     </div>
                 {/if}
 
-                <form class="form-horizontal" action="/admin/login" method="post">
+                <form class="form-horizontal" action="{$link_prefix}admin/login" method="post">
                     <fieldset>
                         <div class="input-prepend" title="Username" data-rel="tooltip">
                             <span class="add-on"><i class="icon-user"></i></span><input autofocus class="input-large span10" name="ALoginForm[username]" id="username" type="text" value="admin" />

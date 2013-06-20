@@ -1,3 +1,7 @@
+{assign 'url_prefix' $Yii->params['url_prefix']}
+{assign 'link_prefix' $Yii->params['link_prefix']}
+
+
 <div class="row-fluid sortable">
     <div class="box span12">
         <div class="box-header well" data-original-title>
@@ -10,7 +14,7 @@
         </div>
         <div class="box-content">
 
-            <table aoDataSource="/admin/table/active" aoOrderBy="end_time" aoColumns="active" fnDrawCallback="active" class="table table-striped table-bordered bootstrap-datatable datatable">
+            <table aoDataSource="{$link_prefix}admin/table/active" aoOrderBy="end_time" aoColumns="active" fnDrawCallback="active" class="table table-striped table-bordered bootstrap-datatable datatable">
                 <thead>
                 <tr>
                     <td>ID</td>
@@ -33,7 +37,7 @@
 
 
 <div id="table-edit-row-template" style="display: none">
-    <a class="btn btn-success edit-view" href="/admin/default/detail#ACT_ID">
+    <a class="btn btn-success edit-view" href="{$link_prefix}admin/default/detail#ACT_ID">
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
@@ -41,7 +45,7 @@
         <i class="icon-edit icon-white"></i>
         修改活动
     </a>
-    <a class="btn btn-info" href="/admin/star/index#ACT_ID">
+    <a class="btn btn-info" href="{$link_prefix}admin/star/index#ACT_ID">
         <i class="icon-edit icon-white"></i>
         星客选拔
     </a>

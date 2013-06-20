@@ -1,3 +1,7 @@
+{assign 'url_prefix' $Yii->params['url_prefix']}
+{assign 'link_prefix' $Yii->params['link_prefix']}
+
+
 <div class="row-fluid sortable">
     <div class="box span9">
         <div class="box-header well" data-original-title>
@@ -28,6 +32,10 @@
                 <div class="video-act row-fluid">
                     <div class="span2"><strong>所属活动</strong></div>
                     <div class="span10">那些花儿海选</div>
+                </div>
+                <div class="video-poster row-fluid">
+                    <div class="span2"><strong>视频海报</strong></div>
+                    <div class="span10">未上传</div>
                 </div>
                 <hr/>
                 <div class="row-fluid">
@@ -114,10 +122,10 @@
     </div>
 </div>
 
-<link href="/video-js/video-js.css" rel="stylesheet">
-<script src="/video-js/video.dev.js"></script>
+<link href="{$url_prefix}video-js/video-js.css" rel="stylesheet">
+<script src="{$url_prefix}video-js/video.dev.js"></script>
 <script>
-    videojs.options.flash.swf = "/video-js/video-js.swf"
+    videojs.options.flash.swf = "{$url_prefix}video-js/video-js.swf"
     video_player = null;
     vp = null;
 </script>
@@ -171,7 +179,7 @@
                 $("#video-search .video-require").show();
                 return;
             }
-            $.post("/admin/video/search", {
+            $.post($.__link_prefix__ + "admin/video/search", {
                 search_type : SType,
                 search_value : _v
             }, function(rtn) {
@@ -188,7 +196,7 @@
                 }
                 for(var i=0;i<list.length;i++) {
                     var act = list[i];
-                    $("<li></li>").html("<a href='/admin/video/detail#"+act.video_id+"'>"+act.video_name+"</a>")
+                    $("<li></li>").html("<a href='"+$.__link_prefix__ + "admin/video/detail#"+act.video_id+"'>"+act.video_name+"</a>")
                             .appendTo(_u);
                 }
             }, "json");
@@ -214,7 +222,7 @@
         }
 
         function showVideo(id) {
-            $.post("/admin/video/getDetail", {
+            $.post($.__link_prefix__ + "admin/video/getDetail", {
                 'video_id' : id
             }, function(rtn) {
                 if(!rtn.success) {
@@ -227,8 +235,8 @@
                 $("#video-detail .page-header h3").html(act.video_name);
                 $("#video-detail .video-time .span10").text($.datepicker.formatDate("yy年mm月dd日", new Date(Number(act.upload_time)*1000)));
 
-                $("#video-detail .video-user .span10").html("<a href='/admin/user/detail#"+act.user_id+"'>"+act.user_name+"</a>");
-                $("#video-detail .video-act .span10").html("<a href='/admin/default/detail#"+act.act_id+"'>"+act.act_name+"</a>");
+                $("#video-detail .video-user .span10").html("<a href='"+$.__link_prefix__ + "admin/user/detail#"+act.user_id+"'>"+act.user_name+"</a>");
+                $("#video-detail .video-act .span10").html("<a href='"+$.__link_prefix__ + "admin/default/detail#"+act.act_id+"'>"+act.act_name+"</a>");
 
                 VideoURL.big = act.big_url;
                 VideoURL.small = act.small_url;

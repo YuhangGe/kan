@@ -71,8 +71,8 @@ return array(
 		'db'=>array(
 			'connectionString' => 'mysql:host=localhost;dbname=kankan',
 			'emulatePrepare' => true,
-			'username' => 'kankan',
-			'password' => 'kankan',
+			'username' => 'root',
+			'password' => 'abeajqn',
 			'charset' => 'utf8',
 		),
 
@@ -116,6 +116,8 @@ return array(
 	// using Yii::app()->params['paramName']
 	'params'=>array(
 		// this is used in contact page
+        'url_prefix' => '/',
+        'link_prefix' => '/',
 		'adminEmail'=>'abraham1@163.com',
         'adminName' => 'kankan',
         /*

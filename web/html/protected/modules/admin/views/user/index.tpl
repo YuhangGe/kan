@@ -1,3 +1,7 @@
+{assign 'url_prefix' $Yii->params['url_prefix']}
+{assign 'link_prefix' $Yii->params['link_prefix']}
+
+
 <div class="row-fluid sortable">
     <div class="box span12">
         <div class="box-header well" data-original-title>
@@ -10,7 +14,7 @@
         </div>
         <div class="box-content">
 
-            <table aoDataSource="/admin/table/user" aoOrderBy="user_id" aoColumns="user"  class="table table-striped table-bordered bootstrap-datatable datatable">
+            <table aoDataSource="{$link_prefix}admin/table/user" aoOrderBy="user_id" aoColumns="user"  class="table table-striped table-bordered bootstrap-datatable datatable">
                 <thead>
                 <tr>
                     <td>ID</td>
@@ -36,7 +40,7 @@
 
 
 <div id="table-edit-row-template" style="display: none">
-    <a class="btn btn-success edit-view" href="/admin/user/detail#USER_ID">
+    <a class="btn btn-success edit-view" href="{$link_prefix}admin/user/detail#USER_ID">
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
@@ -57,7 +61,7 @@
             window.aoColumns = {'user' : [
                 { "mData": "user_id"},
                 { "mData" : "small_avatar", "mRender": function(data) {
-                    var url = (typeof data !== 'string' || data.trim()==="") ? '/img/avatar.png' : data;
+                    var url = (typeof data !== 'string' || data.trim()==="") ? $.__url_prefix__ + 'img/avatar.png' : data;
                     return "<img src='"+url+"' style='max-height:50px;max-width:50px;'/>";
                 }
                 },
