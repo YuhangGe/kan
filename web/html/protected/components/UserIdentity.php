@@ -10,6 +10,9 @@ class UserIdentity extends CUserIdentity
 	private $_id;
     private $_name;
 
+    public function getAvatar() {
+        return $this->getState("avatar", false);
+    }
     public function isAdmin() {
         return $this->getState("isAdmin", false);
     }
@@ -33,7 +36,7 @@ class UserIdentity extends CUserIdentity
             $type = "nick_name";
         }
 
-        $record = User::model()->findColumnByAttributes(array("user_id", "nick_name","password"), array($type=>$this->username));
+        $record = User::model()->findColumnByAttributes(array("user_id", "nick_name","small_avatar","password"), array($type=>$this->username));
 
 
         //print_r(CJSON::encode($record));
@@ -48,6 +51,7 @@ class UserIdentity extends CUserIdentity
 //            echo $this->_id;
             $this->_id=$record->user_id;
             $this->_name = $record->nick_name;
+            $this->setState("avatar", $record->small_avatar);
             $this->setState("isAdmin", false);
             $this->errorCode=self::ERROR_NONE;
         }

@@ -28,7 +28,7 @@ class SiteController extends Controller
              * 登陆成功则返回user_id，客户端使用user_id通过/user/info接口取得用户信息
              * 客户端应该在本地保存用户信息的副本，这样直接使用user_id本地查询减少网络压力
              */
-            $this->sendAjax(array('user_id'=>Yii::app()->user->id, 'nick_name'=>Yii::app()->user->name), true);
+            $this->sendAjax(array('user_id'=>Yii::app()->user->id, 'nick_name'=>Yii::app()->user->name, 'small_avatar'=>Yii::app()->user->getAvatar(), 'sid'=>session_id()), true);
         } else {
             $this->sendAjax(null);
         }
