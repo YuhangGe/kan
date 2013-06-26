@@ -10,12 +10,15 @@ class StarForm extends CFormModel{
     public $act_id;
     public $user_id;
     public $video_name;
+    public $video_big_url;
+    public $video_small_url;
 
     public function rules() {
         return array(
             array("act_id, user_id", "required"),
             array("act_id, user_id", 'numerical', 'integerOnly'=>true),
-            array("video_name", "length", "min"=>1, "max"=>20)
+            array("video_name", "length", "min"=>1, "max"=>20),
+            array("video_big_url, video_small_url", "length", "min"=>1, "max"=>150)
         );
     }
 
@@ -84,8 +87,7 @@ class StarForm extends CFormModel{
 
     public function video() {
 
-        if(!isset($_FILES['big_file']) || !isset($_FILES['small_file']) || $this->video_name===null) {
-            echo "!1";
+        if($this->video_big_url===null || $this->video_small_url===null || $this->video_name===null) {
             return false;
         }
         $r = Star::model()->find(array(
@@ -95,39 +97,20 @@ class StarForm extends CFormModel{
         ));
         if($r===null) {
             //不是星客
-            echo "!2";
-
-            return false;
-        }
-
-        $dir = "video";
-        $_tag = time().rand(0, 10000);
-        $i_fn = "big_".$this->user_id."_".$this->act_id."_".$_tag;
-        $s_fn = "small_".$this->user_id."_".$this->act_id."_".$_tag;
-
-
-        $iif = FileHelper::saveVideo("big_file", $dir, $i_fn);
-        if($iif==false) {
             return false;
         }
 
 
-        $sif = FileHelper::saveVideo("small_file", $dir, $s_fn);
-        if($sif==false) {
-            unlink(Yii::app()->params['uploadDir']."/".$iif);
-            return false;
-        }
 
         $vr = Video::model()->find(array("select"=>"video_id","condition"=>"user_id=:uId and act_id=:aId", "params"=>array(":uId"=>$this->user_id,":aId"=>$this->act_id)));
 
-        $iif = Yii::app()->params["staticServer"]."/".$iif;
-        $sif = Yii::app()->params["staticServer"]."/".$sif;
+
 
         if($vr!==null) {
             return $vr->updateAll(array(
                 "video_name"=>$this->video_name,
-                "big_url"=>$iif,
-                "small_url"=>$sif
+                "big_url"=>$this->video_big_url,
+                "small_url"=>$this->video_small_url
             ), "user_id=:uId and act_id=:aId",array(":uId"=>$this->user_id,":aId"=>$this->act_id));
 
         } else {
@@ -144,9 +127,10 @@ class StarForm extends CFormModel{
             $m->act_id = $this->act_id;
             $m->user_name = $u->nick_name;
             $m->act_name = $a->act_name;
+            $m->video_name = $this->video_name;
             $m->upload_time = time();
-            $m->big_url = $iif;
-            $m->small_url = $sif;
+            $m->big_url = $this->video_big_url;
+            $m->small_url = $this->video_small_url;
 
             return $m->save();
         }

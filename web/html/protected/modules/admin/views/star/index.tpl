@@ -179,8 +179,7 @@
         <h3>上传视频</h3>
     </div>
     <div class="modal-body">
-        <div class="alert alert-info" id="video-process">为星客上传视频节目</div>
-        <div class="alert alert-warning">视频格式必须是mp4的h264格式，并且使用<a href='#'>qt-faststart（点击下载）</a>程序将视频文件进行头部转换，以支持边缓冲边播放！</div>
+        <div class="alert alert-info" id="video-process">为星客上传视频节目。如果是优酷一类的网站不区分高清和普清地址，则只要简单的给两个相同的地址就行了。</div>
         <div class="control-group">
             <label class="control-label" for="fileImage">节目名称</label>
             <div class="controls">
@@ -196,13 +195,13 @@
         <div class="control-group">
             <label class="control-label" for="fileImage">高清视频</label>
             <div class="controls">
-                <input class="input-file uniform_on" id="fileBigVideo" type="file">
+                <input class="input-file uniform_on" id="fileBigVideo">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="fileImage">普清视频</label>
             <div class="controls">
-                <input class="input-file uniform_on" id="fileSmallVideo" type="file">
+                <input class="input-file uniform_on" id="fileSmallVideo">
             </div>
         </div>
     </div>
@@ -241,7 +240,7 @@
                     if(data===null) {
                         return "未上传"
                     } else {
-                        return "<a href='"+$.__link_prefix__ + +"admin/video/detail#"+data+"'>查看视频</a>";
+                        return "<a href='"+$.__link_prefix__ +"admin/video/detail#"+data+"'>查看视频</a>";
 
                     }
                 }},
@@ -455,12 +454,12 @@
                 alert("请选择视频的预览图片！");
                 return;
             }
-            var bf = $("#fileBigVideo")[0].files;
+            var bf = $("#fileBigVideo").val().trim();
             if(bf.length===0) {
                 alert("请选择要上传的高清视频！");
                 return;
             }
-            var sf = $("#fileSmallVideo")[0].files;
+            var sf = $("#fileSmallVideo").val().trim();
             if(sf.length===0) {
                 alert("请选择要上传的普清视频！");
                 return;
@@ -474,8 +473,8 @@
 
             var fd = new FormData();
             fd.append("video_poster", ps[0]);
-            fd.append("big_file", bf[0]);
-            fd.append("small_file", sf[0]);
+            fd.append("video_big_url", bf);
+            fd.append("video_small_url", sf);
             fd.append("video_name", v_n);
             fd.append("user_id", CUR_USER);
             fd.append("act_id", CUR_ACT);
@@ -514,7 +513,7 @@
             }
             $("#video-process").text("为星客上传视频节目");
             $("#videoDialog").modal("hide");
-            $(".table-star-selected").DataTable().fnReloadAjax();
+            $(".table-star-selected").DataTable().fnDraw();
         }
     </script>
 {/literal}

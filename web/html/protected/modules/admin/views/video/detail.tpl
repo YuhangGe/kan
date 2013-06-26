@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="box-content" id="video-detail" style="min-height: 400px;">
-            <div class="alert alert-info">
+            <div class="alert alert-info alert-video">
                 <button type="button" class="close" data-dismiss="alert">×</button>
                 <span>没有选择视频。请在右边查找视频然后查看详情。</span>
             </div>
@@ -40,7 +40,7 @@
                 <hr/>
                 <div class="row-fluid">
                     <div class="span2"><strong>视频</strong></div>
-                    <div class="span6">
+                    <div class="span6 my_player">
                         <div>
                             <label class="radio">
                                 <input type="radio" name="hdOption" id="bigVideoRadio" value="big" checked="">
@@ -59,8 +59,10 @@
                                 {*<source src="http://video-js.zencoder.com/oceans-clip.ogv" type='video/ogg' />*}
                             </video>
                         </div>
-
-
+                    </div>
+                    <div class="span6 other_player hide">
+                        <div class="alert alert-info">当前视频为第三方视频，点击打开视频查看。</div>
+                        <a href="javascript:;" onclick="openVideo();">打开视频</a>
                     </div>
                 </div>
 
@@ -148,6 +150,15 @@
 
         }
         function loadVideo(url) {
+            if(!/\.mp4$/.test(url)) {
+                $(".other_player a").attr("onclick", "openVideo('"+url+"');");
+                $(".other_player").show();
+                $(".my_player").hide();
+                return;
+            } else {
+                $(".other_player").hide();
+                $(".my_player").show();
+            }
             if(vp===null) {
                 vp = videojs("video_player", {'width':500, 'height':375});
                 vp.src({type:'video/mp4', src : url});
@@ -230,7 +241,7 @@
                     return;
                 }
                 var act = rtn.data;
-                $("#video-detail .alert").hide();
+                $("#video-detail .alert-video").hide();
                 $("#video-detail .video-content").show();
                 $("#video-detail .page-header h3").html(act.video_name);
                 $("#video-detail .video-time .span10").text($.datepicker.formatDate("yy年mm月dd日", new Date(Number(act.upload_time)*1000)));
@@ -243,6 +254,10 @@
 
                 loadVideo(act.big_url);
             }, 'json');
+        }
+
+        function openVideo(url) {
+            window.location.href=url;
         }
     </script>
 {/literal}

@@ -13,6 +13,7 @@
             var m = para.match(route_table[i].regex);
             if(m!==null && typeof route_table[i].func === 'function') {
                 route_table[i].func.apply(window, m);
+                return;
             }
         }
     };

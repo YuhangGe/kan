@@ -13,8 +13,8 @@
  * @property string $user_name
  * @property string $act_name
  * @property integer $upload_time
- * @property integer $vote_num
- * @property integer $view_num
+ * @property integer $vote_number
+ * @property integer $view_number
  * @property string $video_name
  */
 class Video extends CActiveRecord
@@ -46,7 +46,7 @@ class Video extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('user_id, act_id, user_name, act_name, video_name, big_url, small_url, upload_time', 'required'),
-			array('user_id, act_id, upload_time, vote_num, view_num', 'numerical', 'integerOnly'=>true),
+			array('user_id, act_id, upload_time, vote_number, view_number', 'numerical', 'integerOnly'=>true),
 			array('act_name, video_name', 'length', 'max'=>25),
 			array('user_name', 'length', 'max'=>15),
             array('big_url, small_url', 'length', 'max'=>150),

@@ -44,6 +44,8 @@ foreach($keys as $key) {
         sendAjax("need params", false);
     }
 }
+
+
 /*
  * 用户名密码是kankan和123456
  */
@@ -66,8 +68,21 @@ try {
 /*
  * 接下来设置配置文件
  */
-
-$path = explode("/", $_SERVER['PATH_INFO']);
+$cur_url = "";
+if(!empty($_SERVER['PATH_INFO'])) {
+    // nginx
+    $cur_url = $_SERVER['PATH_INFO'];
+} elseif(!empty($_SERVER['REQUEST_URI'])) {
+    //apache and iis
+    $cur_url = $_SERVER['REQUEST_URI'];
+} elseif(!empty($_SERVER['PHP_SELF'])) {
+    $cur_url = $_SERVER['PHP_SELF'];
+} elseif(!empty($_SERVER['PHP_SELF'])) {
+    $cur_url = $_SERVER['PHP_SELF'];
+} else {
+    sendAjax("no current url");
+}
+$path = explode("/", $cur_url);
 $c = count($path);
 
 if($c<2) {

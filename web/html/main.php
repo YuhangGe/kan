@@ -71,10 +71,10 @@ return array(
 		// uncomment the following to use a MySQL database
 
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=kankan;charset=utf8',
+			'connectionString' => 'mysql:host=27.54.227.135;dbname=a0114203654;charset=utf8',
 			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => 'abeajqn',
+			'username' => 'a0114203654',
+			'password' => '77360224',
 			'charset' => 'utf8',
 		),
 
@@ -134,7 +134,7 @@ return array(
             'http://localhost:8089'
         ),
         'maxViewNumberEachDay' => 3,
-        'staticServer' => 'http://localhost:8088/upload',
+        'staticServer' => 'http://shoujixuanxiu.com/upload',
         'uploadDir'=> 'upload'
 
 	),

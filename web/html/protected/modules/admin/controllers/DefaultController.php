@@ -68,4 +68,37 @@ class DefaultController extends AController
             $this->sendAjax(null);
         }
     }
+
+    public function actionModify() {
+        if(!isset($_POST['act_id'])) {
+            $this->sendAjax(null);
+        }
+        $aid = intval($_POST['act_id']);
+
+        $m = Active::model()->findByPk($aid);
+
+        if($m===null) {
+            $this->sendAjax(null);
+        }
+
+        $m->attributes = $_POST;
+        if($m->validate() && $m->save()) {
+            $this->sendAjax(array('act_id'=>$m->act_id), true);
+        } else {
+            $this->sendAjax(null);
+        }
+    }
+
+    public function actionDelete() {
+        if(!isset($_POST['password']) || !isset($_POST['act_id'])) {
+            $this->sendAjax(null);
+        }
+        if(PwdHelper::encode($_POST['password'])!==Yii::app()->params['adminPassword']) {
+            $this->sendAjax(null);
+        }
+        //$aid = intval($_POST['act_id']);
+        $this->sendAjax(true, true);
+        //Active::model()->deleteByPk($aid);
+
+    }
 }

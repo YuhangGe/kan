@@ -41,7 +41,7 @@
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
-    <a class="btn btn-info" href="javascript:modifyActive('ACT_ID');">
+    <a class="btn btn-info" href="{$link_prefix}admin/default/detail#ACT_ID!">
         <i class="icon-edit icon-white"></i>
         修改活动
     </a>
@@ -100,9 +100,21 @@
 
 
     function delActive(id) {
-        if(confirm("确认删除活动？", "删除")) {
-            $.log("del:"+id);
+        var pwd = prompt("请输入管理员密码确认删除");
+        if(pwd.trim()==="") {
+            return;
         }
+        $.post($.__link_prefix__+"admin/default/delete", {
+            password : pwd,
+            act_id : id
+        }, function(rtn) {
+            if(!rtn.success) {
+                alert('删除失败！');
+                return;
+            }
+            alert("删除成功");
+            $(".datatable").DataTable().fnDraw();
+        }, "json");
     }
 </script>
 
