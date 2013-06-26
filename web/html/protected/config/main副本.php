@@ -21,10 +21,9 @@ return array(
 		'application.components.*',
 	),
     'theme' => 'charisma',
-	
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
-		/*
+
 		'gii'=>array(
             'generatorPaths'=>array(
                 'bootstrap.gii',
@@ -34,7 +33,6 @@ return array(
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
 		),
-		*/
         "admin"
 	),
 
@@ -71,7 +69,7 @@ return array(
 		// uncomment the following to use a MySQL database
 
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=kan_test;charset=utf8',
+			'connectionString' => 'mysql:host=localhost;dbname=kankan',
 			'emulatePrepare' => true,
 			'username' => 'root',
 			'password' => 'abeajqn',
@@ -116,7 +114,7 @@ return array(
 	'params'=>array(
 		// this is used in contact page
         'url_prefix' => '/',
-        'link_prefix' => '/index.php/',
+        'link_prefix' => '/',
 		'adminEmail'=>'abraham1@163.com',
         'adminName' => 'kankan',
         /*
@@ -134,7 +132,7 @@ return array(
             'http://localhost:8089'
         ),
         'maxViewNumberEachDay' => 3,
-        'staticServer' => 'http://localhost:8088/upload',
+        'staticServer' => 'http://localhost:8090',
         'uploadDir'=> 'upload'
 
 	),

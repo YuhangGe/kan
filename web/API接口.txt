@@ -200,6 +200,7 @@
     'length' : xx
 }
 返回：[{
+    'act_id' : xxx
     'act_name' : xxx
     'begin_time' : xxx  //整数时间戳，需要转换
     'end_time' : xxx
@@ -557,3 +558,31 @@
 /notify/allList
 
 /notify/setRead
+
+/star/timeList
+使用：得到星客列表，按选拔的时间
+参数：{
+    offset : xx
+    length : xx
+}
+返回：[{
+    user_id : xx,
+    act_id : xx,
+    act_vote : xx
+    act_view: xx,
+    act_score : xx, //分别是在这个活动中他得到的喜欢数，总浏览量和得分（喜欢*10+浏览）。手机端保留，可不使用。
+    poster_url : xx, //当选海报，可能为null如果后台没有为他上传海报
+    user_name : xx
+    act_name : xx //活动名称
+    time : xx    //获选时间
+}, {}, {}]
+
+/star/actList
+使用：得到某个活动的星客列表
+参数：{
+    act_id : xxx
+    offset
+    length
+}
+返回：同上
+说明：这个接口保留，似乎暂时不需要使用。

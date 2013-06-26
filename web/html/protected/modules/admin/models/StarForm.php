@@ -47,6 +47,7 @@ class StarForm extends CFormModel{
         $m->act_view = $rs['act_view'];
         $m->act_vote = $rs['act_vote'];
         $m->act_score = $rs['act_score'];
+        $m->time = time();
 
         return $m->save(false);
 

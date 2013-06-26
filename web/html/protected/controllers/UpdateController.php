@@ -37,8 +37,32 @@ class UpdateController extends Controller{
     }
 
     public function actionAvatar() {
+        if(!isset($_FILES['image_file']) || !isset($_FILES['small_file'])) {
+            $this->sendAjax(null);
+        }
+        $uid = Yii::app()->user->id;
+        $dir = "avatar";
+        $_tag = time().rand(0, 1000000);
+        $i_fn = "large_".$uid."_".$_tag;
+        $s_fn = "small_".$uid."_".$_tag;
+
+        $iif = FileHelper::savePhoto("image_file", $dir, $i_fn);
+        if($iif==false) {
+            $this->sendAjax(null);
+        }
+
+        $sif = FileHelper::savePhoto("small_file", $dir, $s_fn);
+        if($sif==false) {
+            unlink(Yii::app()->params['uploadDir']."/".$iif);
+            $this->sendAjax(null);
+        }
+
+        $s_path = Yii::app()->params['staticServer'];
+
         $u = new UpdateUserForm();
-        $u -> attributes = $_POST;
+        $u -> big_avatar = $s_path.'/'.$iif;
+        $u -> small_avatar = $s_path.'/'.$sif;
+
         if($u->updateAvatar()) {
             $this->sendAjax(true);
         } else {

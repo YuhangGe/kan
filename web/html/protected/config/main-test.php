@@ -134,7 +134,7 @@ return array(
             'http://localhost:8089'
         ),
         'maxViewNumberEachDay' => 3,
-        'staticServer' => 'http://localhost:8088/upload',
+        'staticServer' => 'localhost:8088/upload',
         'uploadDir'=> 'upload'
 
 	),

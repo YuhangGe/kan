@@ -11,6 +11,7 @@
  * @property integer $act_score
  * @property string $poster_url
  * @property string $user_name
+ * @property integer $time
  */
 class Star extends CActiveRecord
 {
@@ -40,8 +41,8 @@ class Star extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, act_id, user_name', 'required'),
-			array('user_id, act_id, act_vote, act_view, act_score', 'numerical', 'integerOnly'=>true),
+			array('user_id, act_id, user_name, time', 'required'),
+			array('user_id, act_id, act_vote, act_view, act_score, time', 'numerical', 'integerOnly'=>true),
 			array('poster_url', 'length', 'max'=>150),
 			array('user_name', 'length', 'max'=>25),
 			// The following rule is used by search().

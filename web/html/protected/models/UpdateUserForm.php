@@ -115,25 +115,14 @@ class UpdateUserForm extends CFormModel {
 
     }
     public function updateAvatar() {
-        if($this->big_avatar===null||$this->thumb_avatar===null||$this->small_avatar===null) {
+        if($this->big_avatar===null||$this->small_avatar===null) {
             return false;
         }
          if(!$this->validate()) {
             return false;
         }
         $uid = Yii::app()->user->id;
-        $tran = Yii::app()->db->beginTransaction();
-        try {
-            User::model()->updateByPk($uid, array("big_avatar"=>$this->big_avatar, "small_avatar"=>$this->small_avatar, "thumb_avatar"=>$this->thumb_avatar));
-            UserFan::model()->updateAll(array("fan_avatar"=>$this->small_avatar), "fan_id=:uId", array(":uId"=>$uid));
-            UserFriend::model()->updateAll(array("user_avatar_1"=>$this->small_avatar), "user_id_1=:uId", array(":uId"=>$uid));
-            UserFriend::model()->updateAll(array("user_avatar_2"=>$this->small_avatar), "user_id_2=:uId", array(":uId"=>$uid));
-            $tran->commit();
-            return true;
-        } catch(Exception $e) {
-            $tran->rollback(); //如果操作失败, 数据回滚
-            return false;
-        }
+        return User::model()->updateByPk($uid, array("big_avatar"=>$this->big_avatar, "small_avatar"=>$this->small_avatar));
     }
     public function updatePassword() {
         if(empty($this->pre_password) || empty($this->password)) {

@@ -185,31 +185,31 @@
 <!-- jQuery UI -->
 <script src="{$url_prefix}js/jquery-ui-1.8.21.custom.min.js"></script>
 <!-- transition / effect library -->
-<script src="{$url_prefix}js/bootstrap-transition.js"></script>
-<!-- alert enhancer library -->
-<script src="{$url_prefix}js/bootstrap-alert.js"></script>
-<!-- modal / dialog library -->
-<script src="{$url_prefix}js/bootstrap-modal.js"></script>
-<!-- custom dropdown library -->
-<script src="{$url_prefix}js/bootstrap-dropdown.js"></script>
-<!-- scrolspy library -->
-<script src="{$url_prefix}js/bootstrap-scrollspy.js"></script>
-<!-- library for creating tabs -->
-<script src="{$url_prefix}js/bootstrap-tab.js"></script>
-<!-- library for advanced tooltip -->
-<script src="{$url_prefix}js/bootstrap-tooltip.js"></script>
-<!-- popover effect library -->
-<script src="{$url_prefix}js/bootstrap-popover.js"></script>
-<!-- button enhancer library -->
-<script src="{$url_prefix}js/bootstrap-button.js"></script>
-<!-- accordion library (optional, not used in demo) -->
-<script src="{$url_prefix}js/bootstrap-collapse.js"></script>
-<!-- carousel slideshow library (optional, not used in demo) -->
-<script src="{$url_prefix}js/bootstrap-carousel.js"></script>
-<!-- autocomplete library -->
-<script src="{$url_prefix}js/bootstrap-typeahead.js"></script>
-<!-- tour library -->
-<script src="{$url_prefix}js/bootstrap-tour.js"></script>
+<script src="{$url_prefix}js/bootstrap.min.js"></script>
+{*<!-- alert enhancer library -->*}
+{*<script src="{$url_prefix}js/bootstrap-alert.js"></script>*}
+{*<!-- modal / dialog library -->*}
+{*<script src="{$url_prefix}js/bootstrap-modal.js"></script>*}
+{*<!-- custom dropdown library -->*}
+{*<script src="{$url_prefix}js/bootstrap-dropdown.js"></script>*}
+{*<!-- scrolspy library -->*}
+{*<script src="{$url_prefix}js/bootstrap-scrollspy.js"></script>*}
+{*<!-- library for creating tabs -->*}
+{*<script src="{$url_prefix}js/bootstrap-tab.js"></script>*}
+{*<!-- library for advanced tooltip -->*}
+{*<script src="{$url_prefix}js/bootstrap-tooltip.js"></script>*}
+{*<!-- popover effect library -->*}
+{*<script src="{$url_prefix}js/bootstrap-popover.js"></script>*}
+{*<!-- button enhancer library -->*}
+{*<script src="{$url_prefix}js/bootstrap-button.js"></script>*}
+{*<!-- accordion library (optional, not used in demo) -->*}
+{*<script src="{$url_prefix}js/bootstrap-collapse.js"></script>*}
+{*<!-- carousel slideshow library (optional, not used in demo) -->*}
+{*<script src="{$url_prefix}js/bootstrap-carousel.js"></script>*}
+{*<!-- autocomplete library -->*}
+{*<script src="{$url_prefix}js/bootstrap-typeahead.js"></script>*}
+{*<!-- tour library -->*}
+{*<script src="{$url_prefix}js/bootstrap-tour.js"></script>*}
 <!-- library for cookie management -->
 <script src="{$url_prefix}js/jquery.cookie.js"></script>
 <!-- calander plugin -->
