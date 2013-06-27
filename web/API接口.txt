@@ -554,10 +554,35 @@
 返回：true/false
 
 /notify/unreadList
+使用：得到未读系统通知
+参数：{
+    'offset' : xxx
+    'length' : xxx
+}
+返回：[{
+    notify_id : xxx
+    type : xxx //消息类型。目前暂时不管这个参数。以后可能会有不同类型的通知
+    time : xxx //通知发布的时间
+    content : xx //通知内容
+    to_user_id : xx   //通知的用户对象。这个参数也不用管，肯定是当前登陆的用户
+},{},{}...]
 
 /notify/allList
+使用：返回所有系统通知。包括已读未读。
+参数和返回同上。
+
+/notify/unreadCount
+使用：返回未读通知数
+参数：无
+返回: {count: xxx}
+说明：每5分钟调用一次，如果未读数大于1，则提示用户刷新。
 
 /notify/setRead
+使用：设置该用户的所有系统通知为已读
+参数：{
+    //无
+}
+返回：true/false
 
 /star/timeList
 使用：得到星客列表，按选拔的时间

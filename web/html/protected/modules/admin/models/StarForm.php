@@ -32,6 +32,18 @@ class StarForm extends CFormModel{
             //已经是星客
             return false;
         }
+        $m = Active::model()->find(array(
+            'select'=>'act_name',
+            'condition'=>'act_id=:aId',
+            'params'=>array(':aId'=>$this->act_id)
+        ));
+        if($m === null) {
+            //如果活动不存在
+            return false;
+        } else {
+            $act_name = $m->act_name;
+        }
+
         $sql = "select user_name, sum(view_number) as act_view, sum(vote_number) as act_vote, sum(view_number)+sum(vote_number)*10 as act_score
             from photo where user_id=:uId and act_id=:aId";
 
@@ -52,8 +64,18 @@ class StarForm extends CFormModel{
         $m->act_score = $rs['act_score'];
         $m->time = time();
 
-        return $m->save(false);
+        if(!$m->save(false)){
+            return false;
+        }
 
+
+        $m = new Notify();
+        $m->to_user_id = $this->user_id;
+        $m->time = time();
+        $m->type = 0;
+        $m->content = "恭喜您已经在{$act_name}活动中当选为星客。请完善您的手机和真实姓名信息，我们会在近期与您取得联系。";
+
+        return $m->save(false);
     }
 
     public function cancel() {

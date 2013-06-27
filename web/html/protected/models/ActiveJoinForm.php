@@ -130,6 +130,9 @@ class ActiveJoinForm extends CFormModel{
                 if(!$m->save(false)) {
                     throw new Exception("error on save photo to database");
                 }
+
+                Yii::app()->db->createCommand("update `user` set level=1 where user_id=:uId and level=0")->query(array(':uId'=>$m->user_id));
+                Yii::app()->db->createCommand("update `user_location` set user_level=1 where user_id=:uId and user_level=0")->query(array(':uId'=>$m->user_id));
             }
             $transaction->commit(); //提交事务会真正的执行数据库操作
             return true;

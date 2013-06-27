@@ -76,6 +76,5 @@ class ChatController extends Controller{
         } else {
             $this->sendAjax(null);
         }
-
     }
 }

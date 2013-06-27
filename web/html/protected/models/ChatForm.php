@@ -72,7 +72,8 @@ class ChatForm extends CFormModel{
         }
 
         $sql = "update chat set is_read=1 where to_user_id={$this->to_user_id} and from_user_id={$this->from_user_id}";
-        return Yii::app()->db->createCommand($sql)->query();
+        Yii::app()->db->createCommand($sql)->query();
+        return true;
     }
 
     public function dialog() {

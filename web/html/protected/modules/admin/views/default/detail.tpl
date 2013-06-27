@@ -119,7 +119,7 @@
 
 <div class="modal hide fade" id="modifyDialog" style="width: 900px;margin: -250px 0 0 -450px; ">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
+        {*<button type="button" class="close" data-dismiss="modal">×</button>*}
         <h3>修改活动</h3>
     </div>
     <div class="modal-body">

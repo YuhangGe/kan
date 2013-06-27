@@ -8,7 +8,11 @@ class SiteController extends Controller
 	{
 		if($error=Yii::app()->errorHandler->error)
 		{
-			echo $error['message'];
+            if(Yii::app()->request->isAjaxRequest) {
+                echo $error->message;
+            } else {
+                $this->redirect(Yii::app()->params['link_prefix']."admin/default/index");
+            }
 		}
 	}
 
@@ -32,23 +36,7 @@ class SiteController extends Controller
         } else {
             $this->sendAjax(null);
         }
-//		// if it is ajax validation request
-//		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
-//		{
-//			echo CActiveForm::validate($model);
-//			Yii::app()->end();
-//		}
-//
-//		// collect user input data
-//		if(isset($_POST['LoginForm']))
-//		{
-//			$model->attributes=$_POST['LoginForm'];
-//			// validate user input and redirect to the previous page if valid
-//			if($model->validate() && $model->login())
-//				$this->redirect(Yii::app()->user->returnUrl);
-//		}
-//		// display the login form
-//		$this->render('login',array('model'=>$model));
+
 	}
 
 	/**

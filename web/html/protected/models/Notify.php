@@ -7,8 +7,9 @@
  * @property integer $notify_id
  * @property integer $type
  * @property integer $time
- * @property integer $read
+ * @property integer $is_read
  * @property string $content
+ * @property integer $to_user_id;
  */
 class Notify extends CActiveRecord
 {
@@ -38,12 +39,11 @@ class Notify extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('type', 'required'),
-			array('type, time, read', 'numerical', 'integerOnly'=>true),
+			array('type, to_user_id', 'required'),
+			array('type, time, is_read, to_user_id', 'numerical', 'integerOnly'=>true),
 			array('content', 'length', 'max'=>300),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('notify_id, type, time, read, content', 'safe', 'on'=>'search'),
 		);
 	}
 
