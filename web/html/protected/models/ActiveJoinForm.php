@@ -127,6 +127,11 @@ class ActiveJoinForm extends CFormModel{
                 $m->upload_time = $_time;
                 $m->thumb_url = Yii::app()->params['staticServer']."/".$_t_url;
                 $m->image_url = Yii::app()->params['staticServer']."/".$_i_url;
+                /*
+                 * 第一张照片是关键照片
+                 */
+                $m->is_key_photo = $i === 0 ? 1 : 0;
+
                 if(!$m->save(false)) {
                     throw new Exception("error on save photo to database");
                 }

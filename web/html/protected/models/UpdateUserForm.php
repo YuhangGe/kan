@@ -26,8 +26,7 @@ class UpdateUserForm extends CFormModel {
     public function rules() {
         return array(
             array('email', 'length', 'max'=>30),
-            array('sex, constellation, phone', 'numerical', 'integerOnly'=>true),
-            array('birthday', 'length', 'max'=>10),
+            array('sex, constellation, phone, birthday', 'numerical', 'integerOnly'=>true),
             array('nick_name', 'length', 'max'=>25),
             array('real_name', 'length', 'max'=>10),
             array('personalsay', 'length', 'max'=>50),
@@ -81,7 +80,7 @@ class UpdateUserForm extends CFormModel {
             $p['sex'] = $this->sex;
         }
         if($this->birthday !== null) {
-            $p['birthday'] = strtotime($this->birthday);
+            $p['birthday'] = $this->birthday;
         }
         if($this->constellation !== null) {
             $p['$constellation'] = $this->constellation;

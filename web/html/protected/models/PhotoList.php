@@ -118,15 +118,15 @@ class PhotoList extends CFormModel{
     private function getTimeList() {
         $sql = "select *
                 from (select * from photo order by photo_id desc) p2
-                group by user_id
+                group by user_id, act_id
                 having upload_time<={$this->time}
-                order by upload_time limit {$this->offset},{$this->length}";
+                order by upload_time desc limit {$this->offset},{$this->length}";
 
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
     }
     private function getViewList() {
-        $sql = "select p.* from photo p order by vote_number*10 + view_number desc limit {$this->offset},{$this->length}";
+        $sql = "select p.* from photo p where is_key_photo = 1 order by vote_number*10 + view_number desc limit {$this->offset},{$this->length}";
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
     }

@@ -12,6 +12,7 @@
  * @property string $user_name
  * @property string $act_name
  * @property integer $upload_time
+ * @property integer $is_key_photo
  */
 class Photo extends CActiveRecord
 {
@@ -42,7 +43,7 @@ class Photo extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('user_id, act_id, image_url, thumb_url, user_name, act_name, upload_time', 'required'),
-			array('user_id, act_id, upload_time', 'numerical', 'integerOnly'=>true),
+			array('user_id, act_id, upload_time, is_key_photo', 'numerical', 'integerOnly'=>true),
 			array('act_name', 'length', 'max'=>25),
 			array('user_name', 'length', 'max'=>15),
             array('image_url, thumb_url', 'length', 'max'=>150)

@@ -6,8 +6,6 @@
  * The followings are the available columns in table 'user_fan':
  * @property integer $user_id
  * @property integer $fan_id
- * @property string $fan_name
- * @property string $fan_avatar
  */
 class UserFan extends CActiveRecord
 {
@@ -37,10 +35,8 @@ class UserFan extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, fan_id, fan_name, fan_avatar', 'required'),
+			array('user_id, fan_id', 'required'),
 			array('user_id, fan_id', 'numerical', 'integerOnly'=>true),
-			array('fan_name', 'length', 'max'=>25),
-            array('fan_avatar', 'length', 'max'=>150)
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			//array('user_id, fan_id, fan_name', 'safe', 'on'=>'search'),
