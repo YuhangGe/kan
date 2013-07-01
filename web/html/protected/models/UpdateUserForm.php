@@ -56,7 +56,6 @@ class UpdateUserForm extends CFormModel {
         $r = User::model()->findColumnByAttributes(array("user_id", "nick_name"), $p, "OR");
 //        print_r(CJSON::encode($r));
 
-        $n_change = false;
         $user_id = Yii::app()->user->id;
         if($r === null) {
             /*
@@ -94,23 +93,9 @@ class UpdateUserForm extends CFormModel {
         if($this->company !== null) {
             $p['company'] = $this->company;
         }
+        return User::model()->updateByPk($user_id, $p);
 
 
-        $transaction = Yii::app()->db->beginTransaction(); //创建事务
-        try {
-            User::model()->updateByPk($user_id, $p);
-            if($n_change) {
-                UserFan::model()->updateAll(array("fan_name"=>$this->nick_name), "fan_id=:fanId", array(":fanId"=>$user_id));
-                UserFriend::model()->updateAll(array("user_name_1"=>$this->nick_name), "user_id_1=:uId", array(":uId"=>$user_id));
-                UserFriend::model()->updateAll(array("user_name_2"=>$this->nick_name), "user_id_2=:uId", array(":uId"=>$user_id));
-            }
-            $transaction->commit();
-            return true;
-        } catch (Exception $e) {
-            $transaction->rollback(); //如果操作失败, 数据回滚
-            echo $e->getMessage();
-            return false;
-        }
 
     }
     public function updateAvatar() {
@@ -134,5 +119,21 @@ class UpdateUserForm extends CFormModel {
         $cur = PwdHelper::encode($this->password);
 
         return User::model()->updateByPk(Yii::app()->user->id, array("password"=>$cur), "password=:pwd", array(":pwd"=>$pre));
+    }
+    public function updateQuick() {
+        if(empty($this->nick_name) && empty($this->sex) && empty($this->birthday)) {
+            return true;
+        }
+        $p = array();
+        if(!empty($this->nick_name)) {
+            $p['nick_name'] = $this->nick_name;
+        }
+        if(!empty($this->sex)) {
+            $p['sex'] = $this->sex;
+        }
+        if(!empty($this->birthday)) {
+            $p['birthday'] = $this->birthday;
+        }
+        return User::model()->updateByPk(Yii::app()->user->id, $p);
     }
 }

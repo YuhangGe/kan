@@ -101,6 +101,16 @@
     birthday为timestamp
     不包括头像的修改，头像修改请使用/user/avatar
 
+/update/quickUser
+使用：快速更新用户信息
+参数：{
+    'nick_name' : xxx
+    'sex' : xxx
+    'birthday' : xxx
+}
+返回：true/false
+说明：基本跟上面一个接口一样，只是少了很多字段。但不一样的是都可以为空，表明不修改。
+
 /update/avatar
 使用：修改头像 [注意upadate和upload的区别。。。]
 参数：{
@@ -208,6 +218,16 @@
     'user_id' : xxx //如果user_id不等于null，则表明当前活动用户已经报了名了。
 }, {}, {},...]
 说明：列表没有返回description，在点进去的详细信息里才会有。用户报名可以在列表页直接报名，也可以在详细页面报名。
+
+/active/userList
+使用：得到某个用户参加的活动
+参数：{
+    'user_id'  : 可选，如果不提供，则默认为当前登陆用户
+    'offset' :
+    'length' :
+}
+返回：同上。
+
 
 /active/info
 使用：得到活动详细信息

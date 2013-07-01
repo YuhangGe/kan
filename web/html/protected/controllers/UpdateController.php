@@ -25,7 +25,15 @@ class UpdateController extends Controller{
             $this->sendAjax(null);
         }
     }
-
+    public function actionQuickUser() {
+        $u = new UpdateUserForm();
+        $u -> attributes = $_POST;
+        if($u->updateQuick()) {
+            $this->sendAjax(true);
+        } else {
+            $this->sendAjax(null);
+        }
+    }
     public function actionPassword() {
         $u = new UpdateUserForm();
         $u -> attributes = $_POST;

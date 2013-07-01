@@ -116,7 +116,13 @@ class ActiveController extends Controller{
         }
     }
 
-    public function actionStar() {
-        
+    public function actionUserList() {
+        $m = new ActiveList();
+        $m->attributes = $_POST;
+        if($m->validate()) {
+           $this->sendAjax($m->getUserList());
+        } else {
+            $this->sendAjax(null);
+        }
     }
 }

@@ -10,10 +10,11 @@ class ActiveList extends CFormModel {
     public $act_type;
     public $offset;
     public $length;
+    public $user_id;
 
     public function rules() {
         return array(
-            array('act_type', 'numerical', 'integerOnly'=>true),
+            array('act_type, user_id', 'numerical', 'integerOnly'=>true),
             array('act_type', 'in', 'range'=>array(0,1,2)),
             array("offset", 'numerical', 'integerOnly'=>true, 'min'=>0),
             array('length', 'numerical', 'integerOnly'=>true, 'min'=>1)
@@ -72,4 +73,12 @@ class ActiveList extends CFormModel {
         );
     }
 
+    public function getUserList() {
+        if($this->user_id===null) {
+            $this->user_id = Yii::app()->user->id;
+        }
+        $this->_off_len();
+        $sql = "select t.act_id, t.act_name, t.begin_time, t.end_time, t.image from active t, user_active ua where ua.user_id = {$this->user_id} and ua.act_id = t.act_id order by end_time desc limit {$this->offset}, {$this->length}";
+        return Yii::app()->db->createCommand($sql)->queryAll();
+    }
 }
