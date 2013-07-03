@@ -26,6 +26,13 @@
         ["label"=>"所有视频", "url"=>"`$link_prefix`admin/video/index"],
         ["label"=>"视频详情", "url"=>"`$link_prefix`admin/video/detail"]
     ]
+],
+["label"=>"其它管理", "child_items"=>
+    [
+        ['label'=>'系统设置', 'url'=>"`$link_prefix`admin/setting/index"],
+        ['label'=>'新闻管理', 'url'=>"`$link_prefix`admin/setting/news"]
+    ]
+
 ]
 
 ]}

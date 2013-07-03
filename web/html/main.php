@@ -133,7 +133,6 @@ return array(
         'KanKanImageServer' => array(
             'http://localhost:8089'
         ),
-        'maxViewNumberEachDay' => 3,
         'staticServer' => 'http://shoujixuanxiu.com/upload',
         'uploadDir'=> 'upload'
 

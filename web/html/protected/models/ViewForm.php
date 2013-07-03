@@ -12,6 +12,17 @@ class ViewForm extends CFormModel {
     public $user_id;
     public $type;
 
+    private $max_view_each_day;
+
+    public function __construct() {
+        parent::__construct();
+        $r = Setting::model()->findByPk("max_view_each_day");
+        if($r === null) {
+            $this->max_view_each_day = 5;
+        } else {
+            $this->max_view_each_day = $r->value;
+        }
+    }
     public function rules(){
         return array(
             array('type, user_id', 'required'),
@@ -41,9 +52,9 @@ class ViewForm extends CFormModel {
         } else {
             if($r->view_time<$today) {
                 Yii::app()->db
-                    ->createCommand("update photo_view set view_number=1 and view_time=$today where photo_id=:pId and user_id=:uId")
+                    ->createCommand("update photo_view set view_number=1 , view_time=$today where photo_id=:pId and user_id=:uId")
                     ->query(array(":pId"=>$this->photo_id, ":uId"=>$this->user_id));
-            } else if($r->view_number <= Yii::app()->params['maxViewNumberEachDay']){
+            } else if($r->view_number <= $this->max_view_each_day){
                 /*
                  * 如果用户当天的浏览量小于定义的最大浏览量，则加1
                  */
@@ -77,9 +88,9 @@ class ViewForm extends CFormModel {
         } else {
             if($r->view_time<$today) {
                 Yii::app()->db
-                    ->createCommand("update video_view set view_number=1 and view_time=$today where video_id=:pId and user_id=:uId")
+                    ->createCommand("update video_view set view_number=1 , view_time=$today where video_id=:pId and user_id=:uId")
                     ->query(array(":pId"=>$this->video_id, ":uId"=>$this->user_id));
-            } else if($r->view_number <= Yii::app()->params['maxViewNumberEachDay']){
+            } else if($r->view_number <= $this->max_view_each_day){
                 /*
                  * 如果用户当天的浏览量小于定义的最大浏览量，则加1
                  */

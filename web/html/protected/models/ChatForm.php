@@ -35,7 +35,7 @@ class ChatForm extends CFormModel{
     }
     public function unread_list() {
         if($this->to_user_id === null) {
-            return false;
+            return array();
         }
         $this->_off_len();
         $sql = "SELECT c.from_user_id, c.time, c.content, u.nick_name as user_name, u.small_avatar as user_avatar FROM (select * from chat where to_user_id={$this->to_user_id} and `is_read`=0 order by msg_id desc) as c, user as u
@@ -45,7 +45,7 @@ class ChatForm extends CFormModel{
 
     public function all_list() {
         if($this->to_user_id === null) {
-            return false;
+            return array();
         }
         $this->_off_len();
 
@@ -56,19 +56,13 @@ class ChatForm extends CFormModel{
 
     public function unread_count() {
         if($this->to_user_id === null) {
-            return false;
+            return array();
         }
-        $sql = "select count(*) as num from chat where to_user_id={$this->to_user_id} and is_read=0";
-        $r = Yii::app()->db->createCommand($sql)->queryAll();
-        if($r!==null) {
-            return $r[0]['num'];
-        } else {
-            return 0;
-        }
+        return Chat::model()->count("to_user_id={$this->to_user_id} and is_read=0");
     }
     public function set_read() {
         if($this->from_user_id === null || $this->to_user_id === null) {
-            return false;
+            return array();
         }
 
         $sql = "update chat set is_read=1 where to_user_id={$this->to_user_id} and from_user_id={$this->from_user_id}";
@@ -78,7 +72,7 @@ class ChatForm extends CFormModel{
 
     public function dialog() {
         if($this->from_user_id === null || $this->to_user_id === null) {
-            return false;
+            return array();
         }
         $this->_off_len();
         return Chat::model()->findAll('(to_user_id=:tId and from_user_id=:fId) or (to_user_id=:fId and from_user_id=:tId) limit :off, :len',

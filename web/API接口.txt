@@ -631,3 +631,73 @@
 }
 返回：同上
 说明：这个接口保留，似乎暂时不需要使用。
+
+/message/overviewList
+使用：得到消息概览列表。
+参数：{
+    offset :
+    length :
+}
+返回：{
+    'total_chat' :  未读聊天总数
+    'total_news' :  新闻消息总数
+    'total_notify' : 未读系统通知总数
+    'list' : [
+        {
+            'news_id' :
+            'content' :
+            'time' : //发布时间
+            'type' :
+            'tag' : //type和tag是保留的，用来可能的比如新闻的点击后跳转。客户端暂时可以不用。
+        },
+        {
+            'notify_id' :
+            'content' :
+            'time' :
+            'is_read' :  // is_read和type都是保留功能。客户端如果觉得已读未读暂时有点麻烦，就不用管了。
+            'type' :
+            'to_user_id' : //一定是当前用户，可忽略
+        },
+        //注意！前两条分别是新闻和未读通知。但是也可能没有，为了方便客户端开发，如果没有，则前两条都是null。
+        //接下来是用户的未读留言，以用户为单位分组（跟/chat/unread_list）一样。
+        {
+            msg_id :
+            content :
+            time :
+            is_read :
+            from_user_id :
+            to_user_id : 一定是当前用户，可忽略
+        },
+        {},
+        {}
+    ]
+}
+说明：
+
+offset和length只用来控制未读留言的数量。返回的数据实际是length+2（如果未读留言总数>length）。
+如果offset不等于0，则表明用户是要取更多的未读留言数据，则返回的数据total_chat,total_news,total_notify
+都是0，并且list里面前两条不再有特别含义都是未读留言。
+
+/message/detailList
+使用：得到详细消息列表
+参数：{
+    from_user_id :
+    offset :
+    length :
+}
+返回：[{},{},{},...]
+如果from_user_id = -1,则返回新闻列表。新闻字段见上个接口。
+如果from_user_id = -2,则返回未读消息列表。消息字段见上个接口。
+如果from_user_id >= 0, 则返回和这个用户的留言对话。同/chat/dialog接口
+
+/setting/get
+使用：得到系统参数
+参数：{
+    'key' : xxx
+}
+返回：{
+    'key' : xxx
+    'value' : xxx
+}
+说明，这个接口用来得到系统配置。当前已有的key包括：
+'background' : 首页的背景图片。

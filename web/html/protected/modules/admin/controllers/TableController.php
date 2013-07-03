@@ -132,4 +132,8 @@ class TableController extends AController{
         $this->getData("video", " * ");
 
     }
+
+    public function actionNews() {
+        $this->getData("news");
+    }
 }

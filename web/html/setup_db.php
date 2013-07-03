@@ -212,6 +212,16 @@ $sql_arr = array(
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
 
+    "DROP TABLE IF EXISTS `news`;",
+
+    "CREATE TABLE `news` (
+  `news_id` int(11) NOT NULL AUTO_INCREMENT,
+  `content` varchar(150) NOT NULL,
+  `type` tinyint(4) NOT NULL DEFAULT '0',
+  `tag` varchar(50) DEFAULT NULL,
+  `time` int(11) NOT NULL,
+  PRIMARY KEY (`news_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;",
 
     "DROP FUNCTION IF EXISTS `GETDISTANCE`;",
 

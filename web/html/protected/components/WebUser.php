@@ -7,23 +7,11 @@
 
 
 class WebUser extends CWebUser{
+    public $avatar;
+    public $level;
 
     public function isAdmin() {
         return $this->getState("isAdmin", false);
     }
 
-    public function getAvatar() {
-        return $this->getState("avatar", null);
-    }
-    /*
-    public function login($identity,$duration=0) {
-        parent::login($identity, $duration);
-        $this->isAdmin = $identity->isAdmin();
-    }
-
-    public function logout($destroySession=true) {
-        parent::logout($destroySession);
-        $this->isAdmin = false;
-    }
-    */
 }
