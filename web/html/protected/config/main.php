@@ -134,7 +134,7 @@ return array(
         'KanKanImageServer' => array(
             'http://localhost:8089'
         ),
-        'staticServer' => 'http://localhost:8088/upload',
+        'staticServer' => 'http://shoujixuanxiu.com/upload',
         'uploadDir'=> 'upload'
 
 	),

@@ -31,10 +31,15 @@
                         </div>
                         <input type="hidden" name="stBg" id="stBg" value="{$bg_url}"/>
                     </div>
+                    {if empty($setting['max_view_each_day'])}
+                        {assign "max_view" 10}
+                    {else}
+                        {assign "max_view" $setting['max_view_each_day']}
+                    {/if}
                     <div class="control-group">
                         <label class="control-label" for="stView">每日最大浏览量</label>
                         <div class="controls">
-                            <input class="input focused" id="stView" type="text" value={$setting['max_view_each_day']}>
+                            <input class="input focused" id="stView" type="text" value={$max_view}>
                             <span class="alert alert-info">说明：每个用户每天为某张照片最多贡献的点击量</span>
                         </div>
                     </div>

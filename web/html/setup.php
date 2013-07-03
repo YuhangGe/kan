@@ -1,8 +1,3 @@
-<?php
-
-
-?>
-
 <!doctype html>
 <html>
 <head>

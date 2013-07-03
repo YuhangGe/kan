@@ -10,10 +10,13 @@ class TestController extends Controller {
     public $t_aa;
 
     function actionIndex() {
-        $c = Photo::model()->count();
-        echo $c;
-        $p = ceil($c / 25);
-        echo $p;
+        $sql = "CREATE TABLE `setting` (
+  `key` varchar(30) NOT NULL,
+  `value` varchar(150) DEFAULT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+        Yii::app()->db->createCommand($sql)->query();
+
     }
 
     function actionDo() {

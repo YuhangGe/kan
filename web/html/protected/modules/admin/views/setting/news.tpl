@@ -127,12 +127,12 @@
                 alert("请输入内容！");
                 return;
             }
-            $("#btnCreate").text("正在提交...").attr('disabled', true);
+            $("#btnDoModify").text("正在提交...").attr('disabled', true);
 
             $.post($.__link_prefix__ + "admin/news/post", {
                 content : cnt
             }, function(rtn) {
-                $("#btnCreate").text("提交").attr('disabled', false);
+                $("#btnDoModify").text("提交").attr('disabled', false);
                 if(!rtn.success) {
                     alert("网络错误，请重试。");
                 } else {
@@ -148,13 +148,13 @@
                 alert("请输入内容！");
                 return;
             }
-            $("#btnCreate").text("正在提交...").attr('disabled', true);
+            $("#btnDoModify").text("正在提交...").attr('disabled', true);
 
             $.post($.__link_prefix__ + "admin/news/modify", {
                 news_id : ID,
                 content : cnt
             }, function(rtn) {
-                $("#btnCreate").text("提交").attr('disabled', false);
+                $("#btnDoModify").text("提交").attr('disabled', false);
                 if(!rtn.success) {
                     alert("网络错误，请重试。");
                 } else {

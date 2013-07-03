@@ -223,6 +223,14 @@ $sql_arr = array(
   PRIMARY KEY (`news_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;",
 
+    "DROP TABLE IF EXISTS `setting`;",
+
+    "CREATE TABLE `setting` (
+  `key` varchar(30) NOT NULL,
+  `value` varchar(150) DEFAULT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+
     "DROP FUNCTION IF EXISTS `GETDISTANCE`;",
 
 
