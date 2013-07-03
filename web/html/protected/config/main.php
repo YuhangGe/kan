@@ -24,7 +24,7 @@ return array(
 	
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
-
+		/*
 		'gii'=>array(
             'generatorPaths'=>array(
                 'bootstrap.gii',
@@ -34,7 +34,7 @@ return array(
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
 		),
-
+		*/
         "admin"
 	),
 
@@ -72,10 +72,10 @@ return array(
 		// uncomment the following to use a MySQL database
 
 		'db'=>array(
-			'connectionString' => 'mysql:host=27.54.227.135;dbname=a0114203654;charset=utf8',
+			'connectionString' => 'mysql:host=localhost;dbname=kankan;charset=utf8',
 			'emulatePrepare' => true,
-			'username' => 'a0114203654',
-			'password' => '77360224',
+			'username' => 'root',
+			'password' => 'abeajqn',
 			'charset' => 'utf8',
 		),
 
@@ -134,7 +134,8 @@ return array(
         'KanKanImageServer' => array(
             'http://localhost:8089'
         ),
-        'staticServer' => 'http://shoujixuanxiu.com/upload',
+        'maxViewNumberEachDay' => 3,
+        'staticServer' => 'http://localhost:8088/upload',
         'uploadDir'=> 'upload'
 
 	),

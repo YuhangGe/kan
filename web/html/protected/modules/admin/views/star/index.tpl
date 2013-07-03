@@ -285,7 +285,7 @@
                 $("#score-search .score-require").show();
                 return;
             }
-            $.post("{$link_prefix}admin/default/search", {
+            $.post( $.__link_prefix__ +"admin/default/search", {
                 search_type : SType,
                 search_value : _v
             }, function(rtn) {

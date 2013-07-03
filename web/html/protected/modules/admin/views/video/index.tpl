@@ -14,7 +14,7 @@
         </div>
         <div class="box-content">
 
-            <table aoDataSource="/admin/table/video" aoColumns="video" fnDrawCallback="video" class="table table-video table-striped table-bordered bootstrap-datatable datatable">
+            <table aoDataSource="{$link_prefix}admin/table/video" aoColumns="video" fnDrawCallback="video" class="table table-video table-striped table-bordered bootstrap-datatable datatable">
                 <thead>
                 <tr>
                     <td>ID</td>
@@ -37,7 +37,7 @@
 
 
 <div id="table-edit-row-template" style="display: none">
-    <a class="btn btn-success" href="/admin/video/detail#VIDEO_ID">
+    <a class="btn btn-success" href="{$link_prefix}admin/video/detail#VIDEO_ID">
         <i class="icon-zoom-in icon-white"></i>
         查看视频
     </a>
@@ -89,11 +89,11 @@
                             { "mData": "video_id"},
                             { "mData": "video_name" },
                             { "mData": "user_name", "mRender" : function(data, type, ooData) {
-                                return "<a href='/admin/user/detail#"+ooData['user_id']+"'>"+data+"</a>";
+                                return "<a href='"+ $.__link_prefix__ + "admin/user/detail#"+ooData['user_id']+"'>"+data+"</a>";
                             }
                             },
                             { "mData": "act_name", "mRender" : function(data, type, ooData) {
-                                return "<a href='/admin/default/detail#"+ooData['act_id']+"'>"+data+"</a>";
+                                return "<a href='"+ $.__link_prefix__ +"admin/default/detail#"+ooData['act_id']+"'>"+data+"</a>";
                             }
                             },
                             { "mData": "upload_time","mRender": function(data) {
@@ -144,7 +144,7 @@
             fd.append("video", CUR_VIDEO);
 
             $.ajax({
-                url: "/admin/video/poster",
+                url: $.__link_prefix__ + "/admin/video/poster",
                 data: fd,
                 dataType : "json",
                 //Options to tell JQuery not to process data or worry about content-type
