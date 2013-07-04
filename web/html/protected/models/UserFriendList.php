@@ -35,12 +35,12 @@ class UserFriendList extends CFormModel {
 
 //        echo $this->offset;
 //        echo $this->length;
-        $sql1 = "select uf.user_id_1 as user_id, u.nick_name, u.small_avatar, u.fan_number, u.friend_number
+        $sql1 = "select uf.user_id_1 as user_id, u.nick_name, u.level as `level`, u.small_avatar, u.fan_number, u.friend_number
             from user_friend uf, user u where u.user_id = uf.user_id_1 and uf.user_id_2 = {$this->user_id}";
 
         $rs1 = Yii::app()->db->createCommand($sql1)->queryAll();
 
-        $sql2 = "select uf.user_id_2 as user_id, u.nick_name, u.small_avatar, u.fan_number, u.friend_number
+        $sql2 = "select uf.user_id_2 as user_id, u.nick_name, u.level as `level`, u.small_avatar, u.fan_number, u.friend_number
             from user_friend uf, user u where u.user_id = uf.user_id_2 and uf.user_id_1 = {$this->user_id}";
 
         $rs2 = Yii::app()->db->createCommand($sql2)->queryAll();

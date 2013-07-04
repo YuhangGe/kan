@@ -34,7 +34,7 @@ class UserFanList extends CFormModel{
         }
 
 
-        $sql = "select uf.fan_id as user_id, u.nick_name as nick_name, u.small_avatar as small_avatar, u.fan_number as fan_number, u.friend_number as friend_number
+        $sql = "select uf.fan_id as user_id, u.nick_name as nick_name, u.level as `level`, u.small_avatar as small_avatar, u.fan_number as fan_number, u.friend_number as friend_number
             from user_fan uf, user u where u.user_id = uf.fan_id and uf.user_id = {$this->user_id} limit {$this->offset}, {$this->length}";
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
@@ -55,7 +55,7 @@ class UserFanList extends CFormModel{
         }
 
 
-        $sql = "select uf.user_id as user_id, u.nick_name as nick_name, u.small_avatar as small_avatar, u.fan_number as fan_number, u.friend_number as friend_number
+        $sql = "select uf.user_id as user_id, u.nick_name as nick_name, u.level as `level`, u.small_avatar as small_avatar, u.fan_number as fan_number, u.friend_number as friend_number
             from user_fan uf, user u where u.user_id = uf.user_id and uf.fan_id = {$this->user_id} limit {$this->offset}, {$this->length}";
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;

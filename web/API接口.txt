@@ -189,7 +189,10 @@
       {
           'user_id' : xxx,
           'nick_name' : xxx,
-          'small_avatar' : xxx //小头像
+          'small_avatar' : xxx //小头像,
+          'level' : 等级（秀客星客）
+          'fan_number' : 粉丝数
+          'friend_number' : 好友数
       }
 说明：offset和length用于分页（或者显示更多）。初始时传入offset=0,length=N,
       之后每一次取更多则把offset = offset + N，假设返回的data.length < N则说明已经取到尾部了。
@@ -468,8 +471,8 @@
 },{},{},{}]
 说明：以上参数为组合参数。其中一但email或phone中有一个出现，
     则为精确搜索。这个可以方便快速定位选手，便于拉票。
-    age_from和age_to必须同时出现，搜索年龄段，age_from必须小于age_to,
-    如果搜索某个年龄，则age_to=age_from+1，请客户端注意。
+    age_from和age_to必须同时出现，搜索年龄段，age_from必须小于或等于age_to,
+    如果搜索某个确定年龄，则age_to=age_from，请客户端注意。
     distance和lat,lng必须同时出现，查找lat，lng经纬度中心的distance米的人。
     address和distance不能同时出现。查找关键字为xx的地方的人。
     （由于自动定位的经纬度不一定准确，可以考虑地点名称由用户输入，就像人人的报道）

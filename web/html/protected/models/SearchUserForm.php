@@ -108,17 +108,28 @@ class SearchUserForm extends CFormModel{
             $cdt[] = "constellation=:co";
             $par[":co"] = $this->constellation;
         }
-        if($this->age_from!==null && $this->age_to!==null && $this->age_from<$this->age_to) {
+
+        if($this->age_from!==null && $this->age_to!==null && $this->age_from<=$this->age_to) {
             $year = (int)date("Y");
             $md = date("-m-d");
 
-            $b_young = strtotime(($year-$this->age_from).$md);
-            $b_old = strtotime(($year-$this->age_to).$md);
+//            if($this->age_from===$this->age_to) {
+                $b_young = strtotime(($year-$this->age_from).$md);
+                $b_old = strtotime(($year-$this->age_to-1).$md);
+//            } else {
+//                $b_young = strtotime(($year-$this->age_from).$md);
+//                $b_old = strtotime(($year-$this->age_to - 1).$md);
+//            }
+
 
             $cdt[] = "birthday between :b_old and :b_young";
+
+//            echo $b_old.",".$b_young;
+
             $par[":b_old"]=$b_old;
             $par[":b_young"]=$b_young;
         }
+
         if($this->fan_number!==null) {
             $cdt[] = "fan_number >= :fan_n";
             $par[":fan_n"] = $this->fan_number;
@@ -166,7 +177,7 @@ class SearchUserForm extends CFormModel{
 
         $cdt_str = join("  AND  ", $cdt);
 
-        $sql = "select {$this->select} ".($s_dis?", ua.distance, ua.address ":"").($s_add?", ua.address ":"")." from user ".(($s_dis||$s_add)? (", $join".($cdt_str==""?"":" and $cdt_str ")) : " where $cdt_str").($s_dis?" order by ua.distance ":"")." limit {$this->offset},{$this->length}";
+        $sql = "select {$this->select} ".($s_dis?", ua.distance, ua.address ":"").($s_add?", ua.address ":"")." from user ".(($s_dis||$s_add)? (", $join".($cdt_str==""?"":" and $cdt_str and user.user_id<>$uid ")) : " where $cdt_str and user.user_id<>$uid").($s_dis?" order by ua.distance ":"")." limit {$this->offset},{$this->length}";
 
         return Yii::app()->db->createCommand($sql)->queryAll(true, $par);
 
