@@ -185,28 +185,57 @@ class PhotoList extends CFormModel{
         } else {
             $this->length = intval($this->length);
         }
+
+        $uid = Yii::app()->user->id;
+
         switch($this->type) {
             case 'location':
-                return $this->getLocationList();
+                $arr = $this->getLocationList();
                 break;
             case 'time':
-                return $this->getTimeList();
+                $arr = $this->getTimeList();
                 break;
             case 'view' :
-                return $this->getViewList();
+                $arr = $this->getViewList();
                 break;
             case "rand" :
-                return $this->getRandList();
+                $arr = $this->getRandList();
                 break;
             case "user" :
-                return $this->getUserList();
+                $arr = $this->getUserList();
                 break;
             case "active":
-                return $this->getActiveList();
+                $arr = $this->getActiveList();
                 break;
             default:
                 return array();
         }
+
+        /*
+         * 得到当前用户是否已经点了推荐
+         * 出于数据库性能和写代码的方便考虑，没有直接使用联表查询。
+         */
+        $p_arr = array();
+        foreach ($arr as $a) {
+            $p_arr[] = $a['photo_id'];
+        }
+
+        $sql = "select * from photo_view where user_id=$uid and photo_id in(".join(",", $p_arr).")";
+        $rs = Yii::app()->db->createCommand($sql)->queryAll();
+
+        $p_arr = array();
+        foreach ($rs as $r) {
+            $p_arr[] = $r['photo_id'];
+        }
+
+        foreach($arr as $key=>$a) {
+            if(in_array($a['photo_id'], $p_arr)) {
+                $arr[$key]['has_voted'] = 1;
+            } else {
+                $arr[$key]['has_voted'] = 0;
+            }
+        }
+        return $arr;
     }
 
 

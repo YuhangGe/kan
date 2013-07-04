@@ -31,12 +31,8 @@ class VoteForm extends CFormModel{
             $m = new PhotoVote();
             $m->user_id = $this->user_id;
             $m->photo_id = $this->photo_id;
-            /*
-             * 这里最好加个事务
-             */
             if($m->save(false)){
-                Photo::model()->updateCounters(array("vote_number"=>1), "photo_id=:pId", array(":pId"=>$this->photo_id));
-                return true;
+                return Photo::model()->updateCounters(array("vote_number"=>1), "photo_id=:pId", array(":pId"=>$this->photo_id));
             }
 
         }
@@ -55,8 +51,7 @@ class VoteForm extends CFormModel{
             $m->video_id = $this->video_id;
 
             if($m->save(false)){
-                Video::model()->updateCounters(array("vote_number"=>1), "video_id=:pId", array(":pId"=>$this->video_id));
-                return true;
+                return Video::model()->updateCounters(array("vote_number"=>1), "video_id=:pId", array(":pId"=>$this->video_id));
             }
         }
         return false;

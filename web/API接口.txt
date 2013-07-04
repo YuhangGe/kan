@@ -350,7 +350,7 @@
     'view_number' : //当前浏览的人数
     'distance' : 上传人离自己的距离
     'address' : 上传人所在地址
-    ‘
+    'has_voted' : 1/0 是否已经点了推荐
 }, {}, {}, ...]
 
 /photo/timeList
