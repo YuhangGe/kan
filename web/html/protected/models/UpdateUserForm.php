@@ -143,7 +143,7 @@ class UpdateUserForm extends CFormModel {
         $bir = intval($birthday);
         $month = intval(date("n", $bir));
         $day = intval(date("j", $bir));
-        echo $month.",".$day;
+//        echo $month.",".$day;
         return $this->get_zodiac_sign($month, $day);
     }
 

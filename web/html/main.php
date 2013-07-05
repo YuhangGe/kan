@@ -24,7 +24,7 @@ return array(
 	
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
-		/*
+
 		'gii'=>array(
             'generatorPaths'=>array(
                 'bootstrap.gii',
@@ -34,7 +34,7 @@ return array(
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
 		),
-		*/
+
         "admin"
 	),
 
@@ -46,7 +46,8 @@ return array(
 		'user'=>array(
 			// enable cookie-based authentication
 			//'allowAutoLogin'=>true,
-            'class' => 'WebUser'
+            'class' => 'WebUser',
+            'loginUrl'=>array('/index.php/admin/login'),
 		),
 		// uncomment the following to enable URLs in path-format
         'session' => array(
@@ -91,7 +92,7 @@ return array(
             //   ... any Smarty object parameter
             )
         ),
-
+       	/*
 		'log'=>array(
 			'class'=>'CLogRouter',
 			'routes'=>array(
@@ -101,14 +102,15 @@ return array(
                     'categories'=>'system.db.CDbCommand'
 				),
 				// uncomment the following to show log messages on web pages
-                /*
-				array(
-					'class'=>'CWebLogRoute',
-				),
-                */
+                
+				//array(
+				//	'class'=>'CWebLogRoute',
+				//),
+                
 
 			),
 		),
+		*/
 	),
 
 	// application-level parameters that can be accessed

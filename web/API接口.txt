@@ -716,6 +716,8 @@ offset和length只用来控制未读留言的数量。返回的数据实际是le
     'user_id' :
     'nick_name' : xx
     'poster_url' : 获奖海报
+    'time' : 获奖时间
+    'video_name' : 视频名称
 },{},{}]
 
 /winner/videoList

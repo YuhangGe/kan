@@ -43,7 +43,7 @@ class WinnerList extends CFormModel{
 
 
         if($this->type === "user") {
-            $sql = "select w.user_id, w.time, w.poster_url, u.nick_name from winner w, `user` u where w.user_id=u.user_id limit {$this->offset}, {$this->length}";
+            $sql = "select w.user_id, w.time, w.poster_url,v.video_name, u.nick_name from winner w, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id order by w.time desc limit {$this->offset}, {$this->length}";
             return Yii::app()->db->createCommand($sql)->queryAll();
 
         } elseif($this->type==="video" && $this->user_id!==null) {
