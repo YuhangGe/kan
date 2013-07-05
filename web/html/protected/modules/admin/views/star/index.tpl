@@ -4,7 +4,7 @@
 <div class="row-fluid sortable">
     <div class="box span9">
         <div class="box-header well" data-original-title>
-            <h2><i class="icon-font"></i> 星客选拔</h2>
+            <h2><i class="icon-font"></i> 演客选拔</h2>
             <div class="box-icon">
                 {*<a href="#" class="btn btn-setting btn-round"><i class="icon-cog"></i></a>*}
                 {*<a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>*}
@@ -23,7 +23,7 @@
                 </div>
                 <hr/>
                 <div class="row-fluid">
-                    <h3>已选星客</h3>
+                    <h3>已选演客</h3>
                     <table aoDataSource="{$link_prefix}admin/table/starSelected" aoSortedBy="act_score" fnDrawCallback="selected" aoColumns="selected" class="table table-star-selected table-striped table-bordered bootstrap-datatable datatable">
                         <thead>
                         <tr>
@@ -133,7 +133,7 @@
     </a>
     <a class="btn btn-danger" href="javascript:cancelStar('USER_ID');">
         <i class="icon-trash icon-white"></i>
-        取消星客
+        取消演客
     </a>
 </div>
 
@@ -144,7 +144,7 @@
     </a>
     <a class="btn btn-info" href="javascript:chooseStar('USER_ID');">
         <i class="icon-edit icon-white"></i>
-        选为星客
+        选为演客
     </a>
     {*<a class="btn btn-danger edit-del" href="javascript:delActive('USER_ID');">*}
         {*<i class="icon-trash icon-white"></i>*}
@@ -158,7 +158,7 @@
         <h3>上传海报</h3>
     </div>
     <div class="modal-body">
-        <div class="alert alert-info" id="poster-process" style="position: relative; top: 5px;">为星客上传获奖海报</div>
+        <div class="alert alert-info" id="poster-process" style="position: relative; top: 5px;">为演客上传获奖海报</div>
 
         <div class="control-group" id="act-detail">
             <label class="control-label" for="fileImage">上传海报</label>
@@ -179,7 +179,7 @@
         <h3>上传视频</h3>
     </div>
     <div class="modal-body">
-        <div class="alert alert-info" id="video-process">为星客上传视频节目。如果是优酷一类的网站不区分高清和普清地址，则只要简单的给两个相同的地址就行了。</div>
+        <div class="alert alert-info" id="video-process">为演客上传视频节目。如果是优酷一类的网站不区分高清和普清地址，则只要简单的给两个相同的地址就行了。</div>
         <div class="control-group">
             <label class="control-label" for="fileImage">节目名称</label>
             <div class="controls">
@@ -336,7 +336,7 @@
                 var act = rtn.data, TYPE = ['才艺','表演', '简历'];
                 $("#score-detail .alert").hide();
                 $("#score-detail .score-content").show();
-                $("#score-detail .score-info .span3 h2").html(act.act_name+"<small style='margin-left: 10px;'>"+TYPE[Number(act.act_type)]+"</small>");
+                $("#score-detail .score-info .span4 h2").html(act.act_name+"<small style='margin-left: 10px;'>"+TYPE[Number(act.act_type)]+"</small>");
                 $("#score-detail .score-info .span9").text(
                         $.datepicker.formatDate("yy年mm月dd日", new Date(Number(act.begin_time)*1000))
                       + " - "

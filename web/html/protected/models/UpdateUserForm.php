@@ -80,6 +80,7 @@ class UpdateUserForm extends CFormModel {
         }
         if($this->birthday !== null) {
             $p['birthday'] = $this->birthday;
+            $p['constellation'] = $this->getConstellation($this->birthday);
         }
         if($this->constellation !== null) {
             $p['$constellation'] = $this->constellation;
@@ -133,7 +134,41 @@ class UpdateUserForm extends CFormModel {
         }
         if(!empty($this->birthday)) {
             $p['birthday'] = $this->birthday;
+            $p['constellation'] = $this->getConstellation($this->birthday);
         }
         return User::model()->updateByPk(Yii::app()->user->id, $p);
+    }
+
+    private function getConstellation($birthday) {
+        $bir = intval($birthday);
+        $month = intval(date("n", $bir));
+        $day = intval(date("j", $bir));
+        echo $month.",".$day;
+        return $this->get_zodiac_sign($month, $day);
+    }
+
+    private function  get_zodiac_sign($month, $day){
+        // 检查参数有效性
+        if ($month < 1 || $month > 12 || $day < 1 || $day > 31)
+            return 0;
+        // 星座名称以及开始日期
+        $signs = array(
+            array( "20" => 2),//  "宝瓶座"),
+            array( "19" => 3),//"双鱼座"),
+            array( "21" => 4),//"白羊座"),
+            array( "20" => 5),//"金牛座"),
+            array( "21" => 6),//"双子座"),
+            array( "22" => 7),//"巨蟹座"),
+            array( "23" => 8),//"狮子座"),
+            array( "23" => 9),//"处女座"),
+            array( "23" => 10),//"天秤座"),
+            array( "24" => 11),//"天蝎座"),
+            array( "22" => 12),// "射手座"),
+            array( "22" => 1)//"摩羯座")
+        );
+        list($sign_start, $sign_name) = each($signs[(int)$month-1]);
+        if ($day < $sign_start)
+            list($sign_start, $sign_name) = each($signs[($month -2 < 0) ? $month = 11: $month -= 2]);
+        return $sign_name;
     }
 }

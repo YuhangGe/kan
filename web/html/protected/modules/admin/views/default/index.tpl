@@ -47,7 +47,7 @@
     </a>
     <a class="btn btn-info" href="{$link_prefix}admin/star/index#ACT_ID">
         <i class="icon-edit icon-white"></i>
-        星客选拔
+        演客选拔
     </a>
     <a class="btn btn-danger edit-del" href="javascript:delActive('ACT_ID');">
         <i class="icon-trash icon-white"></i>

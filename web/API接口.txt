@@ -449,7 +449,8 @@
     email : xxx
     phone : xxx
     sex : 0/1
-    constellation : 1-12  星座
+    constellation : 1-12  星座。
+    1-12分别代表对应月份的上半月星座。比如1是摩羯，2是水瓶，双鱼，白羊，金牛，双子，巨蟹，狮子，处女，天秤，天蝎，射手
     age_from : 0-100
     age_to : 0-100
     nick_name : xxx(模糊搜索)
@@ -704,3 +705,25 @@ offset和length只用来控制未读留言的数量。返回的数据实际是le
 }
 说明，这个接口用来得到系统配置。当前已有的key包括：
 'background' : 首页的背景图片。
+
+/winner/userList
+使用：返回所有获奖用户
+参数：{
+    offset:
+    length:
+}
+返回：[{
+    'user_id' :
+    'nick_name' : xx
+    'poster_url' : 获奖海报
+},{},{}]
+
+/winner/videoList
+使用：返回获奖用户的视频列表
+参数：{
+    'user_id' : xx
+    'offset' :
+    'length' :
+}
+返回：同/video/list
+说明：返回的第一个元素为用户的获奖视频。之后为其它视频

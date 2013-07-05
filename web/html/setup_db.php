@@ -231,6 +231,16 @@ $sql_arr = array(
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
 
+    "DROP TABLE IF EXISTS `winner`;",
+
+    "CREATE TABLE `winner` (
+  `video_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `time` int(11) NOT NULL,
+  `poster_url` varchar(150) DEFAULT NULL,
+  PRIMARY KEY (`video_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+
     "DROP FUNCTION IF EXISTS `GETDISTANCE`;",
 
 

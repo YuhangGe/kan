@@ -30,7 +30,7 @@ class StarForm extends CFormModel{
         ));
         if($r!==null) {
             //已经是星客
-            return false;
+            return true;
         }
         $m = Active::model()->find(array(
             'select'=>'act_name',
@@ -66,16 +66,18 @@ class StarForm extends CFormModel{
 
         if(!$m->save(false)){
             return false;
+        } else {
+            return true;
         }
 
 
-        $m = new Notify();
-        $m->to_user_id = $this->user_id;
-        $m->time = time();
-        $m->type = 0;
-        $m->content = "恭喜您已经在{$act_name}活动中当选为星客。请完善您的手机和真实姓名信息，我们会在近期与您取得联系。";
+//        $m = new Notify();
+//        $m->to_user_id = $this->user_id;
+//        $m->time = time();
+//        $m->type = 0;
+//        $m->content = "恭喜您已经在{$act_name}活动中当选为星客。请完善您的手机和真实姓名信息，我们会在近期与您取得联系。";
 
-        return $m->save(false);
+//        return $m->save(false);
     }
 
     public function cancel() {
@@ -96,7 +98,7 @@ class StarForm extends CFormModel{
         }
         $dir = "poster";
         $_tag = time().rand(0, 10000);
-        $i_fn = $this->user_id."_".$this->act_id."_".$_tag;
+        $i_fn = "star_".$this->user_id."_".$this->act_id."_".$_tag;
 
         $sif = FileHelper::savePhoto("image_file", $dir, $i_fn);
         if($sif==false) {

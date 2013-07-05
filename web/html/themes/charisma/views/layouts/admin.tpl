@@ -12,8 +12,7 @@
 ["label"=>"用户管理", "child_items" =>
     [
         ["label"=>"所有用户", "url"=>"`$link_prefix`admin/user/index"],
-        ["label"=>"用户详情", "url"=>"`$link_prefix`admin/user/detail"],
-        ["label"=>"星客选拔", "url"=>"`$link_prefix`admin/star/index"]
+        ["label"=>"用户详情", "url"=>"`$link_prefix`admin/user/detail"]
     ]
 ],
 ["label"=>"照片管理", "child_items" =>
@@ -25,6 +24,12 @@
     [
         ["label"=>"所有视频", "url"=>"`$link_prefix`admin/video/index"],
         ["label"=>"视频详情", "url"=>"`$link_prefix`admin/video/detail"]
+    ]
+],
+["label"=>"选秀管理", "child_items"=>
+    [
+        ["label"=>"演客管理", "url"=>"`$link_prefix`admin/star/index"],
+        ["label"=>"星客管理", "url"=>"`$link_prefix`admin/winner/index"]
     ]
 ],
 ["label"=>"其它管理", "child_items"=>

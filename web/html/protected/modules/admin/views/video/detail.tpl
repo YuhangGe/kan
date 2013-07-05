@@ -245,7 +245,9 @@
                 $("#video-detail .video-content").show();
                 $("#video-detail .page-header h3").html(act.video_name);
                 $("#video-detail .video-time .span10").text($.datepicker.formatDate("yy年mm月dd日", new Date(Number(act.upload_time)*1000)));
-
+                $("#video-detail .video-poster .span10").html(
+                    act.poster_url === null || act.poster_url.trim()==="" ? "未上传" : "<img style='max-width: 300px;max-height: 300px' src='"+act.poster_url+"'/>"
+                );
                 $("#video-detail .video-user .span10").html("<a href='"+$.__link_prefix__ + "admin/user/detail#"+act.user_id+"'>"+act.user_name+"</a>");
                 $("#video-detail .video-act .span10").html("<a href='"+$.__link_prefix__ + "admin/default/detail#"+act.act_id+"'>"+act.act_name+"</a>");
 

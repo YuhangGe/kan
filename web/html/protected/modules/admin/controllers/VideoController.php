@@ -53,4 +53,29 @@ class VideoController extends AController{
 
         $this->sendAjax($rtn, true);
     }
+
+    public function actionPoster() {
+        if(!isset($_FILES['image_file']) || empty($_POST['video_id'])) {
+            $this->sendAjax(null);
+        }
+        $r = Video::model()->findByPk($_POST['video_id']);
+        if($r===null) {
+            $this->sendAjax(null);
+        }
+        $dir = "poster";
+        $_tag = time().rand(0, 10000);
+        $i_fn = "video_".$_POST['video_id']."_".$_tag;
+
+        $sif = FileHelper::savePhoto("image_file", $dir, $i_fn);
+        if($sif===false) {
+            $this->sendAjax(null);
+        }
+
+       if(Video::model()->updateAll(array('poster_url'=>Yii::app()->params['staticServer']."/".$sif), "video_id=:pId", array(':pId'=>$_POST['video_id']))){
+           $this->sendAjax(true, true);
+       } else {
+           $this->sendAjax(null);
+       }
+
+    }
 }

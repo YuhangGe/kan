@@ -136,4 +136,35 @@ class TableController extends AController{
     public function actionNews() {
         $this->getData("news");
     }
+
+    public function actionWinnerRank() {
+        $this->check();
+        $this->total_number = Video::model()->count();
+        $sql = "select video.* , vote_number * 10 + view_number as score, w.user_id as winner_id from video left join winner w on video.video_id=w.video_id order by score desc {$this->lmt}";
+
+        $s_r = Yii::app()->db->createCommand($sql)->queryAll(true, $this->params);
+        if($s_r===null || count($s_r)===0) {
+            $this->total_number = 0;
+            $this->output();
+        }
+        $this->data = $s_r;
+
+        $this->output();
+    }
+
+    public function actionWinnerSelected() {
+        $this->check();
+        $this->total_number = Winner::model()->count();
+
+        $sql = "select w.`time` as `time`, w.poster_url as winner_poster, v.* , v.vote_number * 10 + v.view_number as score from winner w, video v where w.video_id=v.video_id order by w.`time` desc {$this->lmt}";
+
+        $s_r = Yii::app()->db->createCommand($sql)->queryAll(true, $this->params);
+        if($s_r===null || count($s_r)===0) {
+            $this->total_number = 0;
+            $this->output();
+        }
+        $this->data = $s_r;
+
+        $this->output();
+    }
 }

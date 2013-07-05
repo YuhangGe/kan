@@ -24,7 +24,7 @@ return array(
 	
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
-		/*
+
 		'gii'=>array(
             'generatorPaths'=>array(
                 'bootstrap.gii',
@@ -34,7 +34,7 @@ return array(
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
 		),
-		*/
+
         "admin"
 	),
 

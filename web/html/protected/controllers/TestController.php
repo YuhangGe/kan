@@ -10,10 +10,12 @@ class TestController extends Controller {
     public $t_aa;
 
     function actionIndex() {
-        $sql = "CREATE TABLE `setting` (
-  `key` varchar(30) NOT NULL,
-  `value` varchar(150) DEFAULT NULL,
-  PRIMARY KEY (`key`)
+        $sql = "CREATE TABLE `winner` (
+        `video_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `time` int(11) NOT NULL,
+  `poster_url` varchar(150) DEFAULT NULL,
+  PRIMARY KEY (`video_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
         Yii::app()->db->createCommand($sql)->query();
 

@@ -141,7 +141,7 @@
             var img = fs[0];
             var fd = new FormData();
             fd.append("image_file", img);
-            fd.append("video", CUR_VIDEO);
+            fd.append("video_id", CUR_VIDEO);
 
             $.ajax({
                 url: $.__link_prefix__ + "/admin/video/poster",
