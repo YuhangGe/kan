@@ -167,8 +167,13 @@ class PhotoList extends CFormModel{
             "condition"=>"act_id=:aId order by upload_time desc limit {$this->offset},{$this->length}",
             "params" => array(":aId"=>$this->act_id)
         ));
+
         if($rs!==null) {
-            return $rs;
+            $rtn = array();
+            foreach ($rs as $r) {
+                $rtn[] = $r->attributes;
+            }
+            return $rtn;
         } else {
             return array();
         }
@@ -216,10 +221,8 @@ class PhotoList extends CFormModel{
          * 出于数据库性能和写代码的方便考虑，没有直接使用联表查询。
          */
         $p_arr = array();
-        foreach ($arr as $key=>$a) {
-            $arr[$key] = $a->attributes;
-//            print_r($arr[$key]);
-            $p_arr[] = $arr[$key]['photo_id'];
+        foreach ($arr as $a) {
+            $p_arr[] = $a['photo_id'];
         }
 
         $sql = "select * from photo_view where user_id=$uid and photo_id in(".join(",", $p_arr).")";
