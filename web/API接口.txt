@@ -714,7 +714,8 @@ offset和length只用来控制未读留言的数量。返回的数据实际是le
     length:
 }
 返回：[{
-    'user_id' :
+    'user_id' : xx
+    'video_id' : xx //这个参数用来提供给下面的接口使用。使得点进去的列表的第一个视频是该视频。
     'nick_name' : xx
     'poster_url' : 获奖海报
     'time' : 获奖时间
@@ -724,6 +725,7 @@ offset和length只用来控制未读留言的数量。返回的数据实际是le
 /winner/videoList
 使用：返回获奖用户的视频列表
 参数：{
+    'video_id' : xx  这个参数是用户点击到的那个获奖视频的id。用来放在第一个位置显示。这个参数是从上一个接口得到的。
     'user_id' : xx
     'offset' :
     'length' :

@@ -77,10 +77,10 @@
         上传海报
     </a>
 
-    <a class="btn btn-danger" href="javascript:cancelStar('VIDEO_ID');">
+ <!--   <a class="btn btn-danger" href="javascript:cancelStar('VIDEO_ID');">
         <i class="icon-trash icon-white"></i>
         取消星客
-    </a>
+    </a> -->
 </div>
 
 <div id="table-row-rank-template" style="display: none">
