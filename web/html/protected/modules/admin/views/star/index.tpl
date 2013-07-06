@@ -131,10 +131,11 @@
         <i class="icon-edit icon-white"></i>
         视频
     </a>
-    <a class="btn btn-danger" href="javascript:cancelStar('USER_ID');">
+<!--    <a class="btn btn-danger" href="javascript:cancelStar('USER_ID');">
         <i class="icon-trash icon-white"></i>
         取消演客
     </a>
+    -->
 </div>
 
 <div id="table-row-rank-template" style="display: none">

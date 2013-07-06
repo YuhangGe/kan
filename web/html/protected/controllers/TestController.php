@@ -10,15 +10,11 @@ class TestController extends Controller {
     public $t_aa;
 
     function actionIndex() {
-        $sql = "CREATE TABLE `winner` (
-        `video_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `time` int(11) NOT NULL,
-  `poster_url` varchar(150) DEFAULT NULL,
-  PRIMARY KEY (`video_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-        Yii::app()->db->createCommand($sql)->query();
-
+        $pwd = PwdHelper::encode("123456");
+        $r = User::model()->findByAttributes(array("email"=>"xiaoge@kk.com"));
+        echo $r->password."    ".$pwd;
+        $r->password = $pwd;
+        echo $r->save();
     }
 
     function actionDo() {

@@ -9,7 +9,8 @@
         user_id : xxx,
         nick_name : xxx,
         sid : xxxxx
-        small_avatar : xxx | null
+        small_avatar : xxx | null,
+        level : 用户等级。0，1，2，3分别代表普客，秀客，演客，星客
     }
     'success' : true/false,
     'msg' : xxx

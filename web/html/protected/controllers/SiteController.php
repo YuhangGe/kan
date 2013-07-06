@@ -11,7 +11,7 @@ class SiteController extends Controller
             if(Yii::app()->request->isAjaxRequest) {
                 echo $error->message;
             } else {
-                $this->redirect(Yii::app()->params['link_prefix']."admin/default/index");
+                $this->redirect(Yii::app()->params['link_prefix']."download/index");
             }
 		}
 	}

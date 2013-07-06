@@ -66,22 +66,27 @@ class StarForm extends CFormModel{
 
         if(!$m->save(false)){
             return false;
-        } else {
-            return true;
         }
 
+        User::model()->updateAll(array("level"=>2), "user_id=:uId and level<=1", array(":uId"=>$this->user_id));
 
-//        $m = new Notify();
-//        $m->to_user_id = $this->user_id;
-//        $m->time = time();
-//        $m->type = 0;
-//        $m->content = "恭喜您已经在{$act_name}活动中当选为星客。请完善您的手机和真实姓名信息，我们会在近期与您取得联系。";
 
-//        return $m->save(false);
+        $m = new Notify();
+        $m->to_user_id = $this->user_id;
+        $m->time = time();
+        $m->type = 0;
+        $m->content = "恭喜您已经在{$act_name}活动中当选为演客。请完善您的手机和真实姓名信息，我们会在近期与您取得联系。";
+
+        return $m->save(false);
     }
 
     public function cancel() {
-        return Star::model()->deleteAllByAttributes(array("user_id"=>$this->user_id, "act_id"=>$this->act_id));
+        if(Star::model()->deleteAllByAttributes(array("user_id"=>$this->user_id, "act_id"=>$this->act_id)) &&
+        Video::model()->deleteAllByAttributes(array("user_id"=>$this->user_id, "act_id"=>$this->act_id))){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function poster() {

@@ -45,10 +45,10 @@
         <i class="icon-edit icon-white"></i>
         上传海报
     </a>
-    <a class="btn btn-danger" href="javascript:delVideo('VIDEO_ID');">
+ <!--   <a class="btn btn-danger" href="javascript:delVideo('VIDEO_ID');">
         <i class="icon-trash icon-white"></i>
         删除
-    </a>
+    </a> -->
 </div>
 
 <div class="modal hide fade" id="posterDialog">

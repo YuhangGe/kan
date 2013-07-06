@@ -48,10 +48,10 @@
     {*<i class="icon-edit icon-white"></i>*}
     {*编辑*}
     {*</a>*}
-    <a class="btn btn-danger edit-del" href="javascript:delActive('USER_ID');">
+    <!--<a class="btn btn-danger edit-del" href="javascript:delActive('USER_ID');">
         <i class="icon-trash icon-white"></i>
         删除
-    </a>
+    </a>-->
 </div>
 
 {literal}
@@ -66,7 +66,7 @@
                 }
                 },
                 { "mData": "level", "mRender" : function(data) {
-                    return ['普通','秀客','星客'][Number(data)];
+                    return ['普通','秀客','演客', '星客'][Number(data)];
                 }
                 },
                 { "mData": "nick_name"

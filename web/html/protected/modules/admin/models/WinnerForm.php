@@ -35,7 +35,17 @@ class WinnerForm extends CFormModel{
         $m->video_id = $this->video_id;
         $m->user_id = $r->user_id;
         $m->time = time();
-        return $m->save();
+        if(!$m->save()){
+            return false;
+        }
+        User::model()->updateAll(array("level"=>3), "user_id=:uId and level<=2", array(":uId"=>$r->user_id));
+        $m = new Notify();
+        $m->to_user_id = $this->user_id;
+        $m->time = time();
+        $m->type = 0;
+        $m->content = "恭喜您的视频{$r->video_name}或胜，您已当选为星客。请完善您的手机和真实姓名信息，我们会在近期与您取得联系。";
+
+        return $m->save(false);
     }
 
     public function cancel() {
