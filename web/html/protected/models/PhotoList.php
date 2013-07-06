@@ -91,21 +91,26 @@ class PhotoList extends CFormModel{
         }
 
 
-        $sql = "select p.*, ua2.distance
-            from photo as p,
-            (select p1.user_id,p1.photo_id,p1.act_id,u_a.distance
-              from photo as p1,
-                (select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance
+//        $sql = "select p.*, ua2.distance
+//            from photo as p,
+//            (select p1.user_id,p1.photo_id,p1.act_id,u_a.distance
+//              from photo as p1,
+//                (select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance
+//                    from user_location
+//                      where $cdt
+//                      order by distance
+//                      limit {$this->offset}, {$this->length}
+//                ) as u_a where u_a.user_id = p1.user_id and p1.user_id<>$uid order by photo_id desc
+//            ) as ua2
+//            where ua2.photo_id=p.photo_id
+//            group by ua2.user_id order by ua2.distance";
+
+        $sql = "select p.*, u_a.distance from photo as p,  (select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance
                     from user_location
                       where $cdt
                       order by distance
                       limit {$this->offset}, {$this->length}
-                ) as u_a where u_a.user_id = p1.user_id and p1.user_id<>$uid order by photo_id desc
-            ) as ua2
-            where ua2.photo_id=p.photo_id
-            group by ua2.user_id order by ua2.distance";
-
-
+                ) as u_a where u_a.user_id = p.user_id and p.user_id<>$uid and p.is_key_photo = 1 order by u_a.distance";
         /*
          * 取出附近用户最新上传的一张照片
          * 其中的GETDISTANCE是mysql的函数，参考数据库.txt文档
@@ -116,12 +121,16 @@ class PhotoList extends CFormModel{
     }
 
     private function getTimeList() {
-        $sql = "select *
-                from (select * from photo order by photo_id desc) p2
-                group by user_id, act_id
-                having upload_time<={$this->time}
-                order by upload_time desc limit {$this->offset},{$this->length}";
+        if($this->time===null) {
+            $this->time = time();
+        }
+//        $sql = "select *
+//                from (select * from photo order by photo_id desc) p2
+//                group by user_id, act_id
+//                having upload_time<={$this->time}
+//                order by upload_time desc limit {$this->offset},{$this->length}";
 
+        $sql = "select * from photo where is_key_photo=1 and upload_time<={$this->time} order by upload_time desc limit {$this->offset}, {$this->length}";
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
     }

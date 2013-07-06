@@ -9,7 +9,7 @@ class SiteController extends Controller
 		if($error=Yii::app()->errorHandler->error)
 		{
             if(Yii::app()->request->isAjaxRequest) {
-                echo $error->message;
+                echo CJSON::encode(array("success"=>false));
             } else {
                 $this->redirect(Yii::app()->params['link_prefix']."download/index");
             }

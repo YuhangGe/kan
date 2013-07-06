@@ -93,11 +93,8 @@ class VideoList extends CFormModel{
         if($this->time===null) {
             $this->time = time();
         }
-        $sql = "select *
-                from (select * from video order by video_id desc) p2
-                group by user_id
-                having upload_time<={$this->time}
-                order by upload_time limit {$this->offset},{$this->length}";
+        $sql = "select * from video where upload_time<={$this->time}
+                order by upload_time desc limit {$this->offset},{$this->length}";
 
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
