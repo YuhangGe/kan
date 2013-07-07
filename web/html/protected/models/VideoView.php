@@ -7,7 +7,8 @@
  * @property integer $video_id
  * @property integer $user_id
  * @property integer $id
- * @property integer $view_num
+ * @property integer $view_number
+ * @property integer $view_time
  */
 class VideoView extends CActiveRecord
 {
@@ -37,11 +38,10 @@ class VideoView extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('video_id, user_id', 'required'),
-			array('video_id, user_id, view_num', 'numerical', 'integerOnly'=>true),
+			array('video_id, user_id, view_time', 'required'),
+			array('video_id, user_id, view_time, view_number', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('video_id, user_id, id, view_num', 'safe', 'on'=>'search'),
 		);
 	}
 

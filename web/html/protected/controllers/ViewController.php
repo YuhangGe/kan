@@ -19,7 +19,6 @@ class ViewController extends Controller {
     public function actionPhoto() {
         $m = new ViewForm();
         $m->attributes = $_POST;
-        $m->user_id = Yii::app()->user->id;
         $m->type = "photo";
         if($m->validate() && $m->view()) {
             $this->sendAjax(true, true);
@@ -30,8 +29,7 @@ class ViewController extends Controller {
     public function actionVideo() {
         $m = new ViewForm();
         $m->attributes = $_POST;
-        $m->user_id = Yii::app()->user->id;
-        $m->type = "photo";
+        $m->type = "video";
         if($m->validate() && $m->view()) {
             $this->sendAjax(true, true);
         } else {

@@ -14,7 +14,7 @@ class VoteForm extends CFormModel{
 
     public function rules(){
         return array(
-            array('type, user_id', 'required'),
+            array('type', 'required'),
             array("user_id", 'numerical', 'integerOnly'=>true),
             array('type', 'in', 'range'=>array("photo", "video")),
             array("photo_id", 'numerical', 'integerOnly'=>true),
@@ -24,6 +24,10 @@ class VoteForm extends CFormModel{
 
     private function votePhoto() {
         if($this->photo_id===null) {
+            return false;
+        }
+        $m = Photo::model()->findBySql("select photo_id from photo where photo_id=:pId", array(":pId"=>$this->photo_id));
+        if($m===null) {
             return false;
         }
         $r = PhotoVote::model()->find("photo_id=:pId AND user_id=:uId", array(':pId'=>$this->photo_id,':uId'=>$this->user_id));
@@ -43,7 +47,10 @@ class VoteForm extends CFormModel{
         if($this->video_id===null) {
             return false;
         }
-
+        $m = Video::model()->findBySql("select video_id from video where video_id=:pId", array(":pId"=>$this->video_id));
+        if($m===null) {
+            return false;
+        }
         $r = VideoVote::model()->find("video_id=:pId AND user_id=:uId", array(':pId'=>$this->video_id,':uId'=>$this->user_id));
         if($r === null) {
             $m = new VideoVote();
@@ -58,6 +65,7 @@ class VoteForm extends CFormModel{
     }
 
     public function vote() {
+        $this->user_id = Yii::app()->user->id;
         if($this->type === "photo") {
             return $this->votePhoto();
         } elseif($this->type==='video'){

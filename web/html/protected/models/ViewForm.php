@@ -25,7 +25,7 @@ class ViewForm extends CFormModel {
     }
     public function rules(){
         return array(
-            array('type, user_id', 'required'),
+            array('type', 'required'),
             array("user_id", 'numerical', 'integerOnly'=>true),
             array('type', 'in', 'range'=>array("photo", "video")),
             array("photo_id", 'numerical', 'integerOnly'=>true),
@@ -40,6 +40,10 @@ class ViewForm extends CFormModel {
         $today = strtotime("12:00:00");
         $r = PhotoView::model()->find("photo_id=:pId AND user_id=:uId", array(':pId'=>$this->photo_id,':uId'=>$this->user_id));
         if($r === null) {
+            $m = Photo::model()->findBySql("select photo_id from photo where photo_id=:pId", array(":pId"=>$this->photo_id));
+            if($m===null) {
+                return false;
+            }
             $m = new PhotoView();
             $m->user_id = $this->user_id;
             $m->photo_id = $this->photo_id;
@@ -75,16 +79,25 @@ class ViewForm extends CFormModel {
         }
         $today = strtotime("12:00:00");
         $r = VideoView::model()->find("video_id=:pId AND user_id=:uId", array(':pId'=>$this->video_id,':uId'=>$this->user_id));
+
         if($r === null) {
+            $m = Video::model()->findBySql("select video_id from video where video_id=:pId", array(":pId"=>$this->video_id));
+
+            if($m===null) {
+                return false;
+            }
+
             $m = new VideoView();
             $m->user_id = $this->user_id;
             $m->video_id = $this->video_id;
             $m->view_time = $today;
             $m->view_number = 1;
 
+
             if(!$m->save(false)) {
                 return false;
             }
+
         } else {
             if($r->view_time<$today) {
                 Yii::app()->db
@@ -106,6 +119,7 @@ class ViewForm extends CFormModel {
     }
 
     public function view() {
+        $this->user_id = Yii::app()->user->id;
         if($this->type === "photo") {
             return $this->viewPhoto();
         } elseif($this->type==='video'){

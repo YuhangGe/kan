@@ -199,17 +199,17 @@ $sql_arr = array(
   `video_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `view_num` int(11) DEFAULT NULL,
+  `view_time` int(11) DEFAULT NULL,
+  `view_number` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;",
 
     "DROP TABLE IF EXISTS `video_vote`;",
 
     "CREATE TABLE `video_vote` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `video_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`video_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
 
     "DROP TABLE IF EXISTS `news`;",

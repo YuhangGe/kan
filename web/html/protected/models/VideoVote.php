@@ -4,7 +4,6 @@
  * This is the model class for table "video_vote".
  *
  * The followings are the available columns in table 'video_vote':
- * @property integer $id
  * @property integer $video_id
  * @property integer $user_id
  */
@@ -40,7 +39,6 @@ class VideoVote extends CActiveRecord
 			array('video_id, user_id', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, video_id, user_id', 'safe', 'on'=>'search'),
 		);
 	}
 

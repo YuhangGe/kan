@@ -19,7 +19,6 @@ class VoteController extends Controller{
     public function actionPhoto() {
         $m = new VoteForm();
         $m->attributes = $_POST;
-        $m->user_id = Yii::app()->user->id;
         $m->type = "photo";
         if($m->validate() && $m->vote()) {
             $this->sendAjax(true, true);
@@ -31,8 +30,6 @@ class VoteController extends Controller{
         $m = new VoteForm();
         $m->attributes = $_POST;
         $m->type = "video";
-        $m->user_id = Yii::app()->user->id;
-
         if($m->validate() && $m->vote()) {
             $this->sendAjax(true, true);
         } else {

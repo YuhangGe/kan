@@ -39,7 +39,7 @@ class PhotoView extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('photo_id, user_id, view_time', 'required'),
-			array('photo_id, user_id, view_date', 'numerical', 'integerOnly'=>true),
+			array('photo_id, user_id, view_time, view_number', 'numerical', 'integerOnly'=>true),
 		);
 	}
 
