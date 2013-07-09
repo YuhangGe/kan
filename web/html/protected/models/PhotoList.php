@@ -105,7 +105,7 @@ class PhotoList extends CFormModel{
 //            where ua2.photo_id=p.photo_id
 //            group by ua2.user_id order by ua2.distance";
 
-        $sql = "select p.*, u_a.distance from photo as p,  (select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance
+        $sql = "select p.*, u_a.distance, u_a.address from photo as p,  (select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance
                     from user_location
                       where $cdt
                       order by distance
