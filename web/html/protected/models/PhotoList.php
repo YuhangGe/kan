@@ -19,7 +19,7 @@ class PhotoList extends CFormModel{
     public function rules(){
         return array(
             array('type', 'required'),
-            array('type', 'in', 'range'=>array("location", "time", "view", "rand", "user", "active")),
+            array('type', 'in', 'range'=>array("location", "time", "view", "rand", "user", "active", "last")),
             array("time, act_id, user_id", 'numerical', 'integerOnly'=>true),
             array("offset", 'numerical', 'integerOnly'=>true, 'min'=>0),
             array('length', 'numerical', 'integerOnly'=>true, 'min'=>1),
@@ -187,6 +187,20 @@ class PhotoList extends CFormModel{
             return array();
         }
     }
+
+    /**
+     * 返回最新一期活动（按结束时间排序）的所有图片，按人气排序
+     * @return array
+     */
+    private function getLastList() {
+        $r = Active::model()->findBySql("select act_id from active order by end_time desc limit 1");
+        if($r===null) {
+            return array();
+        }
+        $sql = "select p.* from photo p where act_id={$r->act_id} and is_key_photo = 1 order by vote_number*10 + view_number desc limit {$this->offset},{$this->length}";
+        return Yii::app()->db->createCommand($sql)->queryAll();
+    }
+
     public function get() {
         if($this->offset===null) {
             $this->offset = 0;
@@ -220,6 +234,9 @@ class PhotoList extends CFormModel{
                 break;
             case "active":
                 $arr = $this->getActiveList();
+                break;
+            case "last" :
+                $arr = $this->getLastList();
                 break;
             default:
                 return array();

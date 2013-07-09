@@ -19,7 +19,7 @@ class VideoList extends CFormModel{
     public function rules(){
         return array(
             array('type', 'required'),
-            array('type', 'in', 'range'=>array("location", "time", "view", "rand", "user", "active")),
+            array('type', 'in', 'range'=>array("location", "time", "view", "rand", "user", "active", "last")),
             array("time, act_id, user_id", 'numerical', 'integerOnly'=>true),
             array("offset", 'numerical', 'integerOnly'=>true, 'min'=>0),
             array('length', 'numerical', 'integerOnly'=>true, 'min'=>1),
@@ -105,6 +105,15 @@ class VideoList extends CFormModel{
         return $rs;
     }
 
+    private function getLastList() {
+        $r = Active::model()->findBySql("select act_id from active order by end_time desc limit 1");
+        if($r===null) {
+            return array();
+        }
+        $sql = "select p.* from video p where act_id={$r->act_id} order by vote_number*10 + view_number desc limit {$this->offset},{$this->length}";
+        $rs = Yii::app()->db->createCommand($sql)->queryAll();
+        return $rs;
+    }
     private function getRandList() {
         $sql = "SELECT *
               FROM video AS r1 JOIN
@@ -177,6 +186,9 @@ class VideoList extends CFormModel{
                 break;
             case "active":
                 return $this->getActiveList();
+                break;
+            case "last" :
+                return $this->getLastList();
                 break;
             default:
                 return array();

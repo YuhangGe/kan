@@ -385,6 +385,16 @@
 }
 返回：同上
 
+/photo/lastViewList
+使用：返回最新一期活动的图片，按人气排序。用在评奖模块的推荐页面。
+参数：{
+    'offset' :
+    'length' :
+}
+返回：同上
+说明：人气计算同/photo/viewList
+
+
 （上面的四个接口可以考虑加一个act_id，返回某个活动下面的照片。但初期需求没提到，先不管了）
 
 /video/timeList
@@ -392,6 +402,8 @@
 /video/userList
 /video/randList
 /video/viewList
+/video/lastViewList  //用在评奖模块的造昨页面
+
 视屏接口就是把photo换成vedio，返回值image_url和thumb_url分别换成big_url和small_url分别代表高清和普通，其它都一样.
 还多了一个poster_url是海报
 

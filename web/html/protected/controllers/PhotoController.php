@@ -124,4 +124,16 @@ class PhotoController extends Controller{
             $this->sendAjax(null);
         }
     }
+
+    public function actionLastViewList() {
+        $m = new PhotoList();
+        $m->attributes = $_POST;
+        $m->type = "last";
+        if($m->validate()) {
+            $list = $m->get();
+            $this->sendAjax($list, true);
+        } else {
+            $this->sendAjax(null);
+        }
+    }
 }
