@@ -12,8 +12,7 @@
     <div>
         <h3>安卓客户端</h3>
         <div>
-            <a href="{$url_prefix}download/kankan.apk">本地下载</a><br/><br/>
-            <a href="http://pan.baidu.com/share/link?shareid=2633458712&uk=503944991">百度网盘下载</a>
+            <a href="{$url_prefix}download/apk">本地下载</a><br/><br/>
         </div>
     </div>
     <div>

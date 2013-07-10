@@ -136,8 +136,8 @@
                     <label class="control-label" for="typeSelect">活动类型</label>
                     <div class="controls">
                         <select id="typeSelect" name="act_type">
-                            <option value="0" selected>才艺</option>
-                            <option value="1">表演</option>
+                            <option value="0" selected>表演</option>
+                            <option value="1">才艺</option>
                             <option value="2">简历</option>
                         </select>
                     </div>
@@ -262,7 +262,7 @@
                 return;
             }
 
-            var act = rtn.data, TYPE = ['才艺','表演', '简历'];
+            var act = rtn.data, TYPE = ['表演', '才艺','简历'];
             $("#act-detail .alert").hide();
             $("#act-detail .act-content").show();
             $("#act-detail .page-header h3").html(act.act_name+"<small style='margin-left: 10px;'>"+TYPE[Number(act.act_type)]+"</small>");

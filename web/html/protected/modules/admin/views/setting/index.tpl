@@ -14,6 +14,8 @@
         <div class="box-content">
             <form class="form-horizontal" action="{$link_prefix}admin/setting/save" method="post">
                 <fieldset>
+
+
                     {if empty($setting['background'])}
                         {assign "bg_url" ""}
                     {else}

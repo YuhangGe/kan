@@ -35,8 +35,9 @@
 ["label"=>"其它管理", "child_items"=>
     [
         ['label'=>'系统设置', 'url'=>"`$link_prefix`admin/setting/index"],
-        ['label'=>'新闻管理', 'url'=>"`$link_prefix`admin/setting/news"]
-    ]
+        ['label'=>'新闻管理', 'url'=>"`$link_prefix`admin/setting/news"],
+        ['label'=>'客户端', 'url'=>"`$link_prefix`admin/setting/app"]
+]
 
 ]
 

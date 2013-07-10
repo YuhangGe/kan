@@ -58,4 +58,21 @@ class UploadController extends AController{
             'image_url'=>  $s_path.'/'.$sif
         ), true);
     }
+
+    public function actionApk() {
+
+        if(!isset($_FILES['apk_file'])) {
+            $this->sendAjax(null);
+        }
+        $file = $_FILES['apk_file'];
+        if(!empty($file['error'])) {
+            $this->sendAjax($file['error'], false);
+        }
+        if(move_uploaded_file($file['tmp_name'], Yii::app()->params['url_prefix']."downlaod/kankan.apk")) {
+            $this->sendAjax(true, true);
+        } else {
+            $this->sendAjax(null);
+        }
+
+    }
 }

@@ -11,7 +11,7 @@ class SiteController extends Controller
             if(Yii::app()->request->isAjaxRequest) {
                 echo CJSON::encode(array("success"=>false));
             } else {
-                $this->redirect(Yii::app()->params['link_prefix']."download/index");
+                $this->redirect(Yii::app()->params['url_prefix']."download.php");
             }
 		}
 	}

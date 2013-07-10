@@ -44,4 +44,8 @@ class SettingController extends AController{
     public function actionNews() {
         $this->render("news");
     }
+
+    public function actionApp() {
+        $this->render("app");
+    }
 }

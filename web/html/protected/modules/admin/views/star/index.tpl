@@ -334,7 +334,7 @@
                     alert("网络错误，请重试。");
                     return;
                 }
-                var act = rtn.data, TYPE = ['才艺','表演', '简历'];
+                var act = rtn.data, TYPE = ['表演', '才艺','简历'];
                 $("#score-detail .alert").hide();
                 $("#score-detail .score-content").show();
                 $("#score-detail .score-info .span4 h2").html(act.act_name+"<small style='margin-left: 10px;'>"+TYPE[Number(act.act_type)]+"</small>");

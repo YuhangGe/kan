@@ -70,7 +70,7 @@
             { "mData": "act_id"},
             { "mData": "act_name" },
             { "mData": "act_type", "mRender" : function(data) {
-                return ['才艺','表演','简历'][Number(data)];
+                return ['表演','才艺','简历'][Number(data)];
             }
             },
             { "mData": "begin_time","mRender": function(data) {
