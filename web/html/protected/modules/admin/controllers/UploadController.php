@@ -61,14 +61,33 @@ class UploadController extends AController{
 
     public function actionApk() {
 
+
+
         if(!isset($_FILES['apk_file'])) {
             $this->sendAjax(null);
         }
         $file = $_FILES['apk_file'];
+
         if(!empty($file['error'])) {
             $this->sendAjax($file['error'], false);
         }
-        if(move_uploaded_file($file['tmp_name'], Yii::app()->params['url_prefix']."downlaod/kankan.apk")) {
+
+        if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
+            $r_s = "protected\\modules\\admin\\controllers";
+            $f_s = "download\\kankan.apk";
+        } else {
+            $r_s = "protected/modules/admin/controllers";
+            $f_s = "download/kankan.apk";
+        }
+        $dir = dirname(__FILE__);
+
+        $filename = str_replace($r_s, $f_s, $dir);
+
+//        if(file_exists($filename)) {
+//            unlink($filename);
+//        }
+
+        if(move_uploaded_file($file['tmp_name'], $filename)) {
             $this->sendAjax(true, true);
         } else {
             $this->sendAjax(null);

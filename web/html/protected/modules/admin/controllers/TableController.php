@@ -72,10 +72,12 @@ class TableController extends AController{
         $this->output();
     }
     public function actionActive() {
+        $this->ord = "order by act_id desc";
         $this->getData("active", " act_id, act_name, act_type, begin_time, end_time, image ");
     }
 
     public function actionUser() {
+        $this->ord = "order by user_id desc";
         $this->getData("user", " user_id, level, sex, nick_name, birthday, email, phone, small_avatar, fan_number, friend_number ");
     }
 
@@ -129,11 +131,13 @@ class TableController extends AController{
     }
 
     public function actionVideo() {
+        $this->ord = "order by video_id desc";
         $this->getData("video", " * ");
 
     }
 
     public function actionNews() {
+        $this->ord = "order by news_id desc";
         $this->getData("news");
     }
 

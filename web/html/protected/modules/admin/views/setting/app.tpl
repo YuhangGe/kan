@@ -44,7 +44,7 @@
         var img = fs[0];
         if(!/\.apk$/.test(img.name)) {
             alert("只能上传.apk文件！");
-            return;
+           return;
         }
         var fd = new FormData();
         fd.append("apk_file", img);
@@ -84,7 +84,7 @@
         } else {
             noty({text: '上传成功！', layout:'topCenter', 'type' : 'success', 'timeout' : 1000});
         }
-        $("#app-apk .apk-upload").text("上传新版本apk文件");
+        $("#app-apk .apk-upload").text("上传成功！");
         $("#btnApk").attr("disabled", false);
     }
 

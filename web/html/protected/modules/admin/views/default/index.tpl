@@ -14,7 +14,7 @@
         </div>
         <div class="box-content">
 
-            <table aoDataSource="{$link_prefix}admin/table/active" aoOrderBy="end_time" aoColumns="active" fnDrawCallback="active" class="table table-striped table-bordered bootstrap-datatable datatable">
+            <table aoDataSource="{$link_prefix}admin/table/active"  aoColumns="active" fnDrawCallback="active" class="table table-striped table-bordered bootstrap-datatable datatable">
                 <thead>
                 <tr>
                     <td>ID</td>

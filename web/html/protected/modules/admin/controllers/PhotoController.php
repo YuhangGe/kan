@@ -28,7 +28,7 @@ class PhotoController extends AController{
         }
         $off = $pi * self::PER_PAGE;
         $len = self::PER_PAGE;
-        $photo_list = Yii::app()->db->createCommand("select * from photo limit $off, $len")->queryAll();
+        $photo_list = Yii::app()->db->createCommand("select * from photo order by photo_id desc limit $off, $len")->queryAll();
 
         $this->sendAjax(array(
             'photo_list' => $photo_list,

@@ -18,7 +18,7 @@
         </div>
         <div class="box-content">
 
-            <table id="news-table" aoDataSource="{$link_prefix}admin/table/news" aoOrderBy="news_id" aoColumns="news"  class="table table-striped table-bordered bootstrap-datatable datatable">
+            <table id="news-table" aoDataSource="{$link_prefix}admin/table/news" aoColumns="news"  class="table table-striped table-bordered bootstrap-datatable datatable">
                 <thead>
                 <tr>
                     <td>ID</td>
@@ -38,10 +38,10 @@
 
 <div id="table-edit-row-template" style="display: none">
 
-    <a class="btn btn-danger edit-del" href="javascript:delNews('NEWS_ID');">
-        <i class="icon-trash icon-white"></i>
-        删除
-    </a>
+    {*<a class="btn btn-danger edit-del" href="javascript:delNews('NEWS_ID');">*}
+        {*<i class="icon-trash icon-white"></i>*}
+        {*删除*}
+    {*</a>*}
     <a class="btn btn-info edit-modify" href="javascript:;">
         <i class="icon-edit icon-white"></i>
         修改

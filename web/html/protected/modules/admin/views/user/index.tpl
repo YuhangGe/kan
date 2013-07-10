@@ -14,7 +14,7 @@
         </div>
         <div class="box-content">
 
-            <table aoDataSource="{$link_prefix}admin/table/user" aoOrderBy="user_id" aoColumns="user"  class="table table-striped table-bordered bootstrap-datatable datatable">
+            <table aoDataSource="{$link_prefix}admin/table/user" aoColumns="user"  class="table table-striped table-bordered bootstrap-datatable datatable">
                 <thead>
                 <tr>
                     <td>ID</td>
