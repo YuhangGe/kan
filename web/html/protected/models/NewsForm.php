@@ -40,7 +40,7 @@ class NewsForm extends CFormModel{
     public function all_list() {
         $this->_off_len();
 
-        $sql = "select * from news limit {$this->offset},{$this->length}";
+        $sql = "select * from news order by news_id desc limit {$this->offset},{$this->length}";
         return Yii::app()->db->createCommand($sql)->queryAll();
 
     }

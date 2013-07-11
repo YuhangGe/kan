@@ -125,4 +125,48 @@ class ActiveController extends Controller{
             $this->sendAjax(null);
         }
     }
+
+    public function actionOpenList() {
+        $m = new ActiveList();
+        $m->attributes = $_POST;
+        if($m->validate()) {
+            $this->sendAjax($m->getOpenList());
+        } else {
+            $this->sendAjax(null);
+        }
+    }
+
+    public function actionCloseList() {
+        $m = new ActiveList();
+        $m->attributes = $_POST;
+        if($m->validate()) {
+            $this->sendAjax($m->getCloseList());
+        } else {
+            $this->sendAjax(null);
+        }
+    }
+
+    public function actionRecommendPhoto() {
+        $m = new PhotoList();
+        $m->attributes = $_POST;
+        $m->type = "recommend";
+        if($m->validate()) {
+            $list = $m->get();
+            $this->sendAjax($list, true);
+        } else {
+            $this->sendAjax(null);
+        }
+    }
+
+    public function actionRecommendVideo() {
+        $m = new VideoList();
+        $m->attributes = $_POST;
+        $m->type = "recommend";
+        if($m->validate()) {
+            $list = $m->get();
+            $this->sendAjax($list, true);
+        } else {
+            $this->sendAjax(null);
+        }
+    }
 }

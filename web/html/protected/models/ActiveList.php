@@ -49,8 +49,17 @@ class ActiveList extends CFormModel {
 
         $uid = Yii::app()->user->id;
 
-        return Yii::app()->db->createCommand("SELECT t.act_id, t.act_name, t.begin_time, t.end_time, t.image, u.user_id FROM active t LEFT OUTER JOIN user_active u ON (u.act_id = t.act_id AND u.user_id=$uid) WHERE t.act_type={$this->act_type} order by end_time desc LIMIT {$this->offset}, {$this->length}")
+        $rs = Yii::app()->db->createCommand("SELECT t.act_id, t.act_name, t.begin_time, t.end_time, t.image, u.user_id FROM active t LEFT OUTER JOIN user_active u ON (u.act_id = t.act_id AND u.user_id=$uid) WHERE t.act_type={$this->act_type} order by end_time desc LIMIT {$this->offset}, {$this->length}")
             ->queryAll();
+
+        foreach ($rs as $key=>$r) {
+            if($r['end_time']<time()) {
+                $rs[$key]['user_id'] = Yii::app()->user->id;
+            }
+        }
+
+        return $rs;
+
     }
 
     public function page() {
@@ -79,6 +88,23 @@ class ActiveList extends CFormModel {
         }
         $this->_off_len();
         $sql = "select t.act_id, t.act_name, t.begin_time, t.end_time, t.image from active t, user_active ua where ua.user_id = {$this->user_id} and ua.act_id = t.act_id order by end_time desc limit {$this->offset}, {$this->length}";
+        return Yii::app()->db->createCommand($sql)->queryAll();
+    }
+
+    public function getOpenList() {
+        $this->_off_len();
+        $now = time();
+        $sql = "select t.act_id, t.act_name, t.begin_time, t.end_time, t.image from active t where t.end_time>$now limit {$this->offset},{$this->length}";
+
+        return Yii::app()->db->createCommand($sql)->queryAll();
+
+    }
+
+    public function getCloseList() {
+        $this->_off_len();
+        $now = time();
+        $sql = "select t.act_id, t.act_name, t.begin_time, t.end_time, t.image from active t where t.end_time<$now limit {$this->offset},{$this->length}";
+
         return Yii::app()->db->createCommand($sql)->queryAll();
     }
 }

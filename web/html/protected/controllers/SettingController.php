@@ -11,8 +11,8 @@ class SettingController extends Controller{
         if(empty($_POST['key'])) {
             $this->sendAjax(null);
         }
-        $r = Setting::model()->find("key=:k", array(":k"=>$_POST['key']));
-        if($r === null) {
+        $r = Setting::model()->findByAttributes(array("key"=>$_POST['key']));
+        if($r === null || empty($r->value)) {
             $this->sendAjax(array('key'=>$_POST['key'], 'value'=>null));
         } else {
             $this->sendAjax(array('key'=>$_POST['key'], 'value'=>$r->value));

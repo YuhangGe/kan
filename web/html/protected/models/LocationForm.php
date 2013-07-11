@@ -26,6 +26,9 @@ class LocationForm extends CFormModel{
         if(!$this->validate()) {
             return false;
         }
+        if($this->lat<0 || $this->lng<0) {
+            return false;
+        }
         $arr = array('lat'=>$this->lat, 'lng'=>$this->lng, 'time'=>$this->time);
         if($this->address !== null) {
             $arr['address'] = $this->address;

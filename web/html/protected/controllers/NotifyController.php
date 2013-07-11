@@ -32,7 +32,7 @@ class NotifyController extends Controller{
         $m->attributes = $_POST;
         $m->user_id = Yii::app()->user->id;
         if($m->validate()) {
-            $this->sendAjax($m->all_list(), true);
+            $this->sendAjax($m->all_list_unread_prefix(), true);
         } else {
             $this->sendAjax(null);
         }

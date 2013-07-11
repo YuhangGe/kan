@@ -33,7 +33,20 @@ class SiteController extends Controller
              * 客户端应该在本地保存用户信息的副本，这样直接使用user_id本地查询减少网络压力
              */
             $user = Yii::app()->user;
-            $this->sendAjax(array('user_id'=>$user->id, 'nick_name'=>$user->name, 'small_avatar'=>$user->avatar,'level'=>$user->level, 'sid'=>session_id()), true);
+
+            $m = new LocationForm();
+            $m->attributes = $_POST;
+            $m->user_id = $user->id;
+            $m->time = time();
+            $m->update();
+
+            $r = Setting::model()->findByAttributes(array("key"=>"advertisement"));
+            if($r===null || empty($r->value)) {
+                $ad = null;
+            } else {
+                $ad = $r->value;
+            }
+            $this->sendAjax(array('user_id'=>$user->id, 'nick_name'=>$user->name, 'small_avatar'=>$user->avatar,'level'=>$user->level, 'sid'=>session_id(), 'ad_url'=>$ad), true);
         } else {
             $this->sendAjax(null);
         }

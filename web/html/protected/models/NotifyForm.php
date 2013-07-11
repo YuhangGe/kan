@@ -47,6 +47,15 @@ class NotifyForm extends CFormModel{
         return Yii::app()->db->createCommand($sql)->queryAll();
     }
 
+    public function all_list_unread_prefix() {
+        $this->_off_len();
+
+
+        $sql = "select * from notify where to_user_id={$this->user_id} order by is_read, notify_id desc limit {$this->offset},{$this->length}";
+        return  Yii::app()->db->createCommand($sql)->queryAll();
+
+
+    }
     public function unread_count() {
         $sql = "select count(*) as num from notify where to_user_id={$this->user_id} and is_read=0";
         $r = Yii::app()->db->createCommand($sql)->queryAll();

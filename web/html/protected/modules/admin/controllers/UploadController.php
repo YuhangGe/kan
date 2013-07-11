@@ -47,7 +47,7 @@ class UploadController extends AController{
 
         $dir = "image";
         $_tag = time().rand(0, 1000000);
-        $i_fn = "act_".$_tag;
+        $i_fn = "img_".$_tag;
 
         $sif = $this->savePhoto("image_file", $dir, $i_fn);
         if($sif==false) {
@@ -59,6 +59,25 @@ class UploadController extends AController{
         ), true);
     }
 
+    public function actionAdvertisement() {
+        if(!isset($_FILES['image_file'])) {
+            $this->sendAjax(null);
+        }
+
+        $dir = "image";
+        $_tag = time().rand(0, 1000000);
+        $i_fn = "ad_".$_tag;
+
+        $sif = $this->savePhoto("image_file", $dir, $i_fn);
+        if($sif==false) {
+            $this->sendAjax(null);
+        }
+
+        $s_path = Yii::app()->params['staticServer'];
+        $this->sendAjax(array(
+            'image_url'=>  $s_path.'/'.$sif
+        ), true);
+    }
     public function actionApk() {
 
 

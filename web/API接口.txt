@@ -10,6 +10,7 @@
         nick_name : xxx,
         sid : xxxxx
         small_avatar : xxx | null,
+	ad_url : xxx | null, 广告的图片url，可能为null
         level : 用户等级。0，1，2，3分别代表普客，秀客，演客，星客
     }
     'success' : true/false,
@@ -65,7 +66,7 @@
     nick_name:
     email : 
     phone:
-    level : 0/1/2 看客，秀客，星客
+    level : 0/1/2/3 看客，秀客，演客，星客
     sex : 0/1  男女
     constellation : 1-12  星座
     birthday : 
@@ -232,6 +233,21 @@
 }
 返回：同上。
 
+/active/openList
+使用：得到正在进行中的活动（用于推荐页面）
+参数：{
+    offset:
+    length:
+}
+返回：同上
+
+/active/closeList
+使用：得到已经结束的活动（用于造星页面）
+参数：{
+    offset:
+    length:
+}
+返回：同上
 
 /active/info
 使用：得到活动详细信息
@@ -348,10 +364,12 @@
     'image_url' : xx //图片地址
     'thumb_url' : xx //缩略图地址
     'vote_number' : //当前喜欢的人数
-    'view_number' : //当前浏览的人数
+    'view_number' : //当前浏览的人数,
+    'score_number' : //当前图片的人气值(vote*10+view)
     'distance' : 上传人离自己的距离
     'address' : 上传人所在地址
-    'has_voted' : 1/0 是否已经点了推荐
+    'has_voted' : 1/0 是否已经点了推荐,
+    'follow' : 1/0 当前用户是否已经关注上传人
 }, {}, {}, ...]
 
 /photo/timeList
@@ -361,7 +379,7 @@
     'offset' : xxx
     'length' : xxx
 }
-返回：同上，但是没有距离信息。注意每次取更多照片时time要保持一致，否则可能出现逻辑错误。
+返回：同上。注意每次取更多照片时time要保持一致，否则可能出现逻辑错误。
      如果要刷新时间后取最新的照片，则应该从offset=0开始取。
 
 /photo/viewList
@@ -394,19 +412,6 @@
 返回：同上
 说明：人气计算同/photo/viewList
 
-
-（上面的四个接口可以考虑加一个act_id，返回某个活动下面的照片。但初期需求没提到，先不管了）
-
-/video/timeList
-/video/locationList
-/video/userList
-/video/randList
-/video/viewList
-/video/lastViewList  //用在评奖模块的造昨页面
-
-视屏接口就是把photo换成vedio，返回值image_url和thumb_url分别换成big_url和small_url分别代表高清和普通，其它都一样.
-还多了一个poster_url是海报
-
 /photo/randList
 使用：随机返回照片列表
 参数：{
@@ -426,6 +431,20 @@
     length : xxx
 }
 返回：同上
+
+
+/video/timeList
+/video/locationList
+/video/userList
+/video/randList
+/video/viewList
+
+/video/lastViewList  //用在评奖模块的造昨页面
+
+视屏接口就是把photo换成vedio，返回值image_url和thumb_url分别换成big_url和small_url分别代表高清和普通，其它都一样.
+还多了一个poster_url是海报
+
+
 
 
 /vote/photo
@@ -718,6 +737,7 @@ offset和length只用来控制未读留言的数量。返回的数据实际是le
 }
 说明，这个接口用来得到系统配置。当前已有的key包括：
 'background' : 首页的背景图片。
+'advertisement' : 广告图片
 
 /winner/userList
 使用：返回所有获奖用户

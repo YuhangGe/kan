@@ -38,7 +38,7 @@ class ChatForm extends CFormModel{
             return array();
         }
         $this->_off_len();
-        $sql = "SELECT c.from_user_id, c.time, c.content, u.nick_name as user_name, u.small_avatar as user_avatar FROM (select * from chat where to_user_id={$this->to_user_id} and `is_read`=0 order by msg_id desc) as c, user as u
+        $sql = "SELECT c.*, u.nick_name as user_name, u.small_avatar as user_avatar FROM (select * from chat where to_user_id={$this->to_user_id} and `is_read`=0 order by msg_id desc) as c, user as u
             where c.from_user_id=u.user_id  group by from_user_id order by msg_id desc limit {$this->offset},{$this->length}";
         return Yii::app()->db->createCommand($sql)->queryAll();
     }
@@ -49,9 +49,20 @@ class ChatForm extends CFormModel{
         }
         $this->_off_len();
 
-        $sql = "SELECT c.from_user_id, c.time, c.content, u.nick_name as user_name, u.small_avatar as user_avatar FROM (select * from chat where to_user_id={$this->to_user_id} order by msg_id desc) as c, user as u
+        $sql = "SELECT c.*, u.nick_name as user_name, u.small_avatar as user_avatar FROM (select * from chat where to_user_id={$this->to_user_id} order by msg_id desc) as c, user as u
             where c.from_user_id=u.user_id  group by from_user_id order by msg_id desc limit {$this->offset},{$this->length}";
         return Yii::app()->db->createCommand($sql)->queryAll();
+    }
+
+    public function all_list_unread_prefix() {
+        $this->_off_len();
+
+
+        $sql = "SELECT c.*, u.nick_name as user_name, u.small_avatar as user_avatar FROM (select * from chat where to_user_id={$this->to_user_id} order by is_read, msg_id desc) as c, user as u
+            where c.from_user_id=u.user_id  group by from_user_id order by msg_id desc limit {$this->offset},{$this->length}";
+
+        return Yii::app()->db->createCommand($sql)->queryAll();
+
     }
 
     public function unread_count() {

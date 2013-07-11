@@ -19,7 +19,7 @@ class VideoList extends CFormModel{
     public function rules(){
         return array(
             array('type', 'required'),
-            array('type', 'in', 'range'=>array("location", "time", "view", "rand", "user", "active", "last")),
+            array('type', 'in', 'range'=>array("location", "time", "view", "rand", "user", "active", "last", "recommend")),
             array("time, act_id, user_id", 'numerical', 'integerOnly'=>true),
             array("offset", 'numerical', 'integerOnly'=>true, 'min'=>0),
             array('length', 'numerical', 'integerOnly'=>true, 'min'=>1),
@@ -28,9 +28,7 @@ class VideoList extends CFormModel{
     }
 
     private  function getLocationList() {
-        if($this->lat === null || $this->lng === null) {
-            return array();
-        }
+
         $uid = Yii::app()->user->id;
         $STEP = array(0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1);
         $STEP_C = 10;
@@ -80,15 +78,11 @@ class VideoList extends CFormModel{
 //            group by ua2.user_id order by ua2.distance";
 
         $sql = "select v.*, u_a.distance, u_a.address from video as v, (
-            select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance
+            select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance, address
                 from user_location where $cdt order by distance limit {$this->offset}, {$this->length}
         ) as u_a where u_a.user_id = v.user_id and v.user_id<>$uid order by u_a.distance";
 
 
-        /*
-         * 取出附近用户最新上传的一张照片
-         * 其中的GETDISTANCE是mysql的函数，参考数据库.txt文档
-         */
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
 
@@ -98,14 +92,13 @@ class VideoList extends CFormModel{
         if($this->time===null) {
             $this->time = time();
         }
-        $sql = "select * from video where upload_time<={$this->time}
-                order by upload_time desc limit {$this->offset},{$this->length}";
+        $sql = "select GETDISTANCE(u_a.lat, u_a.lng, {$this->lat}, {$this->lng}) as distance, u_a.address, p.*, p.vote_number*10+p.view_number as score_number from video p left join user_location u_a on p.user_id=u_a.user_id where upload_time<={$this->time} order by upload_time desc limit {$this->offset}, {$this->length}";
 
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
     }
     private function getViewList() {
-        $sql = "select p.* from video p order by vote_number*10 + view_number desc limit {$this->offset},{$this->length}";
+        $sql = "select GETDISTANCE(u_a.lat, u_a.lng, {$this->lat}, {$this->lng}) as distance, u_a.address, p.*, p.vote_number*10 + p.view_number as score_number from video p left join user_location u_a on p.user_id=u_a.user_id order by score_number desc limit {$this->offset},{$this->length}";
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
     }
@@ -115,7 +108,7 @@ class VideoList extends CFormModel{
         if($r===null) {
             return array();
         }
-        $sql = "select p.* from video p where act_id={$r->act_id} order by vote_number*10 + view_number desc limit {$this->offset},{$this->length}";
+        $sql = "select GETDISTANCE(u_a.lat, u_a.lng, {$this->lat}, {$this->lng}) as distance, u_a.address, p.*, p.vote_number*10 + p.view_number as score_number from video p left join user_location u_a on u_a.user_id=p.user_id where p.act_id={$r->act_id} order by score_number desc limit {$this->offset},{$this->length}";
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
     }
@@ -143,7 +136,7 @@ class VideoList extends CFormModel{
         if($this->user_id===null) {
             return array();
         }
-        $sql = "select * from video where user_id={$this->user_id} order by upload_time desc limit {$this->offset},{$this->length}";
+        $sql = "select GETDISTANCE(u_a.lat, u_a.lng, {$this->lat}, {$this->lng}) as distance, u_a.address, p.*, p.vote_number*10 + p.view_number as score_number from video p left join user_location u_a on p.user_id=u_a.user_id where p.user_id={$this->user_id} order by upload_time desc limit {$this->offset},{$this->length}";
         return Yii::app()->db->createCommand($sql)->queryAll();
     }
 
@@ -151,15 +144,18 @@ class VideoList extends CFormModel{
         if($this->act_id===null) {
             return array();
         }
-        $rs = Video::model()->findAll(array(
-            "condition"=>"act_id=:aId order by upload_time desc limit {$this->offset},{$this->length}",
-            "params" => array(":aId"=>$this->act_id)
-        ));
-        if($rs!==null) {
-            return $rs;
-        } else {
+        $sql = "select GETDISTANCE(u_a.lat, u_a.lng, {$this->lat}, {$this->lng}) as distance, u_a.address, p.*, vote_number*10 + view_number as score_number from video p left join user_location u_a on p.user_id=u_a.user_id where p.act_id={$this->act_id} order by upload_time desc limit {$this->offset},{$this->length}";
+        return Yii::app()->db->createCommand($sql)->queryAll();
+
+    }
+    private function getRecommendList() {
+        if($this->act_id===null) {
             return array();
         }
+        $sql = "select GETDISTANCE(u_a.lat, u_a.lng, {$this->lat}, {$this->lng}) as distance, u_a.address, p.*, p.vote_number*10 + p.view_number as score_number from video p left join user_location u_a on p.user_id=u_a.user_id where p.act_id={$this->act_id} order by score_number desc limit 9";
+        $rs = Yii::app()->db->createCommand($sql)->queryAll();
+        return $rs;
+
     }
     public function get() {
         if($this->offset===null) {
@@ -173,31 +169,93 @@ class VideoList extends CFormModel{
         } else {
             $this->length = intval($this->length);
         }
+        $uid = Yii::app()->user->id;
+        $r = UserLocation::model()->findBySql("select * from user_location where user_id=$uid");
+        if($r===null) {
+            return array();
+        }
+        if($r->lat==null || $r->lng==null) {
+            $this->lat = 0;
+            $this->lng = 0;
+        } else {
+            $this->lat = $r->lat;
+            $this->lng = $r->lng;
+        }
         switch($this->type) {
             case 'location':
-                return $this->getLocationList();
+                $arr = $this->getLocationList();
                 break;
             case 'time':
-                return $this->getTimeList();
+                $arr = $this->getTimeList();
                 break;
             case 'view' :
-                return $this->getViewList();
+                $arr = $this->getViewList();
                 break;
             case "rand" :
-                return $this->getRandList();
+                $arr = $this->getRandList();
                 break;
             case "user" :
-                return $this->getUserList();
+                $arr = $this->getUserList();
                 break;
             case "active":
-                return $this->getActiveList();
+                $arr = $this->getActiveList();
                 break;
             case "last" :
-                return $this->getLastList();
+                $arr = $this->getLastList();
+                break;
+            case "recommend":
+                $arr = $this->getRecommendList();
                 break;
             default:
                 return array();
         }
+
+
+        /*
+         * 出于数据库性能和写代码的方便考虑，没有直接使用联表查询。
+         */
+        $p_arr = array();
+        $u_arr = array();
+        foreach ($arr as $a) {
+            if(empty($a['distance'])) {
+                $a['distance'] = -1;
+            }
+            $p_arr[] = $a['video_id'];
+            $u_arr[] = $a['user_id'];
+        }
+        $sql = "select pv.* from video_vote pv where user_id=$uid and video_id in(".join(",", $p_arr).")";
+        $rs = Yii::app()->db->createCommand($sql)->queryAll();
+
+        $p_arr = array();
+        foreach ($rs as $r) {
+            $p_arr[] = $r['video_id'];
+        }
+
+        foreach($arr as $key=>$a) {
+            if(in_array($a['video_id'], $p_arr)) {
+                $arr[$key]['has_voted'] = 1;
+            } else {
+                $arr[$key]['has_voted'] = 0;
+            }
+        }
+
+        $sql = "select * from user_fan where fan_id=$uid and user_id in(".join(",", $u_arr).")";
+        $rs = Yii::app()->db->createCommand($sql)->queryAll();
+
+        $u_arr = array();
+        foreach ($rs as $r) {
+            $u_arr[] = $r['user_id'];
+        }
+
+        foreach($arr as $key=>$a) {
+            if(in_array($a['user_id'], $u_arr)) {
+                $arr[$key]['follow'] = 1;
+            } else {
+                $arr[$key]['follow'] = 0;
+            }
+        }
+
+        return $arr;
     }
 
 

@@ -1,0 +1,237 @@
+登陆：/site/login
+参数：{
+	'username' : xx
+	'password' : xx
+	'lat' : xx 可选
+	'lng' : xx 可选
+	'address' : xx  可选
+}
+返回：true/false
+登陆时传入地理位置。如果没有，则不传相关参数或是lat=-1,lng=-1,address=""
+
+
+1. 广告
+通过登陆接口
+/site/login
+返回：{
+	 user_id : xxx,
+        nick_name : xxx,
+        sid : xxxxx
+        small_avatar : xxx | null,
+		ad_url : xxx | null, 广告的图片url，可能为null
+        level : 用户等级。0，1，2，3分别代表普客，秀客，演客，星客
+}
+
+或者通过接口
+/setting/get
+参数: {
+	'key' : 'advertisement'
+}
+返回：{
+	'key' : 'advertisement',
+	'value' : xxxx | null
+}
+
+2. 图片列表
+/photo/viewList, /photo/timeList, /photo/locationList, /photo/userList, /photo/activeList, /photo/lastViewList
+
+参数：{
+	offset : 可选
+	length : 可选
+}
+返回：[{
+    'photo_id' : xx
+    'user_id' : xx
+    'act_id' : xx
+    'user_name' : xx
+    'act_name' : xx
+    'upload_time' : xx
+    'image_url' : xx //图片地址
+    'thumb_url' : xx //缩略图地址
+    'vote_number' : //当前喜欢的人数
+    'view_number' : //当前浏览的人数,
+    'score_number' : //当前图片的人气值(vote*10+view)  * 新增
+    'distance' : 上传人离自己的距离      *新增，如果算不出距离则是 -1
+    'address' : 上传人所在地址       *新增，如果没有位置则是null或者空 
+    'has_voted' : 1/0 是否已经点了推荐      *新增
+    'follow' : 1/0 当前用户是否已经关注上传人       *新增
+}, {}, {}, ...]
+
+说明：不再传入当前地理位置。在登陆时传入，之后每5分钟更新一次。地理距离如果是-1，则可以显示未知距离，如果非常大，则可以显示超过10公里。
+
+
+
+3. 视频列表
+同图片列表。也是所有接口传入lat , lng ，返回列表统一有 distance, address, has_voted, follow字段
+
+4. 
+/active/openList
+使用：得到正在进行中的活动（用于推荐页面）
+参数：{
+    offset:
+    length:
+}
+返回：[{
+    'act_id' : xxx
+    'act_name' : xxx
+    'begin_time' : xxx  //整数时间戳，需要转换
+    'end_time' : xxx
+    'image' : xxx //海报
+}, {}, {},...]
+
+/active/closeList
+使用：得到已经结束的活动（用于造星页面）
+参数：{
+    offset:
+    length:
+}
+返回：同上
+
+/active/recommendPhoto
+使用：得到某个活动的推荐的9张照片（人气排名前9）
+参数：{
+	act_id : xxx
+}
+返回：同/photo/viewList
+说明：
+a. 需要的排名就是返回数组本身的顺序(不再提供字段）。点进照片详情后跟前面的一致，会有距离点信息.
+b. 人气值（推荐指数）可以用score_number。这里和/photo/xxxList不一样的是，是该用户在这个活动中上传照片人气的总和。当然客户端可以不用管这个，只是说明一下。
+c. 注意返回可能没有9张图片，如果一个活动才开始还没有超过9个人参加。
+
+/active/recommendVideo
+使用：得到某个活动的推荐的9个视频（人气排名前9）
+参数：{
+	act_id : xxx
+}
+返回：同/video/viewList
+说明：同上
+
+6. 原接口已经有这些信息。就是通过level，演客（2）才有视频，星客（3）才是民星。
+/user/info
+使用：取得用户信息
+参数：{
+    'user_id' : xxx
+}
+返回：{
+    user_id: 
+    nick_name:
+    email : 
+    phone:
+    level : 0/1/2/3 看客，秀客，演客，星客
+    sex : 0/1  男女
+    constellation : 1-12  星座
+    birthday : 
+    personalsay: 个人说明
+    company: 公司或学校（单位）
+    hobby: 兴趣爱好
+    big_avatar:
+    small_avatar:
+    image_server : //图片上传服务器地址
+    fan_number : 粉丝数
+    friend_number: 好友数
+    view_number : 空间来访量（人气）
+    relation : [me,friend,follow,fan]
+}
+      relation是一个数组，代表当前登陆用户和这个用户的关系：
+      ['me']【是自己】
+      ['friend']【是互粉好友】
+      ['follow']【对方关注自己】
+      ['fan']【是对方粉丝】
+      其中，friend,follow,fan可以同时组合出现，比如作为普通用户两个人互相是好友，
+            而且两个人还都参加了选秀活动成为秀客彼此互相关注对方，那么他们间就会同时有这三个关系。
+
+7. /search/active  /search/user /search/video
+
+
+8. 能用
+/update/password
+使用：更新密码
+参数：{
+    'pre_password' : xxx
+    'password' : xxx
+}
+返回：true/false
+说明：
+    pre_password为之前的密码。password为新密码。
+    
+
+9. 
+/news/allList
+使用：返回所有新闻
+参数：{
+	offset :
+	length :
+}
+返回：[
+        {
+            'news_id' :
+            'content' :
+            'time' : //发布时间
+            'type' :
+            'tag' : //type和tag是保留的，用来可能的比如新闻的点击后跳转。客户端暂时可以不用。
+        },{},{}
+    ]
+
+/notify/allList
+使用：返回所有通知。未读的在前面。
+参数：{
+	offset:
+	length:
+}
+返回：[{
+            'notify_id' :
+            'content' :
+            'time' :
+            'is_read' :  1/0   is_read和type都是保留功能。客户端如果觉得已读未读暂时有点麻烦，就不用管了。
+            'type' :
+            'to_user_id' : //一定是当前用户，可忽略
+        }, {}, {}]
+
+/chat/allList
+使用：返回所有通知。未读的在前面。
+参数：{
+	offset:
+	length:
+}
+返回：[{
+            msg_id :
+            content :
+            time :
+            is_read :
+            from_user_id :
+            to_user_id : 一定是当前用户，可忽略
+        }, {}, {}]
+
+
+10. 原来的接口/video/userList就是返回用户的视频。从资料页面点进去用这个接口就可以了。这里是按上传时间排序的，跟获不获奖没关系。注意和/winner/videoList接口功能不一样。
+
+/photo/userList
+使用：返回某个用户的所有照片。
+参数：{
+    user_id: xxx
+    offset : 
+    length : 
+}
+返回：[{
+    'video_id' : xx
+    'user_id' : xx
+    'act_id' : xx
+    'user_name' : xx
+    'act_name' : xx
+    'upload_time' : xx
+    'big_url' : xx //高清
+    'small_url' : xx //普清
+    'poster_url' : //海报地址
+    'vote_number' : //当前喜欢的人数
+    'view_number' : //当前浏览的人数,
+    'score_number' : //当前图片的人气值(vote*10+view)
+    'distance' : 上传人离自己的距离
+    'address' : 上传人所在地址
+    'has_voted' : 1/0 是否已经点了推荐,
+    'follow' : 1/0 当前用户是否已经关注上传人
+}, {}, {}, ...]
+
+
+
+
+
