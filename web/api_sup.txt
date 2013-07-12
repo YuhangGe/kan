@@ -141,6 +141,23 @@ c. 注意返回可能没有9张图片，如果一个活动才开始还没有超�
             而且两个人还都参加了选秀活动成为秀客彼此互相关注对方，那么他们间就会同时有这三个关系。
 
 7. /search/active  /search/user /search/video
+参数：{
+    nick_name :  xxx  模糊搜索
+    act_name / video_name : xxx   模糊搜索。act_name用于活动，video_name用于节目
+    sex : 0/1
+    constellation : 1-12  星座。
+       1-12分别代表对应月份的上半月星座。比如1是摩羯，2是水瓶，双鱼，白羊，金牛，双子，巨蟹，狮子，处女，天秤，天蝎，射手
+    age_from : 0-100
+    age_to : 0-100
+    distance : xxx（米）
+    tag : xxx  //标签，可以是任意文字，匹配公司学校或个人爱好。
+}
+返回：同原来的接口。
+说明：
+1. age_from和age_to必须同时出现，搜索年龄段，age_from必须小于或等于age_to,
+       如果搜索某个确定年龄，则age_to=age_from，请客户端注意。
+2. 不再传入lat, lng参数，使用当前用户最近一次更新的位置。
+
 
 
 8. 能用
@@ -237,6 +254,17 @@ c. 注意返回可能没有9张图片，如果一个活动才开始还没有超�
     'follow' : 1/0 当前用户是否已经关注上传人
 }, {}, {}, ...]
 
+
+/user/fans, /user/follows添加了返回字段chat_number，代表留言数（单向留言）
+{
+          'user_id' : xxx,
+          'nick_name' : xxx,
+          'small_avatar' : xxx //小头像,
+          'level' : 等级（秀客星客）
+          'fan_number' : 粉丝数
+          'friend_number' : 好友数,
+          'chat_number' : 粉丝向这个查询用户的留言数
+      }
 
 
 

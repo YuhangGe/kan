@@ -17,8 +17,10 @@ class SearchController extends Controller{
     }
 
     public function actionUser() {
-        $m = new SearchUserForm();
+        $m = new SearchForm();
         $m->attributes = $_POST;
+        $m->type="user";
+
         if(!$m->validate()) {
             $this->sendAjax(null);
         }
@@ -44,8 +46,9 @@ class SearchController extends Controller{
         }
     }
     public function actionActive() {
-        $m = new SearchActiveForm();
+        $m = new SearchForm();
         $m->attributes = $_POST;
+        $m->type = "active";
         if(!$m->validate()) {
             $this->sendAjax(null);
         }
@@ -57,8 +60,9 @@ class SearchController extends Controller{
         }
     }
     public function actionVideo() {
-        $m = new SearchVideoForm();
+        $m = new SearchForm();
         $m->attributes = $_POST;
+        $m->type = "video";
         if(!$m->validate()) {
             $this->sendAjax(null);
         }
@@ -69,4 +73,5 @@ class SearchController extends Controller{
             $this->sendAjax(null);
         }
     }
+
 }

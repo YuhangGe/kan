@@ -194,7 +194,8 @@
           'small_avatar' : xxx //小头像,
           'level' : 等级（秀客星客）
           'fan_number' : 粉丝数
-          'friend_number' : 好友数
+          'friend_number' : 好友数,
+          'chat_number' : 粉丝向这个查询用户的留言数
       }
 说明：offset和length用于分页（或者显示更多）。初始时传入offset=0,length=N,
       之后每一次取更多则把offset = offset + N，假设返回的data.length < N则说明已经取到尾部了。
@@ -205,6 +206,7 @@
 
 /user/follows
 使用：得到某人关注的好友
+其中，chat_number是该某人向他关注的人的留言数
 参数和返回同上
 
 /active/list
