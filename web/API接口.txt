@@ -640,6 +640,13 @@
 }
 返回：true/false
 
+/notify/setReadOne
+使用：设置该用户的某条系统通知为已读
+参数：{
+    notify_id : xxx
+}
+返回：true/false
+
 /star/timeList
 使用：得到星客列表，按选拔的时间
 参数：{

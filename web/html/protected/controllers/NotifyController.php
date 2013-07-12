@@ -53,4 +53,15 @@ class NotifyController extends Controller{
             $this->sendAjax(null);
         }
     }
+
+    public function actionSetReadOne() {
+        $m = new NotifyForm();
+        $m->attributes = $_POST;
+        $m->user_id = Yii::app()->user->id;
+        if($m->validate() && $m->set_read_one()) {
+            $this->sendAjax(true, true);
+        } else {
+            $this->sendAjax(null);
+        }
+    }
 }

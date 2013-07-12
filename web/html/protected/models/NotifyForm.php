@@ -10,11 +10,12 @@ class NotifyForm extends CFormModel{
     public $user_id;
     public $offset;
     public $length;
+    public $notify_id;
 
     public function rules(){
         return array(
             array('user_id', 'required'),
-            array('user_id', 'numerical', 'integerOnly'=>true),
+            array('user_id, notify_id', 'numerical', 'integerOnly'=>true),
             array("offset", 'numerical', 'integerOnly'=>true, 'min'=>0),
             array('length', 'numerical', 'integerOnly'=>true, 'min'=>1)
         );
@@ -67,6 +68,12 @@ class NotifyForm extends CFormModel{
     }
     public function set_read() {
         $sql = "update notify set is_read=1 where to_user_id={$this->user_id}";
+        Yii::app()->db->createCommand($sql)->query();
+        return true;
+    }
+
+    public function set_read_one() {
+        $sql = "update notify set is_read=1 where notify_id={$this->notify_id} and to_user_id={$this->user_id}";
         Yii::app()->db->createCommand($sql)->query();
         return true;
     }
