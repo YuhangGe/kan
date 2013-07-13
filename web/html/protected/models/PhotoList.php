@@ -194,7 +194,7 @@ class PhotoList extends CFormModel{
 		(select p0.user_id, p0.act_id, sum(vote_number) as vote, sum(view_number) as view, sum(vote_number) * 10 + sum(view_number)  as score from photo p0 where p0.act_id={$this->act_id} group by user_id, act_id order by score desc limit 9) as p2
     where p3.user_id=p2.user_id and p3.act_id=p2.act_id and p3.is_key_photo=1) as p left join user_location u_a on u_a.user_id=p.user_id";
 
-        return Yii::app()->db->createCommand($sql)->queryAll();;
+        return Yii::app()->db->createCommand($sql)->queryAll();
 
     }
     public function get() {
@@ -253,6 +253,9 @@ class PhotoList extends CFormModel{
                 return array();
         }
 
+        if(count($arr)===0) {
+            return $arr;
+        }
 
         /*
          * 出于数据库性能和写代码的方便考虑，没有直接使用联表查询。
