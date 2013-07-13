@@ -44,19 +44,29 @@ class WinnerList extends CFormModel{
 
         $tm = time();
 
-        $r = Active::model()->findBySql("select act_id from active where end_time<$tm order by end_time desc limit 1");
-        if($r===null) {
-            return array();
-        }
+//        $r = Active::model()->findBySql("select act_id from active where end_time<$tm order by end_time desc limit 1");
+//        if($r===null) {
+//            return array();
+//        }
 
 //        echo CJSON::encode($r);
 
         if($this->type === "user") {
-            $sql = "select w.user_id, w.time, w.poster_url,v.video_name, v.video_id, u.nick_name from winner w, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id and v.act_id={$r->act_id} order by w.time desc limit {$this->offset}, {$this->length}";
+
+            $sql = "select w.user_id, w.time, w.poster_url,v.video_name, v.video_id, u.nick_name from winner w, active ac, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id and v.act_id=ac.act_id and ac.end_time<$tm order by w.time desc limit {$this->offset}, {$this->length}";
             return Yii::app()->db->createCommand($sql)->queryAll();
 
-        } elseif($this->type==="video" && $this->user_id!==null && $this->video_id!==null) {
+        } elseif($this->type==="video" && $this->user_id!==null) {
 //            $r = Video::model()->findBySql("select v.* from video v, winner w where w.video_id=v.video_id and v.user_id=:uId order by w.time desc limit 1", array(":uId"=>$this->user_id));
+
+            if($this->video_id===null) {
+                $r = Winner::model()->findBySql("select video_id from winner where user_id={$this->user_id} order by time desc limit 1");
+                if($r===null) {
+                    return array();
+                }
+                $this->video_id = $r->video_id;
+            }
+
             $r = Video::model()->findByPk($this->video_id);
             if($r === null) {
                 return array();
