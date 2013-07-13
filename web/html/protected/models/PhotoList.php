@@ -103,16 +103,13 @@ class PhotoList extends CFormModel{
 //            where ua2.photo_id=p.photo_id
 //            group by ua2.user_id order by ua2.distance";
 
-        $sql = "select p.*, u_a.distance, u_a.address from photo as p,  (select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance, address
+        $sql = "select p.*, p.vote_number*10+p.view_number as score_number, u_a.distance, u_a.address from photo as p,  (select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance, address
                     from user_location
                       where $cdt
                       order by distance
                       limit {$this->offset}, {$this->length}
                 ) as u_a where u_a.user_id = p.user_id and p.user_id<>$uid and p.is_key_photo = 1 order by u_a.distance";
-        /*
-         * 取出附近用户最新上传的一张照片
-         * 其中的GETDISTANCE是mysql的函数，参考数据库.txt文档
-         */
+
         $rs = Yii::app()->db->createCommand($sql)->queryAll();
         return $rs;
 

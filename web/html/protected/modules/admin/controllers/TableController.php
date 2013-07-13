@@ -144,7 +144,7 @@ class TableController extends AController{
     public function actionWinnerRank() {
         $this->check();
         $this->total_number = Video::model()->count();
-        $sql = "select video.* , vote_number * 10 + view_number as score, w.user_id as winner_id from video left join winner w on video.video_id=w.video_id order by score desc {$this->lmt}";
+        $sql = "select video.* , vote_number * 10 + view_number as score, w.user_id as winner_id from video left join winner w on video.video_id=w.video_id order by upload_time desc {$this->lmt}";
 
         $s_r = Yii::app()->db->createCommand($sql)->queryAll(true, $this->params);
         if($s_r===null || count($s_r)===0) {

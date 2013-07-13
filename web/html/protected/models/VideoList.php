@@ -77,7 +77,7 @@ class VideoList extends CFormModel{
 //            where ua2.video_id=p.video_id
 //            group by ua2.user_id order by ua2.distance";
 
-        $sql = "select v.*, u_a.distance, u_a.address from video as v, (
+        $sql = "select v.*, v.vote_number*10+v.view_number as score_number, u_a.distance, u_a.address from video as v, (
             select user_id, GETDISTANCE(lat, lng, {$this->lat}, {$this->lng}) as distance, address
                 from user_location where $cdt order by distance limit {$this->offset}, {$this->length}
         ) as u_a where u_a.user_id = v.user_id and v.user_id<>$uid order by u_a.distance";

@@ -1,13 +1,19 @@
+{assign 'url_prefix' $Yii->params['url_prefix']}
+{assign 'link_prefix' $Yii->params['link_prefix']}
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript" src="/js/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript" src="{$url_prefix}js/jquery-2.0.0.min.js"></script>
     <script type="text/javascript">
+        $.__url_prefix__ = "{$url_prefix}";
+        $.__link_prefix__ = "{$link_prefix}";
         $.log = function(msg) {
             console.log(msg);
         }
     </script>
+
     <title>{$Yii->name}</title>
 </head>
 
@@ -21,6 +27,10 @@
             if(url==="") {
                 return;
             }
+            if(/^\//.test(url)) {
+                url = url.substr(1);
+            }
+            url = $.__link_prefix__ + url;
             var fd = new FormData();
             $("#table tr").each(function() {
                 var _t = $(this);

@@ -23,24 +23,36 @@ class UserController extends Controller {
         if(!isset($_POST['user_id'])) {
             return;
         }
-        $user = User::model()->findByPk($_POST['user_id']);
-        if($user === null) {
-            $this->sendAjax(null);
+        $my_id = Yii::app()->user->id;
+
+        $r = UserLocation::model()->findByPk($my_id);
+
+        if($r===null || $r->lat===null || $r->lng===null) {
+            $sql = "select u.*, -1 as distance from `user` u where u.user_id=:uId";
+        } else {
+            $sql = "select u.*, GETDISTANCE(ua.lat, ua.lng, {$r->lat},{$r->lng}) as distance from `user` u, user_location ua where u.user_id=:uId and u.user_id=ua.user_id";
         }
 
-        $info = $user->attributes;
-        unset($info['password']);
-        unset($info['real_name']);
+        $rs = Yii::app()->db->createCommand($sql)->queryAll(true, array(":uId"=>$_POST['user_id']));
+//        $user = User::model()->findByPk($_POST['user_id']);
+        if($rs === null || count($rs)===0) {
+            $this->sendAjax(null);
+        }
+        $user = $rs[0];
+        if($user['distance']==null) {
+            $user['distance'] = -1;
+        }
+//        $info = $user->attributes;
+        unset($user['password']);
 
-        $my_id = Yii::app()->user->id;
-        if($user->user_id === $my_id) {
-            $info['relation'] = array("me");
-            $this->sendAjax($info, true);
-        } else if($user->user_id > $my_id) {
+        if($user['user_id'] === $my_id) {
+            $user['relation'] = array("me");
+            $this->sendAjax($user, true);
+        } else if($user['user_id'] > $my_id) {
             $id1 = $my_id;
-            $id2 = $user->user_id;
+            $id2 = $user['user_id'];
         } else {
-            $id1 = $user->user_id;
+            $id1 = $user['user_id'];
             $id2 = $my_id;
         }
         /*
@@ -49,26 +61,26 @@ class UserController extends Controller {
          */
         $record = UserFriend::model()->findByAttributes(array('user_id_1'=>$id1, "user_id_2"=>$id2));
         if($record !== null) {
-            $info['relation'] = array("friend");
+            $user['relation'] = array("friend");
         } else {
-            $info['relation'] = array();
+            $user['relation'] = array();
         }
         /*
          * 然后看当前登陆用户是否是该用户的粉丝，即是否关注了对方。
          */
-        $record = UserFan::model()->findByAttributes(array("user_id"=>$user->user_id, "fan_id"=>$my_id));
+        $record = UserFan::model()->findByAttributes(array("user_id"=>$user['user_id'], "fan_id"=>$my_id));
         if($record !== null) {
-            $info['relation'][] = "fan";
+            $user['relation'][] = "fan";
         }
         /*
          * 最后检查当前登陆用户是否被该用户关注
          */
-        $record = UserFan::model()->findByAttributes(array("user_id"=>$my_id, "fan_id"=>$user->user_id));
+        $record = UserFan::model()->findByAttributes(array("user_id"=>$my_id, "fan_id"=>$user['user_id']));
         if($record !== null) {
-            $info['relation'][] = "follow";
+            $user['relation'][] = "follow";
         }
 
-        $this->sendAjax($info, true);
+        $this->sendAjax($user, true);
 
     }
 

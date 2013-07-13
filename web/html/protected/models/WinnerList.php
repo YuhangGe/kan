@@ -42,10 +42,14 @@ class WinnerList extends CFormModel{
 
         $this->_off_len();
 
-        $r = Active::model()->findBySql("select act_id from active order by end_time desc limit 1");
+        $tm = time();
+
+        $r = Active::model()->findBySql("select act_id from active where end_time<$tm order by end_time desc limit 1");
         if($r===null) {
             return array();
         }
+
+//        echo CJSON::encode($r);
 
         if($this->type === "user") {
             $sql = "select w.user_id, w.time, w.poster_url,v.video_name, v.video_id, u.nick_name from winner w, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id and v.act_id={$r->act_id} order by w.time desc limit {$this->offset}, {$this->length}";
