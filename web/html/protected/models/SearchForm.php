@@ -109,7 +109,7 @@ class SearchForm extends CFormModel{
         }
 
         if($this->act_name !==null) {
-            echo 'act';
+//            echo 'act';
             $this->act_cdt[] = "active.act_name LIKE :act_name";
             $this->video_cdt[] = "video.act_name LIKE :act_name";
 
@@ -135,7 +135,7 @@ class SearchForm extends CFormModel{
         $cdt_str = join("  AND  ", $this->user_cdt);
         $act_str = join("  AND  ", $this->act_cdt);
 
-        print_r($this->act_cdt);
+//        print_r($this->act_cdt);
 
         $sql = "select user.* ".($this->s_dis?", ua.distance, ua.address ":"")." from user ".
             ($this->s_dis

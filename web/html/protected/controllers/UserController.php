@@ -45,9 +45,17 @@ class UserController extends Controller {
 //        $info = $user->attributes;
         unset($user['password']);
 
-        $r = Winner::model()->findBySql("select poster_url from winner where user_id=$my_id order by time desc limit 1");
+        $rs = Yii::app()->db->createCommand("select v.video_name, v.video_id, w.time, w.poster_url from winner w, video v where w.video_id=v.video_id and w.user_id=$my_id order by w.`time` desc limit 1")->queryAll();
 
-        $user['winner_poster_url'] = $r === null ? null : $r->poster_url;
+        if($rs===null || count($rs)===0) {
+            $r = null;
+        } else {
+            $r = $rs[0];
+        }
+        $user['winner_poster_url'] = $r === null ? null : $r['poster_url'];
+        $user['winner_video_name'] = $r === null ? null : $r['video_name'];
+        $user['winner_video_id'] = $r === null ? null : $r['video_id'];
+        $user['winner_time'] = $r === null ? null : $r['time'];
 
         if($user['user_id'] === $my_id) {
             $user['relation'] = array("me");
