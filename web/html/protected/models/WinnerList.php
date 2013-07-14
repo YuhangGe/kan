@@ -53,14 +53,14 @@ class WinnerList extends CFormModel{
 
         if($this->type === "user") {
 
-            $sql = "select w.user_id, w.time, w.poster_url,v.video_name, v.video_id, u.nick_name from winner w, active ac, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id and v.act_id=ac.act_id and ac.end_time<$tm order by w.time desc limit {$this->offset}, {$this->length}";
+            $sql = "select w.user_id, w.time, w.poster_url,v.*, v.vote*10 + v.view as score_number from winner w, active ac, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id and v.act_id=ac.act_id and ac.end_time<$tm order by w.time desc limit {$this->offset}, {$this->length}";
             return Yii::app()->db->createCommand($sql)->queryAll();
 
         } elseif($this->type==="video" && $this->user_id!==null) {
 //            $r = Video::model()->findBySql("select v.* from video v, winner w where w.video_id=v.video_id and v.user_id=:uId order by w.time desc limit 1", array(":uId"=>$this->user_id));
 
             if($this->video_id===null) {
-                $r = Winner::model()->findBySql("select video_id from winner where user_id={$this->user_id} order by time desc limit 1");
+                $r = Winner::model()->findBySql("select video_id, poster_url from winner where user_id={$this->user_id} order by time desc limit 1");
                 if($r===null) {
                     return array();
                 }

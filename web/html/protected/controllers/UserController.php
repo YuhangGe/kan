@@ -45,6 +45,10 @@ class UserController extends Controller {
 //        $info = $user->attributes;
         unset($user['password']);
 
+        $r = Winner::model()->findBySql("select poster_url from winner where user_id=$my_id order by time desc limit 1");
+
+        $user['winner_poster_url'] = $r === null ? null : $r->poster_url;
+
         if($user['user_id'] === $my_id) {
             $user['relation'] = array("me");
             $this->sendAjax($user, true);

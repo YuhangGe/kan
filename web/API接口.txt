@@ -79,7 +79,8 @@
     fan_number : 粉丝数
     friend_number: 好友数
     view_number : 空间来访量（人气）
-    relation : [me,friend,follow,fan]
+    relation : [me,friend,follow,fan],
+    winner_poster_url : 最近一次获奖的海报，如果没有则为null
 }
       relation是一个数组，代表当前登陆用户和这个用户的关系：
       ['me']【是自己】

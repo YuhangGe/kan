@@ -210,7 +210,9 @@ class VideoList extends CFormModel{
                 return array();
         }
 
-
+        if(count($arr)===0) {
+            return $arr;
+        }
         /*
          * 出于数据库性能和写代码的方便考虑，没有直接使用联表查询。
          */
