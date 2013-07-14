@@ -45,7 +45,7 @@ class UserController extends Controller {
 //        $info = $user->attributes;
         unset($user['password']);
 
-        $rs = Yii::app()->db->createCommand("select v.video_name, v.video_id, w.time, w.poster_url from winner w, video v where w.video_id=v.video_id and w.user_id=$my_id order by w.`time` desc limit 1")->queryAll();
+        $rs = Yii::app()->db->createCommand("select v.video_name, v.video_id, w.time, w.poster_url from winner w, video v where w.video_id=v.video_id and w.user_id=:uId order by w.`time` desc limit 1")->queryAll(true, array(":uId"=>$_POST['user_id']));
 
         if($rs===null || count($rs)===0) {
             $r = null;
