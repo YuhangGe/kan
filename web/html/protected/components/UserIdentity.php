@@ -31,7 +31,7 @@ class UserIdentity extends CUserIdentity
             $type = "nick_name";
         }
 
-        $record = User::model()->findColumnByAttributes(array("user_id", "nick_name","small_avatar", "level","password"), array($type=>$this->username));
+        $record = User::model()->findColumnByAttributes(array("user_id", "nick_name", "email", "phone", "small_avatar", "level","password"), array($type=>$this->username));
 
 
 //        echo (CJSON::encode($record));
@@ -49,6 +49,9 @@ class UserIdentity extends CUserIdentity
             $user = Yii::app()->user;
             $user->avatar = $record->small_avatar;
             $user->level = $record->level;
+            $user->email = $record->email;
+            $user->phone = $record->phone;
+
             $this->errorCode=self::ERROR_NONE;
         }
         //return false;

@@ -46,7 +46,7 @@ class SiteController extends Controller
             } else {
                 $ad = $r->value;
             }
-            $this->sendAjax(array('user_id'=>$user->id, 'nick_name'=>$user->name, 'small_avatar'=>$user->avatar,'level'=>$user->level, 'sid'=>session_id(), 'ad_url'=>$ad), true);
+            $this->sendAjax(array('email'=>$user->email, 'phone'=>$user->phone, 'user_id'=>$user->id, 'nick_name'=>$user->name, 'small_avatar'=>$user->avatar,'level'=>$user->level, 'sid'=>session_id(), 'ad_url'=>$ad), true);
         } else {
             $this->sendAjax(null);
         }

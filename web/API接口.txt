@@ -8,6 +8,8 @@
     'data' : {
         user_id : xxx,
         nick_name : xxx,
+        email : xxx | null,
+        phone : xxx | null,
         sid : xxxxx
         small_avatar : xxx | null,
 	ad_url : xxx | null, 广告的图片url，可能为null

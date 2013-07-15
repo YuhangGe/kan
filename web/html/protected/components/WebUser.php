@@ -9,6 +9,8 @@
 class WebUser extends CWebUser{
     public $avatar;
     public $level;
+    public $email;
+    public $phone;
 
     public function isAdmin() {
         return $this->getState("isAdmin", false);
