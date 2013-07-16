@@ -49,7 +49,8 @@ class ActiveList extends CFormModel {
 
         $uid = Yii::app()->user->id;
 
-        $rs = Yii::app()->db->createCommand("SELECT t.act_id, t.act_name, t.begin_time, t.end_time, t.image, u.user_id FROM active t LEFT OUTER JOIN user_active u ON (u.act_id = t.act_id AND u.user_id=$uid) WHERE t.act_type={$this->act_type} order by end_time desc LIMIT {$this->offset}, {$this->length}")
+        $rs = Yii::app()->db->createCommand("SELECT t.act_id, t.act_name, t.begin_time, t.end_time, t.image, u.user_id FROM active t
+            LEFT OUTER JOIN user_active u ON (u.act_id = t.act_id AND u.user_id=$uid) WHERE t.act_type={$this->act_type} order by end_time desc LIMIT {$this->offset}, {$this->length}")
             ->queryAll();
 
         foreach ($rs as $key=>$r) {
@@ -94,7 +95,8 @@ class ActiveList extends CFormModel {
     public function getOpenList() {
         $this->_off_len();
         $now = time();
-        $sql = "select t.act_id, t.act_name, t.begin_time, t.end_time, t.image from active t where t.end_time>$now order by end_time desc, act_id desc limit {$this->offset},{$this->length}";
+        $uid = Yii::app()->user->id;
+        $sql = "select t.act_id, t.act_name, t.begin_time, t.end_time, t.image, u.user_id from active t LEFT OUTER JOIN user_active u ON (u.act_id = t.act_id AND u.user_id=$uid) where t.end_time>$now order by end_time desc, act_id desc limit {$this->offset},{$this->length}";
 
         return Yii::app()->db->createCommand($sql)->queryAll();
 
@@ -103,7 +105,9 @@ class ActiveList extends CFormModel {
     public function getCloseList() {
         $this->_off_len();
         $now = time();
-        $sql = "select t.act_id, t.act_name, t.begin_time, t.end_time, t.image from active t where t.end_time<$now order by end_time desc, act_id desc limit {$this->offset},{$this->length}";
+        $uid = Yii::app()->user->id;
+
+        $sql = "select t.act_id, t.act_name, t.begin_time, t.end_time, t.image, u.user_id from active t LEFT OUTER JOIN user_active u ON (u.act_id = t.act_id AND u.user_id=$uid) where t.end_time<$now order by end_time desc, act_id desc limit {$this->offset},{$this->length}";
 
         return Yii::app()->db->createCommand($sql)->queryAll();
     }

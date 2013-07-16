@@ -96,7 +96,7 @@ class SearchForm extends CFormModel{
                 $lng_right = $r->lng + $dlng;
 
 
-                $this->dis_join = " (select user_id, address, GETDISTANCE(lat, lng, {$r->lat},{$r->lng}) as distance from user_location where user_id<>$uid and lat between $lat_left and $lat_right and lng between $lng_left and $lng_right order by distance limit 1000) ua where ua.user_id=user.user_id";
+                $this->dis_join = " (select user_id, address, GETDISTANCE(lat, lng, {$r->lat},{$r->lng}) as distance from user_location where ".($this->type==='user' ? "user_id<>$uid and " : ""). " lat between $lat_left and $lat_right and lng between $lng_left and $lng_right order by distance limit 1000) ua where ua.user_id=user.user_id";
                 $this->lat = $r->lat;
                 $this->lng = $r->lng;
                 $this->s_dis = true;
@@ -137,14 +137,31 @@ class SearchForm extends CFormModel{
 
 //        print_r($this->act_cdt);
 
-        $sql = "select user.* ".($this->s_dis?", ua.distance, ua.address ":"")." from user ".
+        $sql = "select user.*, 0 as chat_number ".($this->s_dis?", ua.distance, ua.address ":"")." from user ".
             ($this->s_dis
                 ? (", $this->dis_join and user.user_id<>$uid".($cdt_str==""?"":" and $cdt_str "))
                 : ($cdt_str==""?"where user.user_id<>$uid":" where $cdt_str and user.user_id<>$uid")).
             ($act_str==""?"":" AND user.user_id in(select user_active.user_id from active, user_active where user_active.act_id=active.act_id and $act_str)").
-            ($this->s_dis?" order by ua.distance ":"")." limit {$this->offset},{$this->length}";
+            ($this->s_dis?" order by ua.distance ":"")." limit {$this->offset},{$this->length} ";
 
-        return Yii::app()->db->createCommand($sql)->queryAll(true, $this->user_par);
+        $rs = Yii::app()->db->createCommand($sql)->queryAll(true, $this->user_par);
+        if(count($rs)===0) {
+            return $rs;
+        }
+        $u_arr = array();
+        foreach ($rs as $r) {
+            $u_arr[] = $r['user_id'];
+        }
+        $sql = "select count(*) as count, from_user_id from chat where to_user_id={$uid} and from_user_id in(".join(",", $u_arr).") group by from_user_id";
+        $cs = Yii::app()->db->createCommand($sql)->queryAll();
+        foreach($cs as $c) {
+            $idx = array_search($c["from_user_id"], $u_arr);
+            if($idx!==FALSE) {
+                $rs[$idx]['chat_number'] = $c["count"];
+            }
+        }
+
+        return $rs;
     }
 
     private function s_active(){
@@ -157,8 +174,8 @@ class SearchForm extends CFormModel{
         if($cdt_str!=="" || $this->s_dis) {
             $u_sql = "(select user_active.act_id from user_active, user ".
                 ($this->s_dis
-                    ? (", $this->dis_join and user.user_id<>$uid".($cdt_str==""?"":" and $cdt_str "))
-                    : ($cdt_str==""?"where user.user_id<>$uid":" where $cdt_str and user.user_id<>$uid"))." and user.user_id=user_active.user_id )";
+                    ? (", $this->dis_join ".($cdt_str==""?"":" and $cdt_str "))
+                    : ($cdt_str==""?"where ":" where $cdt_str and "))." user.user_id=user_active.user_id )";
         } else {
             $u_sql = "";
 
@@ -173,9 +190,11 @@ class SearchForm extends CFormModel{
                 $wh.=" and active.act_id in $u_sql";
             }
         }
-        $sql = "select active.*  from active $wh order by end_time desc limit {$this->offset},{$this->length}";
+        $sql = "select active.*, ua.user_id  from active LEFT OUTER JOIN user_active ua ON (ua.act_id = active.act_id AND ua.user_id=$uid) $wh order by end_time desc limit {$this->offset},{$this->length}";
 
         return Yii::app()->db->createCommand($sql)->queryAll(true, $this->user_par);
+
+
     }
 
     private function s_video(){
@@ -188,8 +207,8 @@ class SearchForm extends CFormModel{
         if($cdt_str!=="" || $this->s_dis) {
             $u_sql = "(select user.user_id from user ".
                 ($this->s_dis
-                    ? (", $this->dis_join and user.user_id<>$uid".($cdt_str==""?"":" and $cdt_str "))
-                    : ($cdt_str==""?"where user.user_id<>$uid":" where $cdt_str and user.user_id<>$uid")).")";
+                    ? (", $this->dis_join ".($cdt_str==""?"":" and $cdt_str "))
+                    : ($cdt_str==""?"":" where $cdt_str ")).")";
         } else {
             $u_sql = "";
 
