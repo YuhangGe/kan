@@ -44,23 +44,22 @@ class WinnerList extends CFormModel{
 
         $tm = time();
 
-        $r = Active::model()->findBySql("select act_id from active where end_time<$tm order by end_time desc limit 1");
+        $r = Active::model()->findBySql("select act_id from active where end_time<$tm order by end_time desc, act_id desc limit 1");
         if($r===null) {
             return array();
         }
 
-//        echo CJSON::encode($r);
-
+//       echo CJSON::encode($r);
         if($this->type === "user") {
 
-            $sql = "select w.user_id, w.time, w.poster_url, u.nick_name, v.video_id, v.video_name, v.vote_number, v.view_number, v.vote_number*10 + v.view_number as score_number from winner w, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id and v.act_id={$r->act_id} order by score_number, w.time desc limit {$this->offset}, {$this->length}";
+            $sql = "select w.user_id, w.time, w.poster_url, u.nick_name, v.video_id, v.video_name, v.vote_number, v.view_number, v.vote_number*10 + v.view_number as score_number from winner w, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id and v.act_id={$r->act_id} order by score_number desc, w.time desc limit {$this->offset}, {$this->length}";
             return Yii::app()->db->createCommand($sql)->queryAll();
 
         } elseif($this->type==="video" && $this->user_id!==null) {
 //            $r = Video::model()->findBySql("select v.* from video v, winner w where w.video_id=v.video_id and v.user_id=:uId order by w.time desc limit 1", array(":uId"=>$this->user_id));
 
             if($this->video_id===null) {
-                $r = Winner::model()->findBySql("select video_id, poster_url from winner where user_id={$this->user_id} order by time desc limit 1");
+                $r = Winner::model()->findBySql("select video_id from winner where user_id={$this->user_id} order by time desc limit 1");
                 if($r===null) {
                     return array();
                 }
@@ -71,7 +70,7 @@ class WinnerList extends CFormModel{
             if($r === null) {
                 return array();
             }
-            $rs = Video::model()->findAllBySql("select * from video where user_id=:uId and video_id<>:vId order by upload_time desc", array(":uId"=>$this->user_id, ":vId"=>$r->video_id));
+            $rs = Video::model()->findAllBySql("select * from video where user_id=:uId and video_id<>:vId order by upload_time desc limit 200", array(":uId"=>$this->user_id, ":vId"=>$r->video_id));
 
             $rtn = array($r);
             foreach ($rs as $a) {
