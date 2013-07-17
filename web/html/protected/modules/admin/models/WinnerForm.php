@@ -76,4 +76,13 @@ class WinnerForm extends CFormModel{
         return Winner::model()->updateAll(array('poster_url'=>Yii::app()->params['staticServer']."/".$sif), "video_id=:pId", array(':pId'=>$this->video_id));
 
     }
+
+    public function modifyTime() {
+        if(!isset($_POST['time'])) {
+            return false;
+        }
+        $tm = strtotime($_POST['time']);
+        return  Winner::model()->updateByPk($this->video_id, array("time"=>$tm));
+    }
+
 }

@@ -12,11 +12,12 @@ class StarForm extends CFormModel{
     public $video_name;
     public $video_big_url;
     public $video_small_url;
+    public $video_id;
 
     public function rules() {
         return array(
             array("act_id, user_id", "required"),
-            array("act_id, user_id", 'numerical', 'integerOnly'=>true),
+            array("act_id, user_id, video_id", 'numerical', 'integerOnly'=>true),
             array("video_name", "length", "min"=>1, "max"=>20),
             array("video_big_url, video_small_url", "length", "min"=>1, "max"=>150)
         );
@@ -116,9 +117,7 @@ class StarForm extends CFormModel{
 
     public function video() {
 
-        if($this->video_big_url===null || $this->video_small_url===null || $this->video_name===null) {
-            return false;
-        }
+
         $r = Star::model()->find(array(
             'select'=>'user_id',
             'condition'=>'user_id=:uId and act_id=:aId',
@@ -131,18 +130,30 @@ class StarForm extends CFormModel{
 
 
 
-        $vr = Video::model()->find(array("select"=>"video_id","condition"=>"user_id=:uId and act_id=:aId", "params"=>array(":uId"=>$this->user_id,":aId"=>$this->act_id)));
+        if($this->video_id !== null) {
+            $m = Video::model()->findBySql("select * from video where video_id={$this->video_id}");
+            if($m===null) {
+                return false;
+            }
+            if($this->video_big_url!==null) {
+                $m->big_url = $this->video_big_url;
 
+            }
+            if($this->video_small_url!==null) {
+                $m->small_url = $this->video_small_url;
 
-
-        if($vr!==null) {
-            return $vr->updateAll(array(
-                "video_name"=>$this->video_name,
-                "big_url"=>$this->video_big_url,
-                "small_url"=>$this->video_small_url
-            ), "user_id=:uId and act_id=:aId",array(":uId"=>$this->user_id,":aId"=>$this->act_id));
-
+            }
+            if($this->video_name!==null) {
+                $m->video_name = $this->video_name;
+            }
+            if(!empty($_POST['upload_time'])) {
+                $m->upload_time = strtotime($_POST['upload_time']);
+            }
         } else {
+            if($this->video_big_url===null || $this->video_small_url===null || $this->video_name===null) {
+                return false;
+            }
+
             $u = User::model()->findColumnByPk(array("nick_name"), $this->user_id);
             if($u===null) {
                 return false;
@@ -151,19 +162,45 @@ class StarForm extends CFormModel{
             if($a===null) {
                 return false;
             }
+
             $m = new Video();
             $m->user_id = $this->user_id;
             $m->act_id = $this->act_id;
             $m->user_name = $u->nick_name;
             $m->act_name = $a->act_name;
-            $m->video_name = $this->video_name;
             $m->upload_time = time();
+            $m->video_name = $this->video_name;
             $m->big_url = $this->video_big_url;
             $m->small_url = $this->video_small_url;
-
-            return $m->save();
         }
 
 
-    }
+
+
+
+
+
+        if(!$m->save(false)) {
+            return false;
+        }
+
+        if(isset($_FILES['video_poster'])) {
+            $dir = "poster";
+            $_tag = time().rand(0, 10000);
+            $i_fn = "video_".$m->video_id."_".$_tag;
+
+            $sif = FileHelper::savePhoto("video_poster", $dir, $i_fn);
+            if($sif===false) {
+                return false;
+            }
+
+            $poster_url = Yii::app()->params['staticServer']."/".$sif;
+            $m->poster_url = $poster_url;
+            return $m->save(false);
+        }
+
+        return true;
+
+        }
+
 }

@@ -38,13 +38,14 @@
 
 <div id="table-edit-row-template" style="display: none">
 
-    {*<a class="btn btn-danger edit-del" href="javascript:delNews('NEWS_ID');">*}
-        {*<i class="icon-trash icon-white"></i>*}
-        {*删除*}
-    {*</a>*}
+
     <a class="btn btn-info edit-modify" href="javascript:;">
         <i class="icon-edit icon-white"></i>
         修改
+    </a>
+    <a class="btn btn-danger edit-del" href="javascript:delNews('NEWS_ID');">
+    <i class="icon-trash icon-white"></i>
+    删除
     </a>
 </div>
 
@@ -99,11 +100,6 @@
         }
 
 
-        function delNews(id) {
-            if(confirm("确认删除？", "删除")) {
-                $.log("del:"+id);
-            }
-        }
 
         function createNews() {
             $("#newsDialog .modal-header h3").text("发布新闻");
@@ -178,6 +174,24 @@
                 var msg = $(p.children()[1]).text();
                 modifyNews(id, msg);
             });
+        }
+
+        function delNews(id) {
+            var pwd = prompt("请输入管理员密码确认删除");
+            if(pwd.trim()==="") {
+                return;
+            }
+            $.post($.__link_prefix__+"admin/news/delete", {
+                password : pwd,
+                news_id : id
+            }, function(rtn) {
+                if(!rtn.success) {
+                    alert('删除失败！');
+                    return;
+                }
+                alert("删除成功");
+                $(".datatable").DataTable().fnDraw();
+            }, "json");
         }
     </script>
 

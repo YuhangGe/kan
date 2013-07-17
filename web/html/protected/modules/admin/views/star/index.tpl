@@ -1,6 +1,40 @@
 {assign 'url_prefix' $Yii->params['url_prefix']}
 {assign 'link_prefix' $Yii->params['link_prefix']}
 
+
+<div class="row-fluid sortable">
+<div class="box span12">
+    <div class="box-header well" data-original-title>
+        <h2><i class="icon-font"></i> 所有演客</h2>
+        <div class="box-icon">
+            {*<a href="#" class="btn btn-setting btn-round"><i class="icon-cog"></i></a>*}
+            {*<a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>*}
+            {*<a href="#" class="btn btn-close btn-round"><i class="icon-remove"></i></a>*}
+        </div>
+    </div>
+    <div class="box-content" id="score-detail" style="min-height: 200px;">
+        <table aoDataSource="{$link_prefix}admin/table/starAll" iDisplayLength="5" aoSortedBy="act_score" fnDrawCallback="selected" aoColumns="selected" class="table table-star-selected table-striped table-bordered bootstrap-datatable datatable">
+            <thead>
+            <tr>
+                <td>ID</td>
+                <th>昵称</th>
+                <th>喜欢</th>
+                <th>浏览</th>
+                <th>人气</th>
+                <th>海报</th>
+                <th>获选日期</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+    </div>
+</div>
+</div>
+
 <div class="row-fluid sortable">
     <div class="box span9">
         <div class="box-header well" data-original-title>
@@ -33,7 +67,7 @@
                             <th>浏览</th>
                             <th>人气</th>
                             <th>海报</th>
-                            <th>视频</th>
+                            <th>获选日期</th>
                             <th>操作</th>
                         </tr>
                         </thead>
@@ -129,13 +163,21 @@
     </a>
     <a class="btn btn-info" href="javascript:showUploadVideo('USER_ID');">
         <i class="icon-edit icon-white"></i>
-        视频
+        上传视频
     </a>
-<!--    <a class="btn btn-danger" href="javascript:cancelStar('USER_ID');">
+    <a class="btn btn-info" href="{$link_prefix}admin/photo/index#uUSER_ID">
+        <i class="icon-edit icon-white"></i>
+        查看照片
+    </a>
+    <a class="btn btn-info" href="{$link_prefix}admin/video/user#USER_ID">
+        <i class="icon-edit icon-white"></i>
+        查看视频
+    </a>
+    <a class="btn btn-danger" href="javascript:cancelStar('USER_ID');">
         <i class="icon-trash icon-white"></i>
         取消演客
     </a>
-    -->
+
 </div>
 
 <div id="table-row-rank-template" style="display: none">
@@ -143,9 +185,13 @@
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
-    <a class="btn btn-info" href="javascript:chooseStar('USER_ID');">
+    <a class="btn btn-info" href="javascript:chooseStar('STAR_ID');">
         <i class="icon-edit icon-white"></i>
         选为演客
+    </a>
+    <a class="btn btn-info" href="javascript:modifyHot('USER_ID');">
+        <i class="icon-edit icon-white"></i>
+        修改人气
     </a>
     {*<a class="btn btn-danger edit-del" href="javascript:delActive('USER_ID');">*}
         {*<i class="icon-trash icon-white"></i>*}
@@ -173,6 +219,34 @@
         {*<a href="#" class="btn btn-primary">Save changes</a>*}
     </div>
 </div>
+
+
+<div class="modal hide fade" id="hotDialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3>修改人气</h3>
+    </div>
+    <div class="modal-body">
+        <div class="control-group">
+            <label class="control-label" for="txtVote">喜欢</label>
+            <div class="controls">
+                <input class="input-file uniform_on" id="txtVote" type="text">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="txtView">浏览</label>
+            <div class="controls">
+                <input class="input-file uniform_on" id="txtView" type="text">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">取消</a>
+            <a href="#" id="btnModifyHot" class="btn btn-primary">修改</a>
+    </div>
+
+</div>
+
 
 <div class="modal hide fade" id="videoDialog">
     <div class="modal-header">
@@ -210,7 +284,63 @@
         <a href="#" class="btn" data-dismiss="modal">取消</a>
         <a href="#" id="btnUploadVideo" class="btn btn-primary">上传</a>
     </div>
+
 </div>
+
+
+{literal}
+<script type="text/javascript">
+    USER_ID = null;
+    function modifyHot(id) {
+        var rs = $(".table-star-rank tbody tr");
+        var cr = null;
+        for(var i=0;i<rs.length;i++) {
+            var _r = $(rs[i]), _d = _r.find("td:first");
+            if(_d.text().trim() === id) {
+                cr = _r;
+                break;
+            }
+        }
+        if(cr === null) {
+            alert("出现错误，请刷新网页重试.");
+            return;
+        }
+        USER_ID = id;
+        var tds = cr.find("td");
+        var name = tds.eq(1).text(), vote=tds.eq(2).text(), view=tds.eq(3).text();
+        $("#hotDialog h3").text("修改 " + name + " 的人气指数");
+        $("#txtVote").val(vote.trim());
+        $("#txtView").val(view.trim());
+        $("#hotDialog").modal("show");
+    }
+
+    function doModifyHot() {
+        var vote = $("#txtVote").val().trim(), view = $("#txtView").val().trim();
+        if(/^\d+$/.test(vote) && /^\d+$/.test(view)) {
+            $.post($.__link_prefix__ +"admin/photo/modifyHot", {
+                user_id : USER_ID,
+                act_id : CUR_ACT,
+                vote_number : vote,
+                view_number : view
+            }, function(rtn) {
+                if(!rtn.success) {
+                    alert('网络错误，请重试！');
+                    return;
+                }
+                $(".datatable").each(function(){
+                    $(this).DataTable().fnDraw();
+                });
+                $("#hotDialog").modal("hide");
+
+            }, "json");
+        } else {
+            alert("数据不合法！");
+            return;
+        }
+    }
+</script>
+{/literal}
+
 {literal}
     <script type="text/javascript">
         var SType = "act_name", CUR_ACT = null, CUR_USER = null;
@@ -237,13 +367,8 @@
                         return "<a class='poster_image' href='"+data+"'/>查看图片</a>";
                     }
                 }},
-                { "mData" : "video_id", "mRender" : function(data) {
-                    if(data===null) {
-                        return "未上传"
-                    } else {
-                        return "<a href='"+$.__link_prefix__ +"admin/video/detail#"+data+"'>查看视频</a>";
-
-                    }
+                { "mData" : "time", "mRender" : function(data) {
+                    return $.datepicker.formatDate("yy年mm月dd日", new Date(Number(data)*1000));
                 }},
                 {
                     "mData" : "user_id",
@@ -263,7 +388,8 @@
                 {
                     "mData" : "star_id",
                     "mRender" : function(data, type, aoData) {
-                        return document.getElementById("table-row-rank-template").innerHTML.replace(/USER_ID/g, data===null?aoData.user_id:"-1");
+                        var rtn = document.getElementById("table-row-rank-template").innerHTML.replace(/STAR_ID/g, data===null?aoData.user_id:"-1");
+                        return rtn.replace(/USER_ID/g, aoData.user_id);
                     }
                 }
             ]};
@@ -303,7 +429,7 @@
                 }
                 for(var i=0;i<list.length;i++) {
                     var act = list[i];
-                    $("<li></li>").html("<a href='"+$.__link_prefix__ + +"admin/star/index#"+act.act_id+"'>"+act.act_name+"</a>")
+                    $("<li></li>").html("<a href='"+$.__link_prefix__ +"admin/star/index#"+act.act_id+"'>"+act.act_name+"</a>")
                             .appendTo(_u);
                 }
             }, "json");
@@ -322,6 +448,7 @@
             $("#idRadio").change(setSearchType);
             $("#btnSearch").click(doSearch);
             $("#fileImage").change(uploadImage);
+            $("#btnModifyHot").click(doModifyHot);
             $("#btnUploadVideo").click(uploadVideo);
         }
 
@@ -514,7 +641,10 @@
             }
             $("#video-process").text("为星客上传视频节目");
             $("#videoDialog").modal("hide");
-            $(".table-star-selected").DataTable().fnDraw();
+            alert("上传成功，将跳转到用户视频管理页面。");
+            window.location.href = $.__link_prefix__ + "admin/video/user#"+CUR_USER;
+
+//            $(".table-star-selected").DataTable().fnDraw();
         }
     </script>
 {/literal}

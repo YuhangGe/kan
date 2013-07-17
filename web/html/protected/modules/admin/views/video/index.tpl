@@ -45,10 +45,10 @@
         <i class="icon-edit icon-white"></i>
         上传海报
     </a>
- <!--   <a class="btn btn-danger" href="javascript:delVideo('VIDEO_ID');">
+    <a class="btn btn-danger" href="javascript:delVideo('VIDEO_ID');">
         <i class="icon-trash icon-white"></i>
         删除
-    </a> -->
+    </a>
 </div>
 
 <div class="modal hide fade" id="posterDialog">
@@ -178,6 +178,24 @@
             $("#posterDialog").modal("hide");
             $(".table-video").DataTable().fnDraw();
 
+        }
+
+        function delVideo(id) {
+            var pwd = prompt("请输入管理员密码确认删除");
+            if(pwd.trim()==="") {
+                return;
+            }
+            $.post($.__link_prefix__+"admin/video/delete", {
+                password : pwd,
+                video_id : id
+            }, function(rtn) {
+                if(!rtn.success) {
+                    alert('删除失败！');
+                    return;
+                }
+                alert("删除成功");
+                $(".table-video").DataTable().fnDraw();
+            }, "json");
         }
 
     </script>

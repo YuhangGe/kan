@@ -96,9 +96,19 @@ class DefaultController extends AController
         if(PwdHelper::encode($_POST['password'])!==Yii::app()->params['adminPassword']) {
             $this->sendAjax(null);
         }
-        //$aid = intval($_POST['act_id']);
-        $this->sendAjax(true, true);
-        //Active::model()->deleteByPk($aid);
+        $aid = intval($_POST['act_id']);
+        if(empty($aid)) {
+            $this->sendAjax(null);
+        }
+
+
+        if(UserActive::model()->deleteAllByAttributes(array("act_id"=>$aid)) &&
+            Active::model()->deleteByPk($aid)){
+            $this->sendAjax(true, true);
+        } else {
+            $this->sendAjax(null);
+        }
+
 
     }
 }

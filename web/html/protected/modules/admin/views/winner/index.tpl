@@ -22,9 +22,6 @@
                     <th>获奖海报</th>
                     <th>获奖视频</th>
                     <th>获奖时间</th>
-                    <th>喜欢</th>
-                    <th>浏览</th>
-                    <th>人气</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -74,20 +71,31 @@
 
     <a class="btn btn-info" href="javascript:uploadPoster('VIDEO_ID');">
         <i class="icon-edit icon-white"></i>
-        上传海报
+        上传获奖海报
     </a>
-
- <!--   <a class="btn btn-danger" href="javascript:cancelStar('VIDEO_ID');">
+    <a class="btn btn-info" href="{$link_prefix}admin/video/user#USER_ID">
+        <i class="icon-edit icon-white"></i>
+        管理用户视频
+    </a>
+    <a class="btn btn-info" href="javascript:modifyTime('VIDEO_ID');">
+        <i class="icon-edit icon-white"></i>
+        修改获奖时间
+    </a>
+    <a class="btn btn-danger" href="javascript:cancelStar('VIDEO_ID');">
         <i class="icon-trash icon-white"></i>
-        取消星客
-    </a> -->
+        撤销星客
+    </a>
 </div>
 
 <div id="table-row-rank-template" style="display: none">
 
-    <a class="btn btn-info" href="javascript:chooseStar('VIDEO_ID');">
+    <a class="btn btn-info" href="javascript:chooseStar('STAR_ID');">
         <i class="icon-edit icon-white"></i>
         选为星客
+    </a>
+    <a class="btn btn-info" href="javascript:modifyHot('VIDEO_ID');">
+        <i class="icon-edit icon-white"></i>
+        修改人气
     </a>
     {*<a class="btn btn-danger edit-del" href="javascript:delActive('USER_ID');">*}
         {*<i class="icon-trash icon-white"></i>*}
@@ -117,6 +125,142 @@
     </div>
 </div>
 
+<div class="modal hide fade" id="hotDialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3>修改人气</h3>
+    </div>
+    <div class="modal-body">
+        <div class="control-group">
+            <label class="control-label" for="txtVote">喜欢</label>
+            <div class="controls">
+                <input class="input-file uniform_on" id="txtVote" type="text">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="txtView">浏览</label>
+            <div class="controls">
+                <input class="input-file uniform_on" id="txtView" type="text">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+        <a href="#" id="btnModifyHot" class="btn btn-primary">修改</a>
+    </div>
+
+</div>
+
+<div class="modal hide fade" id="timeDialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3>修改时间</h3>
+    </div>
+    <div class="modal-body">
+        <div class="control-group">
+            <label class="control-label" for="txtTime">获奖时间</label>
+            <div class="controls">
+                <input class="input-xlarge datepicker" id="txtTime" type="text">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+        <a href="#" id="btnModifyTime" class="btn btn-primary">修改</a>
+    </div>
+
+</div>
+
+{literal}
+    <script type="text/javascript">
+        VIDEO_ID = null;
+
+        function modifyTime(id) {
+            var rs = $(".table-star-selected tbody tr");
+            var cr = null;
+            for(var i=0;i<rs.length;i++) {
+                var _r = $(rs[i]), _d = _r.find("td:first");
+                if(_d.text().trim() === id) {
+                    cr = _r;
+                    break;
+                }
+            }
+            if(cr === null) {
+                alert("出现错误，请刷新网页重试.");
+                return;
+            }
+            VIDEO_ID = id;
+            var tds = cr.find("td");
+            var name = tds.eq(1).text(), tm = tds.eq(4).text().trim(), ms = tm.match(/(\d+)年(\d+)月(\d)+日/);
+
+            $("#timeDialog h3").text("修改 " + name + " 的获奖时间");
+            $("#txtTime").val(ms[1]+"-"+ms[2]+"-"+ms[3]);
+            $("#timeDialog").modal("show");
+        }
+
+        function doModifyTime() {
+            $.post($.__link_prefix__ +"admin/winner/modifyTime", {
+                video_id : VIDEO_ID,
+                time : $("#txtTime").val(),
+            }, function(rtn) {
+                if(!rtn.success) {
+                    alert('网络错误，请重试！');
+                    return;
+                }
+                $(".table-star-selected").DataTable().fnDraw();
+                $("#timeDialog").modal("hide");
+
+            }, "json");
+        }
+        function modifyHot(id) {
+            var rs = $(".table-star-rank tbody tr");
+            var cr = null;
+            for(var i=0;i<rs.length;i++) {
+                var _r = $(rs[i]), _d = _r.find("td:first");
+                if(_d.text().trim() === id) {
+                    cr = _r;
+                    break;
+                }
+            }
+            if(cr === null) {
+                alert("出现错误，请刷新网页重试.");
+                return;
+            }
+            VIDEO_ID = id;
+            var tds = cr.find("td");
+            var name = tds.eq(1).text(), vote=tds.eq(4).text(), view=tds.eq(5).text();
+            $("#hotDialog h3").text("修改 " + name + " 的人气指数");
+            $("#txtVote").val(vote.trim());
+            $("#txtView").val(view.trim());
+            $("#hotDialog").modal("show");
+        }
+
+        function doModifyHot() {
+            var vote = $("#txtVote").val().trim(), view = $("#txtView").val().trim();
+            if(/^\d+$/.test(vote) && /^\d+$/.test(view)) {
+                $.post($.__link_prefix__ +"admin/video/modifyHot", {
+                    video_id : VIDEO_ID,
+                    vote_number : vote,
+                    view_number : view
+                }, function(rtn) {
+                    if(!rtn.success) {
+                        alert('网络错误，请重试！');
+                        return;
+                    }
+                    $(".datatable").each(function(){
+                        $(this).DataTable().fnDraw();
+                    });
+                    $("#hotDialog").modal("hide");
+
+                }, "json");
+            } else {
+                alert("数据不合法！");
+                return;
+            }
+        }
+    </script>
+{/literal}
+
 {literal}
     <script type="text/javascript">
 
@@ -142,17 +286,12 @@
                     return $.datepicker.formatDate("yy年mm月dd日", new Date(Number(data)*1000));
 
                 }},
-                { "mData": "vote_number"
-                },
-                { "mData": "view_number"
-                },
-                { "mData": "score"},
-
 
                 {
                     "mData" : "video_id",
-                    "mRender" : function(data) {
-                        return document.getElementById("table-row-selected-template").innerHTML.replace(/VIDEO_ID/g, data);
+                    "mRender" : function(data, type, aoData) {
+                        var rtn = document.getElementById("table-row-selected-template").innerHTML.replace(/VIDEO_ID/g, data);
+                        return rtn.replace(/USER_ID/g, aoData.user_id);
                     }
                 }
             ], "rank" : [
@@ -174,7 +313,8 @@
                 {
                     "mData" : "winner_id",
                     "mRender" : function(data, type, aoData) {
-                        return document.getElementById("table-row-rank-template").innerHTML.replace(/VIDEO_ID/g, data===null?aoData.video_id:"-1");
+                        var rtn = document.getElementById("table-row-rank-template").innerHTML.replace(/STAR_ID/g, data===null?aoData.video_id:"-1");
+                        return rtn.replace(/VIDEO_ID/g, aoData.video_id);
                     }
                 }
             ]};
@@ -185,6 +325,8 @@
          */
         function viewReady(){
             $("#fileImage").change(uploadImage);
+            $("#btnModifyHot").click(doModifyHot);
+            $("#btnModifyTime").click(doModifyTime);
         }
 
         function chooseStar(video_id) {

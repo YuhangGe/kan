@@ -44,14 +44,22 @@
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
+    <a class="btn btn-info" href="{$link_prefix}admin/photo/index#uUSER_ID">
+        <i class="icon-edit icon-white"></i>
+        照片
+    </a>
+    <a class="btn btn-info" href="{$link_prefix}admin/video/user#USER_ID">
+        <i class="icon-edit icon-white"></i>
+        视频
+    </a>
     {*<a class="btn btn-info" href="#">*}
     {*<i class="icon-edit icon-white"></i>*}
     {*编辑*}
     {*</a>*}
-    <!--<a class="btn btn-danger edit-del" href="javascript:delActive('USER_ID');">
+    <a class="btn btn-danger edit-del" href="javascript:delUser('USER_ID');">
         <i class="icon-trash icon-white"></i>
         删除
-    </a>-->
+    </a>
 </div>
 
 {literal}
@@ -102,10 +110,22 @@
         }
 
 
-        function delActive(id) {
-            if(confirm("确认删除用户？", "删除")) {
-                $.log("del:"+id);
+        function delUser(id) {
+            var pwd = prompt("请输入管理员密码确认删除");
+            if(pwd.trim()==="") {
+                return;
             }
+            $.post($.__link_prefix__+"admin/user/delete", {
+                password : pwd,
+                user_id : id
+            }, function(rtn) {
+                if(!rtn.success) {
+                    alert('删除失败！请重试。');
+                    return;
+                }
+                alert("删除成功");
+                $(".datatable").DataTable().fnDraw();
+            }, "json");
         }
     </script>
 

@@ -57,7 +57,7 @@ class SearchUserForm extends CFormModel{
             'condition'=>"user_id<>$uid and email=:e",
             'params'=>array(':e'=>$this->email)
         ));
-        return $r;
+        return array($r);
     }
     private function searchPhone() {
         $uid = Yii::app()->user->id;
@@ -67,11 +67,11 @@ class SearchUserForm extends CFormModel{
             'condition'=>"user_id<>$uid and phone=:p",
             'params'=>array(':p'=>$this->phone)
         ));
-        return $r;
+        return array($r);
     }
     private function searchId() {
-        $r = User::model()->findAllByPk($this->user_id);
-        return $r;
+        $r = User::model()->findBySql("select ".self::ADMIN_SELECT." from user where user_id = :uId", array(":uId"=>$this->user_id));
+        return array($r);
     }
     public function search($select = self::USER_COLUMN) {
         $this->select = $select;

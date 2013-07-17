@@ -81,6 +81,11 @@ class TableController extends AController{
         $this->getData("user", " user_id, level, sex, nick_name, birthday, email, phone, small_avatar, fan_number, friend_number ");
     }
 
+    public function actionStarAll() {
+        $this->ord = "order by time desc";
+        $this->getData("star");
+    }
+
     public function actionStarSelected() {
         if(!isset($_POST['act_id'])) {
             $this->output();
@@ -95,7 +100,7 @@ class TableController extends AController{
             $this->output();
         }
 
-        $s_sql = "select star.* , v.video_id from star left join video v  on star.user_id=v.user_id and v.act_id=:aId where star.act_id=:aId {$this->ord} {$this->lmt}";
+        $s_sql = "select star.* from star where star.act_id=:aId {$this->ord} {$this->lmt}";
         $s_r = Yii::app()->db->createCommand($s_sql)->queryAll(true, $this->params);
         if($s_r===null) {
             $this->output();
@@ -136,11 +141,53 @@ class TableController extends AController{
 
     }
 
+    public function actionUserVideo() {
+        if(!isset($_POST['user_id'])) {
+            $this->output();
+        }
+        $this->check();
+        $this->params[':uId']=$_POST['user_id'];
+        $this->total_number = Video::model()->count("user_id=:uId", array(":uId"=>$_POST['user_id']));
+
+        $sql = "select video.*, if(winner.video_id is NULL, 0, 1)  as is_winner from video left outer join winner on winner.video_id=video.video_id and winner.user_id=:uId where video.user_id=:uId order by video.upload_time desc {$this->lmt} ";
+
+        $s_r = Yii::app()->db->createCommand($sql)->queryAll(true, $this->params);
+        if($s_r===null || count($s_r)===0) {
+            $this->total_number = 0;
+            $this->output();
+        }
+        $this->data = $s_r;
+
+        $this->output();
+
+    }
     public function actionNews() {
         $this->ord = "order by news_id desc";
         $this->getData("news");
     }
 
+    public function actionNotify() {
+        $this->check();
+        if(!empty($_POST['user_id'])) {
+            $this->params[':uId']=$_POST['user_id'];
+            $this->total_number = Notify::model()->count("to_user_id=:uId", array(":uId"=>$_POST['user_id']));
+            $ad = "and n.to_user_id=:uId and u.user_id=:uId";
+        } else {
+            $ad = "";
+            $this->total_number = Notify::model()->count();
+        }
+
+        $sql = "select n.*, u.nick_name, u.user_id from notify n, user u where n.to_user_id=u.user_id $ad order by notify_id desc {$this->lmt}";
+
+        $s_r = Yii::app()->db->createCommand($sql)->queryAll(true, $this->params);
+        if($s_r===null || count($s_r)===0) {
+            $this->total_number = 0;
+            $this->output();
+        }
+        $this->data = $s_r;
+
+        $this->output();
+    }
     public function actionWinnerRank() {
         $this->check();
         $this->total_number = Video::model()->count();
@@ -160,7 +207,7 @@ class TableController extends AController{
         $this->check();
         $this->total_number = Winner::model()->count();
 
-        $sql = "select w.`time` as `time`, w.poster_url as winner_poster, v.* , v.vote_number * 10 + v.view_number as score from winner w, video v where w.video_id=v.video_id order by w.`time` desc {$this->lmt}";
+        $sql = "select w.`time` as `time`, w.poster_url as winner_poster, v.user_id, v.video_name, v.video_id, v.user_name from winner w, video v where w.video_id=v.video_id order by w.`time` desc {$this->lmt}";
 
         $s_r = Yii::app()->db->createCommand($sql)->queryAll(true, $this->params);
         if($s_r===null || count($s_r)===0) {

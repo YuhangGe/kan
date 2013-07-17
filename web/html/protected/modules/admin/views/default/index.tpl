@@ -49,10 +49,10 @@
         <i class="icon-edit icon-white"></i>
         演客选拔
     </a>
- <!--   <a class="btn btn-danger edit-del" href="javascript:delActive('ACT_ID');">
+     <a class="btn btn-danger edit-del" href="javascript:delActive('ACT_ID');">
         <i class="icon-trash icon-white"></i>
         删除
-    </a> -->
+    </a>
 </div>
 
 

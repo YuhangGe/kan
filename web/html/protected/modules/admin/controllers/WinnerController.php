@@ -40,4 +40,13 @@ class WinnerController extends AController{
         }
     }
 
+    public function actionModifyTime() {
+        $m = new WinnerForm();
+        $m->attributes = $_POST;
+        if($m->validate() && $m->modifyTime()) {
+            $this->sendAjax(true, true);
+        } else {
+            $this->sendAjax(null);
+        }
+    }
 }

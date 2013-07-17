@@ -23,7 +23,8 @@
 ["label"=>"视频管理", "child_items" =>
     [
         ["label"=>"所有视频", "url"=>"`$link_prefix`admin/video/index"],
-        ["label"=>"视频详情", "url"=>"`$link_prefix`admin/video/detail"]
+        ["label"=>"视频详情", "url"=>"`$link_prefix`admin/video/detail"],
+        ["label"=>"用户视频", "url"=>"`$link_prefix`admin/video/user"]
     ]
 ],
 ["label"=>"选秀管理", "child_items"=>
@@ -32,10 +33,17 @@
         ["label"=>"星客管理", "url"=>"`$link_prefix`admin/winner/index"]
     ]
 ],
+
+["label"=>"消息管理", "child_items"=>
+    [
+        ['label'=>'通知管理', 'url'=>"`$link_prefix`admin/message/notify"],
+        ['label'=>'新闻管理', 'url'=>"`$link_prefix`admin/message/news"]
+    ]
+],
+
 ["label"=>"其它管理", "child_items"=>
     [
         ['label'=>'系统设置', 'url'=>"`$link_prefix`admin/setting/index"],
-        ['label'=>'新闻管理', 'url'=>"`$link_prefix`admin/setting/news"],
         ['label'=>'客户端', 'url'=>"`$link_prefix`admin/setting/app"]
 ]
 
@@ -228,7 +236,7 @@
 <!-- calander plugin -->
 <script src='{$url_prefix}js/fullcalendar.min.js'></script>
 <!-- data table plugin -->
-<script src='{$url_prefix}js/jquery.dataTables.min.js'></script>
+<script src='{$url_prefix}js/jquery.dataTables.js'></script>
 
 <!-- chart libraries start -->
 <script src="{$url_prefix}js/excanvas.js"></script>

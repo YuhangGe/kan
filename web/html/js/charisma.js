@@ -325,7 +325,11 @@ function docReady(){
                 }
             });
         }
-
+        if(typeof _t.attr("iDisplayLength") !== 'undefined') {
+            $.extend(params, {
+                "iDisplayLength" :  Number(_t.attr("iDisplayLength"))
+            });
+        }
         if(typeof _t.attr("aoColumns") !== 'undefined' && typeof window.aoColumns !== 'undefined') {
             $.extend(params, {
                 "aoColumns" :  window.aoColumns[_t.attr("aoColumns")]
