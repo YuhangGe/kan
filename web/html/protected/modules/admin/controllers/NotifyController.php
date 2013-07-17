@@ -12,7 +12,9 @@ class NotifyController extends AController{
         $m = new Notify();
         $m->content = $_POST['content'];
         $m->to_user_id = $_POST['to_user_id'];
+        $m->type = 0;
         $m->time = time();
+
         if($m->validate() && $m->save(false)) {
             $this->sendAjax(true, true);
         } else {
@@ -56,5 +58,16 @@ class NotifyController extends AController{
             $this->sendAjax(null);
         }
 
+    }
+
+    public function actionSearch() {
+        if(empty($_POST['search_value'])) {
+            $this->sendAjax(null);
+        }
+        $sql = "select u.nick_name, u.user_id from notify n, user u where u.user_id = n.to_user_id and n.content like :cnt";
+
+        $rs = Yii::app()->db->createCommand($sql)->queryAll(true, array(':cnt'=>'%'.strtr($_POST['search_value'],array('%'=>'\%', '_'=>'\_', '\\'=>'\\\\')).'%'));
+
+        $this->sendAjax($rs, true);
     }
 }

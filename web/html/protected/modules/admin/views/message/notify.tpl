@@ -196,6 +196,7 @@
         USER_ID = null;
         NOTIFY_ID = null;
         USER_NAME = null;
+        QUICK = false;
 
         function viewTableParams(aoData) {
             if(USER_ID!==null) {
@@ -241,6 +242,36 @@
             }
 
         }
+
+        function doActSearch() {
+            var _v = $("#txtActValue").val().trim();
+            if(_v==="") {
+                $("#act-search .user-require").show();
+                return;
+            }
+            $.post($.__link_prefix__ + "admin/notify/search", {
+                search_value : _v
+            }, function(rtn) {
+                if(!rtn.success) {
+                    alert('网络错误，请重试！');
+                    return;
+                }
+                $("#act-search .alert").hide();
+
+                var _u = $("#act-search ul").html("");
+                var list = rtn.data;
+                if(list.length===0) {
+                    $("#act-search .user-result").show();
+                }
+                for(var i=0;i<list.length;i++) {
+                    var user = list[i];
+                    $("<li></li>").html("<a href='"+$.__link_prefix__ + "admin/message/notify#"+user.user_id+"'>"+user.nick_name+"</a>")
+                            .appendTo(_u);
+                }
+            },"json");
+
+        }
+
         function doUserSearch() {
             $("#user-search .alert").hide();
 
@@ -303,6 +334,8 @@
             $("#nameUserRadio").change(setUserSearchType);
             $("#idUserRadio").change(setUserSearchType);
             $("#btnUserSearch").click(doUserSearch);
+            $("#btnActSearch").click(doActSearch);
+
             $("#btnDoModify").click(doPostNotify);
         }
 
@@ -325,7 +358,10 @@
         }
 
         function quickPostNotify(id) {
-            USER_ID = id;
+            if(USER_ID===null) {
+                QUICK = true;
+                USER_ID = id;
+            }
             $.post($.__link_prefix__ + "admin/user/sInfo", {
                 user_id : id
             }, function(rtn) {
@@ -388,8 +424,13 @@
                     return;
                 }
                 $("#notifyDialog").modal("hide");
+                if(QUICK) {
+                    USER_ID = null;
+                }
                 $(".table-notify").DataTable().fnDraw();
             }, "json");
         }
+
+
     </script>
 {/literal}
