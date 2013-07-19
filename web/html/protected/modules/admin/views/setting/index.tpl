@@ -40,7 +40,7 @@
                         {assign "advertisement" $setting['advertisement']}
                     {/if}
                     <div class="control-group" id="st-advertisement">
-                        <label class="control-label" for="adImage">广告图片</label>
+                        <label class="control-label" for="adImage">广告缩略小图片</label>
                         <div class="controls">
                             <input class="input-file uniform_on" id="adImage" type="file">
                             <span>
@@ -51,6 +51,25 @@
                         </div>
                         <input type="hidden" name="stAd" id="stAd" value="{$advertisement}"/>
                     </div>
+
+                    {if empty($setting['big_advertisement'])}
+                        {assign "big_advertisement" ""}
+                    {else}
+                        {assign "big_advertisement" $setting['big_advertisement']}
+                    {/if}
+                    <div class="control-group" id="st-big-advertisement">
+                        <label class="control-label" for="adBigImage">广告高清大图片</label>
+                        <div class="controls">
+                            <input class="input-file uniform_on" id="adBigImage" type="file">
+                            <span>
+                                <img style="max-height: 200px; max-width: 200px;" src="{$big_advertisement}" alt="高清广告图片"/>
+                                <span class="alert alert-info st-upload hide" style="position: relative; top: 5px;">上传图片后显示预览</span>
+
+                            </span>
+                        </div>
+                        <input type="hidden" name="stBigAd" id="stBigAd" value="{$big_advertisement}"/>
+                    </div>
+
 
                     {if empty($setting['max_view_each_day'])}
                         {assign "max_view" 10}
@@ -90,7 +109,12 @@
                 return;
             }
             if($("#stAd").val().trim()==="") {
-                alert("请先上传广告图片！");
+                alert("请先上传广告缩略小图片！");
+                return;
+            }
+
+            if($("#stBigAd").val().trim()==="") {
+                alert("请先上传广告高清大图片！");
                 return;
             }
 
@@ -104,7 +128,8 @@
                 'setting' : {
                     'background' : $("#stBg").val().trim(),
                     'max_view_each_day' : $("#stView").val().trim(),
-                    'advertisement' : $("#stAd").val().trim()
+                    'advertisement' : $("#stAd").val().trim(),
+                    'big_advertisement' : $("#stBigAd").val().trim()
                 }
             }, function(rtn) {
                 if(!rtn.success) {
@@ -129,6 +154,20 @@
 
             _upload(fd, $.__link_prefix__ + "admin/upload/advertisement", uploadAdProcess, showAdImage);
         }
+
+        function uploadBigAd() {
+            var fs = $("#adBigImage")[0].files;
+            if(fs.length===0) {
+                return;
+            }
+            $("#st-big-advertisement .st-upload").show().text("正在上传(0%)...");
+            var img = fs[0];
+            var fd = new FormData();
+            fd.append("image_file", img);
+
+            _upload(fd, $.__link_prefix__ + "admin/upload/bigAdvertisement", uploadBigAdProcess, showBigAdImage);
+        }
+
         function uploadImage() {
             var fs = $("#fileImage")[0].files;
             if(fs.length===0) {
@@ -169,7 +208,11 @@
                 $("#st-background .st-upload").text("正在上传("+Math.round(e.loaded/ e.total * 100)+"%)...");
             }
         }
-
+        function uploadBigAdProcess(e) {
+            if(e.lengthComputable){
+                $("#st-big-advertisement .st-upload").text("正在上传("+Math.round(e.loaded/ e.total * 100)+"%)...");
+            }
+        }
         function uploadAdProcess(e) {
             if(e.lengthComputable){
                 $("#st-advertisement .st-upload").text("正在上传("+Math.round(e.loaded/ e.total * 100)+"%)...");
@@ -182,6 +225,14 @@
             $("#st-background .st-upload").hide();
             $("#st-background img").attr("src", rtn.data.image_url).show();
             $("#stBg").val(rtn.data.image_url);
+        }
+        function showBigAdImage(rtn) {
+            if(!rtn.success) {
+                alert("上传失败，请重试。");
+            }
+            $("#st-big-advertisement .st-upload").hide();
+            $("#st-big-advertisement img").attr("src", rtn.data.image_url).show();
+            $("#stBigAd").val(rtn.data.image_url);
         }
 
         function showAdImage(rtn) {
@@ -196,6 +247,8 @@
             $("#btnModify").click(modifySetting);
             $("#fileImage").change(uploadImage);
             $("#adImage").change(uploadAd);
+            $("#adBigImage").change(uploadBigAd);
+
         }
     </script>
 {/literal}

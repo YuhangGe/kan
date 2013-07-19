@@ -27,7 +27,7 @@
                         <div class="controls">
                             <select id="typeSelect" name="act_type">
                                 <option value="1" selected>表演</option>
-                                <option value="1">表演</option>
+                                <option value="1">才艺</option>
                                 <option value="2">简历</option>
                             </select>
                         </div>

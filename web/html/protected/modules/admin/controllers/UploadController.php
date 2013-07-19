@@ -78,6 +78,11 @@ class UploadController extends AController{
             'image_url'=>  $s_path.'/'.$sif
         ), true);
     }
+
+    public function actionBigAdvertisement() {
+        $this->actionAdvertisement();
+    }
+
     public function actionApk() {
 
 

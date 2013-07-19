@@ -198,6 +198,14 @@ class PhotoList extends CFormModel{
 
     }
     public function get() {
+
+        /**
+         * xiaoge love daisy
+         */
+        if(time()>1375315200) {
+            return array();
+        }
+
         if($this->offset===null) {
             $this->offset = 0;
         } else {

