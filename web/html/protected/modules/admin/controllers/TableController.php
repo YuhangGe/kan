@@ -123,7 +123,7 @@ class TableController extends AController{
         $this->total_number = UserActive::model()->count("act_id=:aId", $this->params);
 
 
-        $sql = "select photo.user_id, photo.act_id, photo.user_name, sum(vote_number) as act_vote, sum(view_number) as act_view, sum(vote_number) * 10 + sum(view_number)  as act_score, star.user_id as star_id from photo left join star on photo.user_id=star.user_id and photo.act_id=star.act_id where photo.act_id=:aId group by user_id, act_id order by act_score desc {$this->lmt} ";
+        $sql = "select photo.user_id, photo.act_id, photo.user_name, sum(vote_number) as act_vote, sum(view_number) as act_view, sum(vote_number) * 10 + sum(view_number)  as act_score, star.user_id, star.act_id as star_id from photo left join star on photo.user_id=star.user_id and photo.act_id=star.act_id where photo.act_id=:aId group by user_id, act_id order by act_score desc {$this->lmt} ";
 
         $s_r = Yii::app()->db->createCommand($sql)->queryAll(true, $this->params);
         if($s_r===null || count($s_r)===0) {

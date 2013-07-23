@@ -179,7 +179,6 @@ class StarForm extends CFormModel{
 
 
 
-
         if(!$m->save(false)) {
             return false;
         }

@@ -12,7 +12,8 @@
         phone : xxx | null,
         sid : xxxxx
         small_avatar : xxx | null,
-	ad_url : xxx | null, 广告的图片url，可能为null
+        ad_url : xxx | null, 广告的图片url，可能为null
+        ad_big_url : xxx | null ， 广告的大图片的url，可能为null
         level : 用户等级。0，1，2，3分别代表普客，秀客，演客，星客
     }
     'success' : true/false,
@@ -228,7 +229,7 @@
     'begin_time' : xxx  //整数时间戳，需要转换
     'end_time' : xxx
     'image' : xxx //海报
-    'user_id' : xxx //如果user_id不等于null，则表明当前活动用户已经报了名了。
+    'user_id' : xxx //如果user_id不等于null，则表明当前活动用户已经报了名了。如果user_id=-1，表明活动已经过期。
 }, {}, {},...]
 说明：列表没有返回description，在点进去的详细信息里才会有。用户报名可以在列表页直接报名，也可以在详细页面报名。
 

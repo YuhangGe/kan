@@ -63,7 +63,7 @@ class ActiveList extends CFormModel {
 
         foreach ($rs as $key=>$r) {
             if($r['end_time']<time()) {
-                $rs[$key]['user_id'] = Yii::app()->user->id;
+                $rs[$key]['user_id'] = -1;
             }
         }
 

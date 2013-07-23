@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="box-content" id="score-detail" style="min-height: 200px;">
-        <table aoDataSource="{$link_prefix}admin/table/starAll" iDisplayLength="5" aoSortedBy="act_score" fnDrawCallback="selected" aoColumns="selected" class="table table-star-selected table-striped table-bordered bootstrap-datatable datatable">
+        <table aoDataSource="{$link_prefix}admin/table/starAll" iDisplayLength="5" aoSortedBy="act_score" fnDrawCallback="selected" aoColumns="selected" class="table table-star-all table-striped table-bordered bootstrap-datatable datatable">
             <thead>
             <tr>
                 <td>ID</td>
@@ -21,7 +21,7 @@
                 <th>喜欢</th>
                 <th>浏览</th>
                 <th>人气</th>
-                <th>海报</th>
+                {*<th>海报</th>*}
                 <th>获选日期</th>
                 <th>操作</th>
             </tr>
@@ -66,7 +66,7 @@
                             <th>喜欢</th>
                             <th>浏览</th>
                             <th>人气</th>
-                            <th>海报</th>
+                            {*<th>海报</th>*}
                             <th>获选日期</th>
                             <th>操作</th>
                         </tr>
@@ -157,11 +157,11 @@
         <i class="icon-zoom-in icon-white"></i>
         详情
     </a>
-    <a class="btn btn-info" href="javascript:uploadPoster('USER_ID');">
-    <i class="icon-edit icon-white"></i>
-       海报
-    </a>
-    <a class="btn btn-info" href="javascript:showUploadVideo('USER_ID');">
+    {*<a class="btn btn-info" href="javascript:uploadPoster('USER_ID');">*}
+    {*<i class="icon-edit icon-white"></i>*}
+       {*海报*}
+    {*</a>*}
+    <a class="btn btn-info" href="javascript:showUploadVideo('USER_ID', 'ACT_ID');">
         <i class="icon-edit icon-white"></i>
         上传视频
     </a>
@@ -360,20 +360,21 @@
                 { "mData": "act_view"
                 },
                 { "mData": "act_score"},
-                { "mData" : "poster_url", "mRender" : function(data) {
-                    if(data===null) {
-                        return "未上传"
-                    } else {
-                        return "<a class='poster_image' href='"+data+"'/>查看图片</a>";
-                    }
-                }},
+//                { "mData" : "poster_url", "mRender" : function(data) {
+//                    if(data===null) {
+//                        return "未上传"
+//                    } else {
+//                        return "<a class='poster_image' href='"+data+"'/>查看图片</a>";
+//                    }
+//                }},
                 { "mData" : "time", "mRender" : function(data) {
                     return $.datepicker.formatDate("yy年mm月dd日", new Date(Number(data)*1000));
                 }},
                 {
                     "mData" : "user_id",
-                    "mRender" : function(data) {
-                        return document.getElementById("table-row-selected-template").innerHTML.replace(/USER_ID/g, data===null? "-1" :data);
+                    "mRender" : function(data, type, aoData) {
+                        var rtn = document.getElementById("table-row-selected-template").innerHTML.replace(/USER_ID/g, data===null? "-1" :data);
+                        return rtn.replace("ACT_ID", aoData.act_id);
                     }
                 }
             ], "rank" : [
@@ -569,11 +570,14 @@
         }
 
         function reloadStarSelected() {
+
             $(".table-star-selected").DataTable().fnDraw();
+            $(".table-star-all").DataTable().fnDraw();
 
         }
-        function showUploadVideo(user_id) {
+        function showUploadVideo(user_id, act_id) {
             CUR_USER = user_id;
+            CUR_ACT = act_id;
             $("#videoDialog").modal("show");
         }
         function uploadVideo() {

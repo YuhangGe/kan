@@ -21,6 +21,7 @@
         sid : xxxxx
         small_avatar : xxx | null,
 		ad_url : xxx | null, 广告的图片url，可能为null
+		ad_big_url : xxx | null ， 广告的大图片的url，可能为null
         level : 用户等级。0，1，2，3分别代表普客，秀客，演客，星客
 }
 

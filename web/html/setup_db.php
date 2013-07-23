@@ -56,6 +56,7 @@ $sql_arr = array(
   `thumb_url` varchar(150) NOT NULL,
   `view_number` int(11) DEFAULT '0',
   `vote_number` int(11) DEFAULT '0',
+  `is_key_photo` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`photo_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1477 DEFAULT CHARSET=utf8;",
 
