@@ -40,13 +40,32 @@ class SiteController extends Controller
             $m->time = time();
             $m->update();
 
-            $r = Setting::model()->findByAttributes(array("key"=>"advertisement"));
-            if($r===null || empty($r->value)) {
-                $ad = null;
-            } else {
-                $ad = $r->value;
+            $rs = Setting::model()->findAllBySql("select * from setting where `key` in('advertisement','big_advertisement_720','big_advertisement_768')");
+            $ad = null;
+            $big_ad_720 = null;
+            $big_ad_768 = null;
+            foreach($rs as $r) {
+                if($r->key==="advertisement") {
+                    $ad = $r->value;
+                } elseif($r->key==="big_advertisement_720") {
+                    $big_ad_720 = $r->value;
+                } elseif($r->key==="big_advertisement_768") {
+                    $big_ad_768 = $r->value;
+                }
+
             }
-            $this->sendAjax(array('email'=>$user->email, 'phone'=>$user->phone, 'user_id'=>$user->id, 'nick_name'=>$user->name, 'small_avatar'=>$user->avatar,'level'=>$user->level, 'sid'=>session_id(), 'ad_url'=>$ad), true);
+            $this->sendAjax(array(
+                'email'=>$user->email,
+                'phone'=>$user->phone,
+                'user_id'=>$user->id,
+                'nick_name'=>$user->name,
+                'small_avatar'=>$user->avatar,
+                'level'=>$user->level,
+                'sid'=>session_id(),
+                'ad_url'=>$ad,
+                'big_ad_720' => $big_ad_720,
+                'big_ad_768' => $big_ad_768
+            ), true);
         } else {
             $this->sendAjax(null);
         }

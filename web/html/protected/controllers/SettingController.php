@@ -20,5 +20,22 @@ class SettingController extends Controller{
         }
     }
 
+    public function actionBackground() {
+        $rs = Setting::model()->findAllBySql("select * from setting where `key` in('background_720','background_768')");
+        $bg_720 = null;
+        $bg_768 = null;
+        foreach ($rs as $r) {
+            if($r->key==='background_720') {
+                $bg_720 = $r->value;
+            } elseif($r->key==='background_768') {
+                $bg_768 = $r->value;
+            }
+        }
+
+        $this->sendAjax(array(
+            'background_720' => $bg_720,
+            'background_768'=> $bg_768
+        ), true);
+    }
 
 }

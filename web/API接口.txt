@@ -12,9 +12,11 @@
         phone : xxx | null,
         sid : xxxxx
         small_avatar : xxx | null,
-        ad_url : xxx | null, 广告的图片url，可能为null
-        ad_big_url : xxx | null ， 广告的大图片的url，可能为null
         level : 用户等级。0，1，2，3分别代表普客，秀客，演客，星客
+
+        ad_url : xxx | null, 广告的图片url，可能为null
+        big_ad_720 : xxx | null ， 720尺寸广告的大图片的url，可能为null
+        big_ad_768 : xxx | null ,  768尺寸广告的大图片url，可能为null
     }
     'success' : true/false,
     'msg' : xxx
@@ -752,8 +754,23 @@ offset和length只用来控制未读留言的数量。返回的数据实际是le
     'value' : xxx
 }
 说明，这个接口用来得到系统配置。当前已有的key包括：
-'background' : 首页的背景图片。
-'advertisement' : 广告图片
+'background_720' : 首页的背景图片。720尺寸
+'background_768' : 首页的背景图片。768尺寸
+'advertisement' : 广告缩略图片
+'big_advertisement_720' : 720尺寸大广告
+'big_advertisement_768' : 768尺寸大广告
+
+/setting/background
+使用：得到背景图片参数
+参数：{
+    //无
+}
+返回：{
+    'background_720' : xxx | null
+    'background_768' : xxx | null
+}
+说明：这个接口只是辅助作用。返回所有尺寸背景图片。客户端可使用可不使用。
+
 
 /winner/userList
 使用：返回所有获奖用户
