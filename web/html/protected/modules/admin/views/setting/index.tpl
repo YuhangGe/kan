@@ -52,22 +52,40 @@
                         <input type="hidden" name="stBg768" id="stBg768" value="{$bg_url_768}"/>
                     </div>
 
-                    {if empty($setting['advertisement'])}
-                        {assign "advertisement" ""}
+                    {if empty($setting['advertisement_720'])}
+                        {assign "advertisement_720" ""}
                     {else}
-                        {assign "advertisement" $setting['advertisement']}
+                        {assign "advertisement_720" $setting['advertisement_720']}
                     {/if}
-                    <div class="control-group" id="st-advertisement">
-                        <label class="control-label" for="adImage">广告缩略小图片</label>
+                    <div class="control-group" id="st-advertisement-720">
+                        <label class="control-label" for="ad720Image">720尺寸广告小图片</label>
                         <div class="controls">
-                            <input class="input-file uniform_on" id="adImage" type="file">
+                            <input class="input-file uniform_on" id="ad720Image" type="file">
                             <span>
-                                <img style="max-height: 200px; max-width: 200px;" src="{$advertisement}" alt="广告图片"/>
+                                <img style="max-height: 200px; max-width: 200px;" src="{$advertisement_720}" alt="广告图片"/>
                                 <span class="alert alert-info st-upload hide" style="position: relative; top: 5px;">上传图片后显示预览</span>
 
                             </span>
                         </div>
-                        <input type="hidden" name="stAd" id="stAd" value="{$advertisement}"/>
+                        <input type="hidden" name="stAd720" id="stAd720" value="{$advertisement_720}"/>
+                    </div>
+
+                    {if empty($setting['advertisement_768'])}
+                        {assign "advertisement_768" ""}
+                    {else}
+                        {assign "advertisement_768" $setting['advertisement_768']}
+                    {/if}
+                    <div class="control-group" id="st-advertisement-768">
+                        <label class="control-label" for="ad768Image">768尺寸广告小图片</label>
+                        <div class="controls">
+                            <input class="input-file uniform_on" id="ad768Image" type="file">
+                            <span>
+                                <img style="max-height: 200px; max-width: 200px;" src="{$advertisement_768}" alt="广告图片"/>
+                                <span class="alert alert-info st-upload hide" style="position: relative; top: 5px;">上传图片后显示预览</span>
+
+                            </span>
+                        </div>
+                        <input type="hidden" name="stAd768" id="stAd768" value="{$advertisement_768}"/>
                     </div>
 
                     {if empty($setting['big_advertisement_720'])}
@@ -147,11 +165,14 @@
                 alert("请先上传首页背景图片！");
                 return;
             }
-            if($("#stAd").val().trim()==="") {
+            if($("#stAd720").val().trim()==="") {
                 alert("请先上传广告缩略小图片！");
                 return;
             }
-
+            if($("#stAd768").val().trim()==="") {
+                alert("请先上传广告缩略小图片！");
+                return;
+            }
             if($("#stBigAd720").val().trim()==="") {
                 alert("请先上传广告高清大图片！");
                 return;
@@ -172,7 +193,8 @@
                     'background_720' : $("#stBg720").val().trim(),
                     'background_768' : $("#stBg768").val().trim(),
                     'max_view_each_day' : $("#stView").val().trim(),
-                    'advertisement' : $("#stAd").val().trim(),
+                    'advertisement_720' : $("#stAd720").val().trim(),
+                    'advertisement_768' : $("#stAd768").val().trim(),
                     'big_advertisement_720' : $("#stBigAd720").val().trim(),
                     'big_advertisement_768' : $("#stBigAd768").val().trim()
                 }
@@ -187,17 +209,21 @@
             }, "json");
         }
 
-        function uploadAd() {
-            var fs = $("#adImage")[0].files;
+        function uploadAd(type) {
+            var fs = $("#ad"+type+"Image")[0].files;
             if(fs.length===0) {
                 return;
             }
-            $("#st-advertisement .st-upload").show().text("正在上传(0%)...");
+            $("#st-advertisement-"+type+" .st-upload").show().text("正在上传(0%)...");
             var img = fs[0];
             var fd = new FormData();
             fd.append("image_file", img);
 
-            _upload(fd, $.__link_prefix__ + "admin/upload/advertisement", uploadAdProcess, showAdImage);
+            _upload(fd, $.__link_prefix__ + "admin/upload/advertisement", function(e) {
+                uploadAdProcess(e, type);
+            }, function(rtn) {
+                showAdImage(rtn, type);
+            });
         }
 
         function uploadBigAd(type) {
@@ -267,9 +293,9 @@
                 $("#st-big-advertisement-"+type+" .st-upload").text("正在上传("+Math.round(e.loaded/ e.total * 100)+"%)...");
             }
         }
-        function uploadAdProcess(e) {
+        function uploadAdProcess(e, type) {
             if(e.lengthComputable){
-                $("#st-advertisement .st-upload").text("正在上传("+Math.round(e.loaded/ e.total * 100)+"%)...");
+                $("#st-advertisement-"+type+" .st-upload").text("正在上传("+Math.round(e.loaded/ e.total * 100)+"%)...");
             }
         }
         function showImage(rtn, type) {
@@ -289,13 +315,13 @@
             $("#stBigAd"+type).val(rtn.data.image_url);
         }
 
-        function showAdImage(rtn) {
+        function showAdImage(rtn, type) {
             if(!rtn.success) {
                 alert("上传失败，请重试。");
             }
-            $("#st-advertisement .st-upload").hide();
-            $("#st-advertisement img").attr("src", rtn.data.image_url).show();
-            $("#stAd").val(rtn.data.image_url);
+            $("#st-advertisement-"+type+" .st-upload").hide();
+            $("#st-advertisement-"+type+" img").attr("src", rtn.data.image_url).show();
+            $("#stAd"+type).val(rtn.data.image_url);
         }
         function viewReady() {
             $("#btnModify").click(modifySetting);
@@ -305,7 +331,13 @@
             $("#file768Image").change(function(){
                 uploadImage("768");
             });
-            $("#adImage").change(uploadAd);
+            $("#ad720Image").change(function() {
+                uploadAd("720");
+            });
+            $("#ad768Image").change(function() {
+                uploadAd("768");
+            });
+
             $("#ad720BigImage").change(function() {
                 uploadBigAd("720");
             });

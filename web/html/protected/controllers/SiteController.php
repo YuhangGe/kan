@@ -40,13 +40,16 @@ class SiteController extends Controller
             $m->time = time();
             $m->update();
 
-            $rs = Setting::model()->findAllBySql("select * from setting where `key` in('advertisement','big_advertisement_720','big_advertisement_768')");
-            $ad = null;
+            $rs = Setting::model()->findAllBySql("select * from setting where `key` in('advertisement_720', 'advertisement_768','big_advertisement_720','big_advertisement_768')");
+            $ad_720 = null;
+            $ad_768 = null;
             $big_ad_720 = null;
             $big_ad_768 = null;
             foreach($rs as $r) {
-                if($r->key==="advertisement") {
-                    $ad = $r->value;
+                if($r->key==="advertisement_720") {
+                    $ad_720 = $r->value;
+                } elseif($r->key==='advertisement_768') {
+                    $ad_768 = $r->value;
                 } elseif($r->key==="big_advertisement_720") {
                     $big_ad_720 = $r->value;
                 } elseif($r->key==="big_advertisement_768") {
@@ -62,7 +65,9 @@ class SiteController extends Controller
                 'small_avatar'=>$user->avatar,
                 'level'=>$user->level,
                 'sid'=>session_id(),
-                'ad_url'=>$ad,
+                'ad_url' => $ad_720,
+                'ad_url_720'=>$ad_720,
+                'ad_url_768'=>$ad_768,
                 'big_ad_720' => $big_ad_720,
                 'big_ad_768' => $big_ad_768
             ), true);

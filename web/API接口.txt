@@ -14,7 +14,8 @@
         small_avatar : xxx | null,
         level : 用户等级。0，1，2，3分别代表普客，秀客，演客，星客
 
-        ad_url : xxx | null, 广告的图片url，可能为null
+        ad_url_720 : xxx | null, 广告的图片url，可能为null
+        ad_url_768 : xxx | null,
         big_ad_720 : xxx | null ， 720尺寸广告的大图片的url，可能为null
         big_ad_768 : xxx | null ,  768尺寸广告的大图片url，可能为null
     }
@@ -756,7 +757,8 @@ offset和length只用来控制未读留言的数量。返回的数据实际是le
 说明，这个接口用来得到系统配置。当前已有的key包括：
 'background_720' : 首页的背景图片。720尺寸
 'background_768' : 首页的背景图片。768尺寸
-'advertisement' : 广告缩略图片
+'advertisement_720' : 720广告缩略图片,
+'advertisement_768' : 768广告缩略图片
 'big_advertisement_720' : 720尺寸大广告
 'big_advertisement_768' : 768尺寸大广告
 
