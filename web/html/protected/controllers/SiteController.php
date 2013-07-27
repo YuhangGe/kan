@@ -92,7 +92,7 @@ class SiteController extends Controller
         $rtn = false;
        // echo $model->validate();
        // return;
-        if($model->validate() && $model->save()) {
+        if($model->validate() && $model->save(false)) {
             $rtn = true;
         }
         $this->sendAjax($rtn, true);

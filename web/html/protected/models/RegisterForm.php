@@ -64,7 +64,10 @@ class RegisterForm extends CFormModel {
 
         $user->nick_name = $this->nick_name;
         $user->password = PwdHelper::encode($this->password);
+        $user->sex = 1;
+        $user->birthday = strtotime("1992-01-01");
 
+//        echo CJSON::encode($user);
 
         $transaction = Yii::app()->db->beginTransaction(); //创建事务
         try {

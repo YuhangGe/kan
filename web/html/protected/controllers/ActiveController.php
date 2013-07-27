@@ -36,14 +36,19 @@ class ActiveController extends Controller{
         }
         $r = Active::model()->findByPk($_POST['act_id']);
         if($r!==null) {
-            $r2 = UserActive::model()->find(array('select'=>'act_id', 'condition'=>'act_id=:aId AND user_id=:uId', 'params'=>array(':aId'=>$_POST['act_id'],'uId'=>Yii::app()->user->id)));
+            if($r->end_time<time()) {
+                $uid = -1;
+            } else {
+                $r2 = UserActive::model()->find(array('select'=>'act_id', 'condition'=>'act_id=:aId AND user_id=:uId', 'params'=>array(':aId'=>$_POST['act_id'],'uId'=>Yii::app()->user->id)));
+                $uid = $r2===null ? null : Yii::app()->user->id;
+            }
             $this->sendAjax(array(
                 'act_name'=>$r->act_name,
                 'begin_time'=>$r->begin_time,
                 'end_time'=>$r->end_time,
                 'image'=>$r->image,
                 'description'=>$r->description,
-                'user_id' => $r2 === null ? null : Yii::app()->user->id
+                'user_id' => $uid
             ), true);
         } else {
             $this->sendAjax(null);

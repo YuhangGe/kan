@@ -21,10 +21,47 @@
                         <div class="controls">
                             <input class="input-file uniform_on" id="fileApk" type="file">
                             <button type="button" id="btnApk" class="btn btn-primary">上传</button>
-                            <span class="alert alert-info apk-upload" style="position: relative; top: 5px;">上传新版本apk文件</span>
+                            <span class="alert alert-info apk-upload">上传新版本apk文件</span>
+
+                        </div>
+                        {if empty($setting['apk_version'])}
+                            {assign "apk_version" "1.0.0"}
+                        {else}
+                            {assign "apk_version" $setting['apk_version']}
+                        {/if}
+                        <label class="control-label" for="apkVersion">设置客户端版本</label>
+                        <div class="controls">
+                            <input class="input-large" id="apkVersion" value="{$apk_version}">
+                            <button type="button" id="btnVersion" class="btn btn-primary">修改</button>
+                            <span class="alert alert-info" >设置下载页面用户看到的安卓客户端版本</span>
+
+                        </div>
+                        {if empty($setting['apk_download_number'])}
+                            {assign "apk_download_number" "0"}
+                        {else}
+                            {assign "apk_download_number" $setting['apk_download_number']}
+                        {/if}
+                        <label class="control-label" for="apkNumber">设置客户端下载量</label>
+                        <div class="controls">
+                            <input class="input-large" id="apkNumber" value="{$apk_download_number}">
+                            <button type="button" id="btnNumber" class="btn btn-primary">修改</button>
+                            <span class="alert alert-info" >设置下载页面用户看到的安卓客户端的下载量</span>
+
                         </div>
                     </div>
-
+                    <style>
+                        .controls {
+                            margin-bottom: 10px;
+                        }
+                        .alert{
+                            position: relative;
+                            top: 2px;
+                        }
+                        .input-large {
+                            width: 180px;
+                            margin-right: 5px;
+                        }
+                    </style>
                 </fieldset>
             </form>
 
@@ -90,6 +127,45 @@
 
     function viewReady() {
         $("#btnApk").click(uploadApk);
+        $("#btnVersion").click(setApkVersion);
+        $("#btnNumber").click(setApkDownloadNuber);
+    }
+
+    function setApkVersion() {
+        var v = $("#apkVersion").val().trim();
+        if(v==="" || /^\d+(\.\d+)*$/.test(v)===false) {
+            alert("请输入正确的版本号。比如 1.3.4 ");
+            return;
+        }
+        $.post($.__link_prefix__ + "admin/setting/save", {
+            setting: {
+                'apk_version' : v
+            }
+        }, function(rtn) {
+            if(!rtn.success) {
+                alert("修改失败。请重试。")
+            } else {
+                noty({text: '修改成功！', layout:'topCenter', 'type' : 'success', 'timeout' : 1000});
+            }
+        }, "json");
+    }
+    function setApkDownloadNuber() {
+        var v = $("#apkNumber").val().trim();
+        if(v==="" || /^\d+$/.test(v)===false) {
+            alert("请输入正确的下载量，应该是一个数字。");
+            return;
+        }
+        $.post($.__link_prefix__ + "admin/setting/save", {
+            setting: {
+                'apk_download_number' : v
+            }
+        }, function(rtn) {
+            if(!rtn.success) {
+                alert("修改失败。请重试。")
+            } else {
+                noty({text: '修改成功！', layout:'topCenter', 'type' : 'success', 'timeout' : 1000});
+            }
+        }, "json");
     }
 </script>
 {/literal}

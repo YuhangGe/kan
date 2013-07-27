@@ -52,7 +52,7 @@ class WinnerList extends CFormModel{
 //       echo CJSON::encode($r);
         if($this->type === "user") {
 
-            $sql = "select w.user_id, w.time, w.poster_url, u.nick_name, v.video_id, v.video_name, v.vote_number, v.view_number, v.vote_number*10 + v.view_number as score_number from winner w, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id and v.act_id={$r->act_id} order by score_number desc, w.time desc limit {$this->offset}, {$this->length}";
+            $sql = "select w.user_id, w.time, w.poster_url, u.nick_name, v.video_id, v.video_name, v.act_name, v.vote_number, v.view_number, v.vote_number*10 + v.view_number as score_number from winner w, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id and v.act_id={$r->act_id} order by score_number desc, w.time desc limit {$this->offset}, {$this->length}";
             return Yii::app()->db->createCommand($sql)->queryAll();
 
         } elseif($this->type==="video" && $this->user_id!==null) {

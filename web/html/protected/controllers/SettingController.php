@@ -11,13 +11,17 @@ class SettingController extends Controller{
         if(empty($_POST['key'])) {
             $this->sendAjax(null);
         }
-        $r = Setting::model()->findByAttributes(array("key"=>$_POST['key']));
-        if($r === null || empty($r->value)) {
-            $this->sendAjax(array('key'=>$_POST['key'], 'value'=>null));
+        $key_list = $_POST['key'];
+        if(is_array($key_list)) {
+            foreach ($key_list as $key=>$k) {
+                $key_list[$key] = "'$k'";
+            }
+            $key_v = join(",", $key_list);
         } else {
-            $this->sendAjax(array('key'=>$_POST['key'], 'value'=>$r->value));
-
+            $key_v = "'$key_list'";
         }
+        $sql = "select * from setting where `key` in($key_v)";
+        $this->sendAjax(Yii::app()->db->createCommand($sql)->queryAll(), true);
     }
 
     public function actionBackground() {

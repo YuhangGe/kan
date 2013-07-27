@@ -46,6 +46,12 @@ class SettingController extends AController{
     }
 
     public function actionApp() {
-        $this->render("app");
+        $rs = Setting::model()->findAllBySql("select * from setting where `key` in('apk_download_number','apk_version')");
+        $data = array();
+        foreach ($rs as $s) {
+            $data[$s->key] = $s->value;
+        }
+
+        $this->render("app", array("setting"=>$data));
     }
 }

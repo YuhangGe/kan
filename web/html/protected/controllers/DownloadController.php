@@ -41,6 +41,22 @@ class DownloadController extends Controller{
     }
 
     public function actionApk() {
-
+        $r = Setting::model()->findBySql("select * from setting where `key`='apk_download_number'");
+        if($r === null) {
+            $r = new Setting();
+            $r->key = 'apk_download_number';
+            $r->value = '0';
+            if(!$r->save(false)) {
+                return;
+            }
+        }
+        $num = intval($r->value);
+        echo $num;
+        $r->value = ($num + 1)."";
+        if(!$r->save(false)){
+            return;
+        }
+        $apk_file = str_replace("protected\\controllers\\DownloadController.php", "download\\kankan.apk", __FILE__);
+        $this->download($apk_file);
     }
 }
