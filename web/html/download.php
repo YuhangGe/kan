@@ -1,26 +1,3 @@
-<?php
-/**
- * User: xiaoge
- * At: 13-7-10 10:48
- * Email: abraham1@163.com
- */
-
-
-if(!empty($_GET['type'])) {
-    $path = dirname(__FILE__);
-
-    switch($_GET['type']) {
-        case 'apk' :
-            header("location:index.php/download/apk");
-            break;
-        case 'ios' :
-            break;
-        case 'windows' :
-            break;
-        default:
-            break;
-    }
-} else { ?>
 <!doctype html>
 <html>
 <head>
@@ -28,7 +5,8 @@ if(!empty($_GET['type'])) {
     <title>下载看看客户端</title>
     <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
     <script type="text/javascript">
-        $(function() {
+
+        function getInfo() {
             $.post("index.php/setting/get", {
                 key : ['apk_download_number', 'apk_version']
             }, function(rtn) {
@@ -48,6 +26,10 @@ if(!empty($_GET['type'])) {
                     }
                 }
             }, "json");
+        }
+        $(function() {
+            getInfo();
+            window.setInterval(getInfo, 10000);
         })
     </script>
 </head>
@@ -56,7 +38,7 @@ if(!empty($_GET['type'])) {
 <div>
     <h3>安卓客户端</h3>
     <div>
-        <a href="download.php?type=apk">本地下载</a>（当前版本：<span id="apk_version">1.0.0</span>，当前下载量：<span id="apk_download_number">0</span>）<br/><br/>
+        <a href="index.php/download/apk">本地下载</a>（当前版本：<span id="apk_version">1.0.0</span>，当前下载量：<span id="apk_download_number">0</span>）<br/><br/>
     </div>
 </div>
 <div>
@@ -69,5 +51,3 @@ if(!empty($_GET['type'])) {
 </div>
 </body>
 </html>
-
-<?php }

@@ -58,6 +58,20 @@ class UserController extends AController {
         $this->render("star");
     }
 
+    public function actionActiveInfo() {
+        if(!isset($_POST['act_id'])) {
+            $this->sendAjax(null);
+        }
+        $r =  Active::model()->findBySql("select act_name, act_id from active where act_id = :aId", array(":aId"=>$_POST['act_id']));
+        if($r!==null) {
+            $this->sendAjax($r, true);
+
+        } else {
+            $this->sendAjax(null);
+
+        }
+    }
+
     public function actionSInfo() {
         if(!isset($_POST['user_id'])) {
             $this->sendAjax(null);

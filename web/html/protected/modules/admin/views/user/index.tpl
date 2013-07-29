@@ -5,7 +5,7 @@
 <div class="row-fluid sortable">
     <div class="box span12">
         <div class="box-header well" data-original-title>
-            <h2><i class="icon-user"></i> 用户</h2>
+            <h2><i class="icon-user"></i> <span id="h-title">所有用户</span></h2>
             <div class="box-icon">
                 {*<a href="#" class="btn btn-setting btn-round"><i class="icon-cog"></i></a>*}
                 {*<a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>*}
@@ -44,6 +44,10 @@
         <i class="icon-zoom-in icon-white"></i>
         查看详情
     </a>
+    <a class="btn btn-info" href="{$link_prefix}admin/default/index#USER_ID">
+        <i class="icon-edit icon-white"></i>
+        活动
+    </a>
     <a class="btn btn-info" href="{$link_prefix}admin/photo/index#uUSER_ID">
         <i class="icon-edit icon-white"></i>
         照片
@@ -65,6 +69,14 @@
 {literal}
 
     <script type="text/javascript">
+        CUR_ACT = null;
+        function viewTableParams(aoData) {
+
+            if(CUR_ACT!==null) {
+                aoData.push({'name' : 'act_id' , 'value' : CUR_ACT});
+            }
+        }
+
         function viewStart() {
             window.aoColumns = {'user' : [
                 { "mData": "user_id"},
@@ -126,6 +138,30 @@
                 alert("删除成功");
                 $(".datatable").DataTable().fnDraw();
             }, "json");
+        }
+
+        function viewReady() {
+            $.Router.register({
+                "\\d+" : function(act_id) {
+                    CUR_ACT = act_id;
+                    $(".datatable").DataTable().fnDraw();
+                    $.post($.__link_prefix__ + "admin/user/activeInfo", {
+                        act_id : act_id
+                    }, function(rtn) {
+                        if(!rtn.success) {
+                            alert("出现网络错误！请刷新重试。");
+                            return;
+                        }
+                        $("#h-title").text("参加活动 " + rtn.data.act_name+" 的用户");
+                    },"json");
+                },
+                ".*" : function() {
+                    CUR_ACT = -1;
+                    $(".datatable").DataTable().fnDraw();
+                    $("#h-title").text("所有用户");
+
+                }
+            }).start();
         }
     </script>
 

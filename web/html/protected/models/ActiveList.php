@@ -110,7 +110,7 @@ class ActiveList extends CFormModel {
 
     }
 
-    public function getCloseList() {
+    public function _getCloseList() {
         $this->_off_len();
         $now = time();
         $uid = Yii::app()->user->id;
@@ -118,5 +118,9 @@ class ActiveList extends CFormModel {
         $sql = "select t.act_id, t.act_name, t.begin_time, t.end_time, t.image, u.user_id from active t LEFT OUTER JOIN user_active u ON (u.act_id = t.act_id AND u.user_id=$uid) where t.end_time<$now order by end_time desc, act_id desc limit {$this->offset},{$this->length}";
 
         return Yii::app()->db->createCommand($sql)->queryAll();
+    }
+
+    public function getCloseList() {
+        return $this->getOpenList();
     }
 }

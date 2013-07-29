@@ -72,13 +72,81 @@ class TableController extends AController{
         $this->output();
     }
     public function actionActive() {
-        $this->ord = "order by act_id desc";
-        $this->getData("active", " act_id, act_name, act_type, begin_time, end_time, image ");
+        if(!isset($_POST['user_id'])) {
+            $this->output();
+        }
+        $this->check();
+
+        $uid = intval($_POST['user_id']);
+        if($uid===-1) {
+            $c_sql = "select count(*) as number from active";
+        } else {
+            $c_sql = "select count(*) as number from user_active where user_id=:uId";
+            $this->params[':uId'] = $uid;
+        }
+        $c_r = Yii::app()->db->createCommand($c_sql)->queryAll(true, $this->params);
+        if($c_r===null) {
+            $this->output();
+        }
+        if($uid===-1) {
+            $s_sql = "select a.act_id, a.act_name, a.act_type, a.begin_time, a.end_time, a.image,
+	                (select count(*) from user_active ua where ua.act_id=a.act_id) as join_n,
+	                (select count(*) from star s where s.act_id=a.act_id) as star_n,
+	                (select count(*) from winner w where w.video_id in(select video_id from video v where v.act_id = a.act_id)) as winner_n from active a order by a.act_id desc {$this->lmt}";
+        } else {
+            $s_sql = "select a.act_id, a.act_name, a.act_type, a.begin_time, a.end_time, a.image,
+	                (select count(*) from user_active ua where ua.act_id=ua.act_id) as join_n,
+	                (select count(*) from star s where s.act_id=ua.act_id) as star_n,
+	                (select count(*) from winner w where w.video_id in(select video_id from video v where v.act_id = ua.act_id)) as winner_n
+	                 from active a, user_active ua where a.act_id=ua.act_id and ua.user_id=:uId order by ua.act_id desc {$this->lmt}";
+        }
+
+        $s_r = Yii::app()->db->createCommand($s_sql)->queryAll(true, $this->params);
+        if($s_r===null) {
+            $this->output();
+        }
+
+        $this->total_number = $c_r[0]['number'];
+
+        $this->data = $s_r;
+
+        $this->output();
     }
 
     public function actionUser() {
+        if(!isset($_POST['act_id'])) {
+            $this->output();
+        }
+        $aid = intval($_POST['act_id']);
         $this->ord = "order by user_id desc";
-        $this->getData("user", " user_id, level, sex, nick_name, birthday, email, phone, small_avatar, fan_number, friend_number ");
+
+        if($aid===-1) {
+            $this->getData("user", " user_id, level, sex, nick_name, birthday, email, phone, small_avatar, fan_number, friend_number ");
+        } elseif($aid>=0) {
+
+
+            $this->check();
+            $this->ord = "";
+            $this->params[':aId'] = $aid;
+
+            $c_sql = "select count(*) as number from `user_active` ua where ua.act_id=:aId";
+            $c_r = Yii::app()->db->createCommand($c_sql)->queryAll(true, $this->params);
+            if($c_r===null) {
+                $this->output();
+            }
+
+            $s_sql = "select u.* from `user` u, `user_active` ua where u.user_id=ua.user_id and ua.act_id=:aId {$this->ord} {$this->lmt}";
+            $s_r = Yii::app()->db->createCommand($s_sql)->queryAll(true, $this->params);
+            if($s_r===null) {
+                $this->output();
+            }
+
+            $this->total_number = $c_r[0]['number'];
+
+            $this->data = $s_r;
+
+            $this->output();
+        }
     }
 
     public function actionStarAll() {

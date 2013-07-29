@@ -44,16 +44,26 @@ class WinnerList extends CFormModel{
 
         $tm = time();
 
-        $r = Active::model()->findBySql("select act_id from active where end_time<$tm order by end_time desc, act_id desc limit 1");
-        if($r===null) {
+        $rs = Active::model()->findAllBySql("select act_id from active where end_time<$tm order by end_time desc, act_id desc limit 20");
+        if($rs===null || count($rs) === 0) {
             return array();
         }
 
+
 //       echo CJSON::encode($r);
         if($this->type === "user") {
+            $rtn = array();
+            foreach($rs as $r) {
+                $sql = "select w.user_id, w.time, w.poster_url, u.nick_name, v.video_id, v.video_name, v.act_name, v.vote_number, v.view_number, v.vote_number*10 + v.view_number as score_number from winner w, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id and v.act_id={$r->act_id} order by score_number  desc limit {$this->offset}, {$this->length}";
+                $user_arr = Yii::app()->db->createCommand($sql)->queryAll();
+                $i = 1;
+                foreach($user_arr as $u) {
+                    $u['rank_number'] = $i++;
+                    $rtn[] = $u;
+                }
+            }
 
-            $sql = "select w.user_id, w.time, w.poster_url, u.nick_name, v.video_id, v.video_name, v.act_name, v.vote_number, v.view_number, v.vote_number*10 + v.view_number as score_number from winner w, `user` u, video v where w.user_id=u.user_id and v.video_id=w.video_id and v.act_id={$r->act_id} order by score_number desc, w.time desc limit {$this->offset}, {$this->length}";
-            return Yii::app()->db->createCommand($sql)->queryAll();
+            return $rtn;
 
         } elseif($this->type==="video" && $this->user_id!==null) {
 //            $r = Video::model()->findBySql("select v.* from video v, winner w where w.video_id=v.video_id and v.user_id=:uId order by w.time desc limit 1", array(":uId"=>$this->user_id));

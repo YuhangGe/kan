@@ -5,7 +5,7 @@
 <div class="row-fluid sortable">
     <div class="box span12">
         <div class="box-header well" data-original-title>
-            <h2><i class="icon-user"></i> 活动</h2>
+            <h2><i class="icon-user"></i> <span id='h-title'>所有活动</span></h2>
             <div class="box-icon">
                 {*<a href="#" class="btn btn-setting btn-round"><i class="icon-cog"></i></a>*}
                 {*<a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>*}
@@ -23,6 +23,10 @@
                     <th>开始时间</th>
                     <th>结束时间</th>
                     <th>活动海报</th>
+                    <th>活动状态</th>
+                    <th>报名数</th>
+                    <th>演客数</th>
+                    <th>星客数</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -39,15 +43,19 @@
 <div id="table-edit-row-template" style="display: none">
     <a class="btn btn-success edit-view" href="{$link_prefix}admin/default/detail#ACT_ID">
         <i class="icon-zoom-in icon-white"></i>
-        查看详情
+        查看
     </a>
     <a class="btn btn-info" href="{$link_prefix}admin/default/detail#ACT_ID!">
         <i class="icon-edit icon-white"></i>
-        修改活动
+        修改
+    </a>
+    <a class="btn btn-info edit-view" href="{$link_prefix}admin/user/index#ACT_ID">
+        <i class="icon-edit icon-white"></i>
+        用户
     </a>
     <a class="btn btn-info" href="{$link_prefix}admin/star/index#ACT_ID">
         <i class="icon-edit icon-white"></i>
-        演客选拔
+        演客
     </a>
      <a class="btn btn-danger edit-del" href="javascript:delActive('ACT_ID');">
         <i class="icon-trash icon-white"></i>
@@ -59,7 +67,17 @@
 {literal}
 
 <script type="text/javascript">
+    USER_ID = null;
+    function viewTableParams(aoData) {
+
+        if(USER_ID!==null) {
+            aoData.push({'name' : 'user_id' , 'value' : USER_ID});
+        }
+    }
+
+
     function viewStart() {
+
         window.fnDrawCallback = {
             'active' : function() {
                 $.colorbox.remove();
@@ -85,6 +103,32 @@
                     return "未上传";
                 } else {
                     return "<a href='"+data+"' class='active_image'>显示图片</a>";
+                }
+            }
+            },
+            {
+              "mData" : "end_time", "mRender" : function(data) {
+                    var t = Number(data)*1000, _d = new Date().getTime();
+                    if(t>_d) {
+                        return "进行中";
+                    } else {
+                        return "已结束";
+                    }
+              }
+            },
+            {
+                "mData" : "join_n"
+            },
+            {
+                "mData" : "star_n"
+            },
+            {
+                "mData" : "winner_n", "mRender" : function(data, type, aoData) {
+                    var t = Number(aoData.end_time)*1000, _d = new Date().getTime();
+                if(t>_d) {
+                    return "未结束";
+                } else {
+                    return data;
                 }
             }
             },
@@ -115,6 +159,29 @@
             alert("删除成功");
             $(".datatable").DataTable().fnDraw();
         }, "json");
+    }
+
+    function viewReady() {
+        $.Router.register({
+            "\\d+" : function(user_id) {
+                USER_ID = user_id;
+                $(".datatable").DataTable().fnDraw();
+                $.post($.__link_prefix__ + "admin/user/sInfo", {
+                    user_id : USER_ID
+                }, function(rtn) {
+                    if(!rtn.success) {
+                        alert("出现网络错误！请刷新重试。");
+                        return;
+                    }
+                    $("#h-title").text(rtn.data.nick_name + " 参加的活动");
+                },"json");
+            },
+            ".*" : function() {
+                USER_ID = -1;
+                $(".datatable").DataTable().fnDraw();
+                $("#h-title").text("所有活动");
+            }
+        }).start();
     }
 </script>
 
